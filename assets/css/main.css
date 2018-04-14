@@ -1709,15 +1709,16 @@
 		}
 
 		.image.avatar48 {
-			width: 97px;
-			height: 97px;
-			background: #f00;
+			width: 160px;
+			height: 160px;
+			margin-right: 1.5em;
+			background: #000000;
 			border-radius: 50%;
 		}
 
 			.image.avatar48 img {
-				width: 97px;
-				height: 97px;
+				width: 160px;
+				height: 160px;
 				border-radius: 50%;
 			}
 
@@ -2042,7 +2043,7 @@
 
 	#logo {
 		position: relative;
-		margin: 1.75em 1.5em 1.5em 1.5em;
+		margin: 0em 1.5em 0em 1.5em;
 		min-height: 48px;
 		cursor: default;
 	}
@@ -2065,6 +2066,36 @@
 		}
 
 		#logo .image {
+			position: absolute;
+			left: 0;
+			top: 0;
+		}
+
+	#experience {
+		position: relative;
+		margin: 0em 1.5em 1.5em 1.5em;
+		min-height: 48px;
+		cursor: default;
+	}
+
+		#experience h1 {
+			position: relative;
+			color: #fff;
+			font-weight: 600;
+			font-size: 1em;
+			line-height: 1em;
+		}
+
+		#experience p {
+			position: relative;
+			display: block;
+			font-size: 0.6em;
+			color: rgba(255, 255, 255, 0.5);
+			line-height: 1.25em;
+			margin: 0.5em 0 0 0;
+		}
+
+		#experience .image {
 			position: absolute;
 			left: 0;
 			top: 0;
