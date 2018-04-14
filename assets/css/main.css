@@ -2043,7 +2043,7 @@
 
 	#logo {
 		position: relative;
-		margin: 0em 1.5em 0em 1.5em;
+		margin: 1.5em 1.5em 2.5em 1.5em;
 		min-height: 48px;
 		cursor: default;
 	}
@@ -2071,35 +2071,7 @@
 			top: 0;
 		}
 
-	#experience {
-		position: relative;
-		margin: 0em 1.5em 1.5em 1.5em;
-		min-height: 48px;
-		cursor: default;
-	}
-
-		#experience h1 {
-			position: relative;
-			color: #fff;
-			font-weight: 600;
-			font-size: 1em;
-			line-height: 1em;
-		}
-
-		#experience p {
-			position: relative;
-			display: block;
-			font-size: 0.6em;
-			color: rgba(255, 255, 255, 0.5);
-			line-height: 1.25em;
-			margin: 0.5em 0 0 0;
-		}
-
-		#experience .image {
-			position: absolute;
-			left: 0;
-			top: 0;
-		}
+	
 
 	#nav ul {
 		margin-bottom: 0;
