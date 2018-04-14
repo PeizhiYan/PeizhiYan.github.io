@@ -1709,16 +1709,16 @@
 		}
 
 		.image.avatar48 {
-			width: 160px;
-			height: 160px;
+			width: 120px;
+			height: 120px;
 			margin-right: 1.5em;
 			background: #000000;
 			border-radius: 50%;
 		}
 
 			.image.avatar48 img {
-				width: 160px;
-				height: 160px;
+				width: 120px;
+				height: 120px;
 				border-radius: 50%;
 			}
 
