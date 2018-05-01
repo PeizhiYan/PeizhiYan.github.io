@@ -11,8 +11,15 @@
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
 		<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
+		<script type="text/javascript">
+			<!--
+			function displayFooter(){
+				document.getElementById("currentDate").innerHTML = "2017-" + getFullYear()		
+			}
+			-->
+		</script>
 	</head>
-	<body>
+	<body  onload="displayFooter()">
 
 		<!-- Header -->
 			<div id="header">
@@ -172,11 +179,7 @@
 			<div id="footer">
 
 				<!-- Copyright -->
-					<script type="text/javascript">
-					<!--
-						document.getElementById("currentDate").innerHTML = "2017-" + getFullYear()	
-					-->
-					</script>
+					
 					<ul class="copyright">
 						<li>&copy; Peizhi Yan. All rights reserved.</li><li id="currentDate" ></li>
 					</ul>
