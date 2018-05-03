@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Scientific Calculator</title>
+	<script type="text/javascript" src="script.js"></script>
+	<style type="text/css">
+		button.btn{
+			width: 59px;
+		}
+		button.btn2{
+			width: 48%;
+		}
+	</style>
+</head>
+<body>
+	<!-- Home button & Back button -->
+	<button onclick="location.href='https://PeizhiYan.github.io'">Home</button>
+	<button onclick="location.href='../index.html'">Back</button><br><hr>
+
+	<!-- Calculator -->
+	<table border="1">
+		<tr>
+			<!-- Input -->
+			<td>
+				<table style="width: 100%">
+					<tr>
+						<td>x=<input type="text" id="textInput1" style="width: 70%;">
+							<button onclick="clearX()">C</button>
+						</td>
+					</tr>
+					<tr>
+						<td>y=<input type="text" id="textInput2" style="width: 70%;">
+						<button onclick="clearY()">C</button>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<button onclick="toX()" class="btn2">RESULT => x</button>
+							<button onclick="toY()" class="btn2">RESULT => y</button>
+						</td>
+					</tr>
+				</table>
+			</td>
+			<!-- Result -->
+			<td>
+				<p id="result"> RESULT </p>
+				<button onclick="clearAll()">Clear All</button>
+			</td>
+		</tr>
+		<!-- constants -->
+		<tr>
+			<td>
+				<button onclick="e()" class="btn">e</button>
+				<button onclick="pi()" class="btn">PI</button>
+			</td>
+		</tr>
+		<!-- basics -->
+		<tr>
+			<td>
+				<button onclick="add()" class="btn">+</button>
+				<button onclick="sub()" class="btn">-</button>
+				<button onclick="mul()" class="btn">x</button>
+				<button onclick="div()" class="btn">/</button>
+			</td>
+		</tr>
+		<!-- logs -->
+		<tr>
+			<td>
+				<button onclick="log2()" class="btn">log_2(x)</button>
+				<button onclick="log10()" class="btn">log_10(x)</button>
+				<button onclick="log()" class="btn">log_e(x)</button>
+				<button onclick="logxy()" class="btn">log_x(y)</button>
+			</td>
+		</tr>
+		<!-- triangulars -->
+		<tr>
+			<td>
+				<button onclick="sin()" class="btn">sin(x)</button>
+				<button onclick="cos()" class="btn">cos(x)</button>
+				<button onclick="tan()" class="btn">tan(x)</button>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<button onclick="radian()" class="btn2">x=Radian(y)</button>
+				<button onclick="degree()" class="btn2">y=Degree(x)</button>
+			</td>
+		</tr>
+	</table>
+
+	<!-- Footer -->
+	<hr>
+	<div style="text-align: center; color: grey">Peizhi Yan, All rights reserved. <br>2018</div>
+</body>
+</html>
