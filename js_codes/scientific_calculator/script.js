@@ -107,4 +107,46 @@ function degree(){
 	document.getElementById("textInput2").value = Number(Math.PI)*(Number(x)/Number(180))
 }
 
+/* Exps */
+function sqrt() {
+	var x = document.getElementById("textInput1").value
+	document.getElementById("result").innerHTML = "sqrt("+x+")="+Math.sqrt(x)
+}
 
+function root3() {
+	var x = document.getElementById("textInput1").value
+	document.getElementById("result").innerHTML = "("+x+")^(1/3)="+Math.pow(x,1/3)
+}
+
+function square() {
+	var x = document.getElementById("textInput1").value
+	document.getElementById("result").innerHTML = "("+x+")^2="+Math.pow(x,2)
+}
+
+function cube() {
+	var x = document.getElementById("textInput1").value
+	document.getElementById("result").innerHTML = "("+x+")^3="+Math.pow(x,3)
+}
+
+function pow() {
+	var x = document.getElementById("textInput1").value
+	var y = document.getElementById("textInput2").value
+	document.getElementById("result").innerHTML = "("+x+")^"+y+"="+Math.pow(x,y)
+}
+
+/* Others */
+function rand() {
+	var x = document.getElementById("textInput1").value
+	var y = document.getElementById("textInput2").value
+	var min = Math.min(x,y)
+	var max = Math.max(x,y)
+	document.getElementById("result").innerHTML = "rand["+min+","+max+"]="+ (Number(min)+Math.random()*(Number(max)-Number(min)))
+}
+
+function randint() {
+	var x = document.getElementById("textInput1").value
+	var y = document.getElementById("textInput2").value
+	var min = Math.min(x,y)
+	var max = Math.max(x,y)
+	document.getElementById("result").innerHTML = "randint["+min+","+max+"]="+ Math.round((Number(min)+Math.random()*(Number(max)-Number(min))))
+}
