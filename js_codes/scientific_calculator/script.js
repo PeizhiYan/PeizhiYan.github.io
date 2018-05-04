@@ -150,3 +150,71 @@ function randint() {
 	var max = Math.max(x,y)
 	document.getElementById("result").innerHTML = "randint["+min+","+max+"]="+ Math.round((Number(min)+Math.random()*(Number(max)-Number(min))))
 }
+
+/* Base Converter */
+function dec2bin() {
+	var x = document.getElementById("textInput1").value
+	var tmp = x
+	var result = ''
+	while(parseInt(tmp/2) >= 1){
+		result = result + tmp%2
+		tmp = parseInt(tmp/2)
+	}
+	if (tmp == 1) {
+		result = result + '1'
+	}
+	else{
+		result = result + '0'
+	}
+	var tmp = ''
+	for (var i = result.length-1; i >= 0; i--) {
+		tmp = tmp + result.charAt(i)
+	}
+	document.getElementById("result").innerHTML = x+"(dec)="+tmp+"(bin)"
+}
+
+function dec2oct() {
+	var x = document.getElementById("textInput1").value
+	x = parseInt(x)
+	document.getElementById("result").innerHTML = x+"(dec)="+x.toString(8)+"(oct)"
+}
+
+function dec2hex() {
+	var x = document.getElementById("textInput1").value
+	x = parseInt(x)
+	document.getElementById("result").innerHTML = x+"(dec)="+x.toString(16).toUpperCase()+"(oct)"
+}
+
+function bin2dec() {
+	var x = document.getElementById("textInput1").value
+	document.getElementById("result").innerHTML = x+"(bin)="+parseInt(x.toString(),2)+"(dec)"
+}
+
+function bin2oct() {
+	var x = document.getElementById("textInput1").value
+	var tmp = parseInt(x.toString(),2)
+	document.getElementById("result").innerHTML = x+"(bin)="+tmp.toString(8)+"(oct)"
+}
+
+function bin2hex() {
+	var x = document.getElementById("textInput1").value
+	var tmp = parseInt(x.toString(),2)
+	document.getElementById("result").innerHTML = x+"(bin)="+tmp.toString(16)+"(hex)"
+}
+
+function hex2dec() {
+	var x = document.getElementById("textInput1").value
+	document.getElementById("result").innerHTML = x+"(hex)="+parseInt(x.toString(),16)+"(dec)"
+}
+
+function hex2oct() {
+	var x = document.getElementById("textInput1").value
+	var tmp = parseInt(x.toString(),16)
+	document.getElementById("result").innerHTML = x+"(hex)="+tmp.toString(8)+"(oct)"
+}
+
+function hex2bin() {
+	var x = document.getElementById("textInput1").value
+	var tmp = parseInt(x.toString(),16)
+	document.getElementById("result").innerHTML = x+"(hex)="+tmp.toString(2)+"(bin)"
+}
