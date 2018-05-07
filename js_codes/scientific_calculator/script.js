@@ -218,3 +218,40 @@ function hex2bin() {
 	var tmp = parseInt(x.toString(),16)
 	document.getElementById("result").innerHTML = x+"(hex)="+tmp.toString(2)+"(bin)"
 }
+
+/* Combination and permutation and factorial */
+function factorial() {
+	var x = document.getElementById("textInput1").value
+	document.getElementById("result").innerHTML = x+"!="+fact(x)
+}
+
+function fact(a) {
+	var tmp1 = a
+	var tmp2 = a
+	tmp1 = tmp1-1
+	while(tmp1 > 0){
+		tmp2 = tmp2*(tmp1)
+		tmp1-=1
+	}
+	if (tmp2 == 0) {
+		tmp2 = 1
+	}
+	if (tmp2 < 0) {
+		tmp2 = "ERROR"
+	}
+	return tmp2
+}
+
+function permutation() {
+	var x = document.getElementById("textInput1").value
+	var y = document.getElementById("textInput2").value
+	var tmp = Number(fact(x))/Number(fact((Number(x)-Number(y))))
+	document.getElementById("result").innerHTML = x+"P"+y+"="+tmp
+}
+
+function combination() {
+	var x = document.getElementById("textInput1").value
+	var y = document.getElementById("textInput2").value
+	var tmp = Number(fact(x))/(Number(fact(y))*Number(fact((Number(x)-Number(y)))))
+	document.getElementById("result").innerHTML = x+"C"+y+"="+tmp
+}
