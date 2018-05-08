@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Matrix Calculator</title>
+	<script type="text/javascript" src="script.js"></script>
+	<style type="text/css">
+		tr.matrice{
+			height: 50px;
+		}
+		table.tb{
+
+		}
+	</style>
+</head>
+<body>
+	<!-- Home button & Back button -->
+	<button onclick="location.href='https://PeizhiYan.github.io'">Home</button>
+	<button onclick="location.href='../index.html'">Back</button><br><hr>
+
+	<!-- Matrix Basics -->
+	<table border="0" class="tb">
+		<tr class="matrice">
+			<b>Note: Use comma to separate each element!</b>
+			<td>M1<textarea id="matrix1" rows="6"></textarea></td>
+			<td><p id="sign">( )</p></td>
+			<td>M2<textarea id="matrix2" rows="6"></textarea></td>
+			<td>=</td>
+			<td>M<textarea id="output" rows="6">RESULT</textarea></td>
+		</tr>
+	</table>
+	<button onclick="mul()">Dot Multiplication</button>
+	<button onclick="add()">Addition</button>
+	<button onclick="sub()">Substraction</button>
+	<hr>
+
+	<!-- Reshape -->
+	<b>Matrix Reshape</b><br><br>
+	Matrix:<textarea id="matrix" rows="6"></textarea><br>
+	New row:<textarea id="new_row" cols="5"></textarea><br>
+	New col:<textarea id="new_col" cols="5"></textarea><br>
+	New matrix:<textarea id="new_matrix" rows="6">RESULT</textarea><br><br>
+	<button onclick="reshape()">reshape</button>
+
+	<!-- Footer -->
+	<hr>
+	<div style="text-align: center; color: grey">Peizhi Yan, All rights reserved. <br>2018</div>
+</body>
+</html>
