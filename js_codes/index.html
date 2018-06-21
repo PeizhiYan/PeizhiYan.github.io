@@ -1,20 +1,43 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Written in Javascript</title>	
+	<title>Written in Javascript</title>
+	<style>
+		.button {
+		    border: none;
+		    color: white;
+		    padding: 15px 32px;
+		    text-align: center;
+		    text-decoration: none;
+		    display: inline-block;
+		    font-size: 24px;
+		    margin: 4px 2px;
+		    cursor: pointer;
+		}
+		.button1 {background-color: #ff6666; color: black} /* Red */
+		.button2 {background-color: #ffbf80; color: black} /* Orange */ 
+		.button3 {background-color: #ffff80; color: black} /* Yellow */ 
+		.button4 {background-color: #80ff80; color: black} /* Green */
+		.button5 {background-color: #80ffff; color: black} /* Aqua */
+		.button6 {background-color: #66a3ff; color: black} /* Blue */ 
+		.button7 {background-color: #df80ff; color: black} /* Purple */ 
+	</style>	
 </head>
 <body>
 	<!-- Home button -->
 	<button onclick="location.href='https://PeizhiYan.github.io'">Home</button><br><hr>
 
 	<!-- Scientific Calculator -->
-	<button onclick="location.href='scientific_calculator/index.html'">Scientific Calculator</button><br>
+	<button class="button button1" onclick="location.href='scientific_calculator/index.html'">Scientific Calculator</button><br>
 
 	<!-- Hashing -->
-	<button onclick="location.href='hashing/index.html'">Hashing</button><br>
+	<button class="button button2" onclick="location.href='hashing/index.html'">Hashing</button><br>
 
 	<!-- Matrix Calculator -->
-	<button onclick="location.href='matrix/index.html'">Matrix Calculator</button><br>
+	<button class="button button3" onclick="location.href='matrix/index.html'">Matrix Calculator</button><br>
+
+	<!-- SVM Demonstration -->
+	<button class="button button4" onclick="location.href='svm/index.html'">Support Vector Machine (SVM) Demo</button><br>
 
 	<!-- Footer -->
 	<hr>
