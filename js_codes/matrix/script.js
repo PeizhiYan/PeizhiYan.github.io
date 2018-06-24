@@ -188,3 +188,34 @@ function reshape() {
 	}
 	document.getElementById("new_matrix").value = output
 }
+
+function transpose() {
+	var x = document.getElementById("matrixT").value
+	var r = matrixRow(x)
+	var c = matrixCol(x)
+	m = new Array(r*c)
+	var tmp = x.split('\n')
+	var k = 0
+	for (var i = 0; i < tmp.length; i++) {
+		var tmp2 = tmp[i].split(',')
+		for (var j = 0; j < tmp2.length; j++) {
+			m[k] = tmp2[j]
+			k++
+		}
+	}
+	var output = ""
+	var k = 0
+	for (var i = 0; i < c; i++) {
+		for (var j = 0; j < r; j++) {
+			output = output + m[c*j + i]
+			if (j != r-1) {
+				output = output + ","
+			}
+			k++
+		}
+		if (i != c-1) {
+			output = output + "\n"
+		}
+	}
+	document.getElementById("new_matrixT").value = output
+}
