@@ -42,6 +42,8 @@ function start(){
 
 	/* write to console */
 	print(">>> Game started")
+
+	document.getElementById("start").innerHTML = "Re-start"
 }
 
 /* Insight! Display the value gradient */
