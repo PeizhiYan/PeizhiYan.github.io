@@ -1,10 +1,55 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>SVM Demo</title>
+	<title>Conv_Gomoku Demo</title>
+	<script type="text/javascript" src="script.js"></script>
 	<style type="text/css">
 		.title{
 			font-size: 30px;
+		}
+		/* the button */
+		.button{
+			border: none;
+			background-color: green;
+		    color: white;
+		    padding: 15px 15px;
+		    text-align: center;
+		    text-decoration: none;
+		    display: inline-block;
+		    font-size: 24px;
+		    margin: 2px 2px;
+		    cursor: pointer;
+		}
+		/* the stone */
+		.cell{
+			border: none;
+			background-color: grey;
+		    color: white;
+		    padding: 15px 15px;
+		    text-align: center;
+		    text-decoration: none;
+		    display: inline-block;
+		    font-size: 24px;
+		    margin: 2px 2px;
+		    cursor: pointer;
+		}
+		/* value cell */
+		.value{
+			background-color: white;
+		}
+		/* the console */
+		#console{
+			border: none;
+			background-color: black;
+		    color:  #00FF0D;
+		    padding: 2px 2px;
+		    width: 50%;
+		    height: 100px;
+		    text-decoration: none;
+		    display: inline-block;
+		    font-size: 20px;
+		    margin: 2px 2px;
+		    cursor: pointer;
 		}
 	</style>
 </head>
@@ -13,18 +58,23 @@
 	<button onclick="location.href='https://PeizhiYan.github.io'">Home</button>
 	<button onclick="location.href='../index.html'">Back</button><br><hr>
 
-	<b class="title">Support Vector Machine (SVM) Demonstration</b><br>
+	<b class="title">Convolution-Based Gomoku Demonstration</b><br>
 
 	<table border="1">
 		<tr>
-			<td><textarea id="inputText"></textarea></td>
+			<td style="color: red;"><b>Game Board (Play here!)</b></td>
+			<td></td>
+			<td>Insight (The visualized value gradient)</td>
 		</tr>
 		<tr>
-			<td><p id="outputHash">RESULT</p></td>
+			<td id="board"></td>
+			<td> . . </td>
+			<td id="value"></td>
 		</tr>
 	</table>
+	<button class="button" onclick="start()">Strat</button>
 
-	<button onclick="toMD5()">MD5</button>
+	<br><textarea id="console"></textarea>
 
 	<!-- Footer -->
 	<hr>
