@@ -189,7 +189,7 @@ function getHex(x){
 function print(x){
 	var console = document.getElementById("console")
 	console.innerHTML += x+"\n"
-	console.focus()
+	//console.focus()
 }
 
 /* Handle button(stone) click events */
