@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>JS Console</title>
+	<script type="text/javascript">
+		// Run the HTML+Js code
+		function runCode(jsCode) {
+			var win = window.open('', "_blank", 'height=400px,width=700px');
+			win.document.open('text/html', 'replace');
+			win.opener = null
+
+			var js = jsCode.value
+			js += "function print(x){document.getElementById('console').innerHTML = document.getElementById('console').value + x}"
+			js += "function max(a,b){if(a>b){return a} return b}"
+			js += "<"
+			js += "/script>"
+			var newPage = "<!DOCTYPE html><html><head><title>Runtime</title><style>#console{border: none;background-color: black;color:  #00FF0D;padding: 0px 0px;width: 100%;height: 350px;text-decoration: none;display: inline-block;font-size: 20px;margin: 0px 0px;cursor: pointer;}</style><script type='text/javascript'>"+js+"</head><body onload='main()'><textarea id='console'></textarea></body></html>"
+
+			win.document.write(newPage);
+			//win.focus();
+			win.document.close();
+		}
+		// Enable the tab character onkeypress (onkeydown) inside textarea...
+		// ... for a textarea that has an `id="my-textarea"`
+		function enableTab(id) {
+			var el = document.getElementById(id);
+			el.onkeydown = function(e) {
+				if (e.keyCode === 9) { // tab was pressed
+		
+				// get caret position/selection
+				var val = this.value,
+				start = this.selectionStart,
+				end = this.selectionEnd;
+		
+				// set textarea value to: text before caret + tab + text after caret
+				this.value = val.substring(0, start) + '\t' + val.substring(end);
+		
+				// put caret at right position again
+				this.selectionStart = this.selectionEnd = start + 1;
+		
+				// prevent the focus lose
+				return false;
+				}
+			};
+		}
+	</script>
+	<style type="text/css">
+		.title{
+			font-size: 30px;
+		}
+		/* the button */
+		#run_btn{
+			border: none;
+			background-color: #0096FF;
+			color: white;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 24px;
+			margin: 2px 2px;
+			cursor: pointer;
+		}
+		#js{
+			border: none;
+			background-color: black;
+			color:  #00FF0D;
+			padding: 2px 2px;
+			width: 800px;
+			height: 600px;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 20px;
+			margin: 2px 2px;
+			cursor: pointer;
+		}
+	</style>
+</head>
+<body onload="enableTab('js')">
+
+	<!-- Home button & Back button -->
+	<button onclick="location.href='https://PeizhiYan.github.io'">Home</button>
+	<button onclick="location.href='../index.html'">Back</button><br><hr>
+
+	<b class="title">Javascript Console</b><br>
+	<b>Pre-defined functions:</b><br>
+	print(x): to print an input string x<br>
+	max(a,b): to return the largest one
+	<hr>
+
+	<!-- JS Code Editer -->
+	<textarea id="js">
+function main(){
+	
+}
+	</textarea>
+			
+	
+
+	<input id="run_btn" type="button" value="Run main()" onclick="runCode(js)">
+	
+	<!-- Footer -->
+	<hr>
+	<div style="text-align: center; color: grey">Peizhi Yan, All rights reserved. <br>2018</div>
+</body>
+</html>
