@@ -188,7 +188,8 @@ function getHex(x){
 /* Concole write */
 function print(x){
 	var console = document.getElementById("console")
-	console.innerHTML += x+"\n"
+	//console.innerHTML += x+"\n"
+	console.innerHTML = x+"\n"
 	//console.focus()
 }
 
@@ -207,11 +208,30 @@ function clk(i, j){
 			board[i][j] = current
 			board_ai[i][j] = 0 - current
 			current = 0 - current
+			var flag = count(conv2d(board, filter1a), 5)
+			flag += count(conv2d(board, filter2a), 5)
+			flag += count(conv2d(board, filter3a), 5)
+			flag += count(conv2d(board, filter4a), 5)
+			if (flag > 0) {
+				print("You win!")
+				return
+			}
 			/* AI's turn */
 			print(">>> Computer is thinking... ")
 			computeValue()
 			var max_value = insight() // show the value gradient
 			ai_move(max_value) // computer make the move
+			print(">>> Your turn. ")
+			var flag = count(conv2d(board_ai, filter1a), 5)
+			flag += count(conv2d(board_ai, filter2a), 5)
+			flag += count(conv2d(board_ai, filter3a), 5)
+			flag += count(conv2d(board_ai, filter4a), 5)
+			if (flag > 0) {
+				print("You lose!")
+				return
+			}
+			computeValue()
+			var max_value = insight() // show the value gradient
 		}
 	}
 	else{
