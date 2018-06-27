@@ -10,11 +10,10 @@
 			win.opener = null
 
 			var js = jsCode.value
-			js += "function print(x){document.getElementById('console').innerHTML = document.getElementById('console').value + x}"
-			js += "function max(a,b){if(a>b){return a} return b}"
+			js += "\nfunction print(x){document.getElementById('console').innerHTML = document.getElementById('console').value + x}"
 			js += "<"
 			js += "/script>"
-			var newPage = "<!DOCTYPE html><html><head><title>Runtime</title><style>#console{border: none;background-color: black;color:  #00FF0D;padding: 0px 0px;width: 100%;height: 350px;text-decoration: none;display: inline-block;font-size: 20px;margin: 0px 0px;cursor: pointer;}</style><script type='text/javascript'>"+js+"</head><body onload='main()'><textarea id='console'></textarea></body></html>"
+			var newPage = "<!DOCTYPE html><html><head><title>Runtime</title><style>#console{border: none;background-color: black;color:  #00FF0D;padding: 0px 0px;width: 100%;height: 350px;text-decoration: none;display: inline-block;font-size: 20px;margin: 0px 0px;cursor: pointer;}</style><script type='text/javascript'>"+js+"<script type='text/javascript' src='lib.js'>"+"<"+"/script>"+"</head><body onload='main()'><textarea id='console'></textarea></body></html>"
 
 			win.document.write(newPage);
 			//win.focus();
@@ -82,21 +81,19 @@
 	<button onclick="location.href='../index.html'">Back</button><br><hr>
 
 	<b class="title">Javascript Console</b><br>
-	<b>Pre-defined functions:</b><br>
-	print(x): to print an input string x<br>
-	max(a,b): to return the largest one
 	<hr>
 
 	<!-- JS Code Editer -->
 	<textarea id="js">
 function main(){
 	
-}
-	</textarea>
-			
-	
-
-	<input id="run_btn" type="button" value="Run main()" onclick="runCode(js)">
+}</textarea><br>
+	<input id="run_btn" type="button" value="Run main()" onclick="runCode(js)"><hr>
+	<b>Pre-defined functions:</b><br>
+	print(x): to print an input string x<br>
+	max(a,b): to return the largest one<br>
+	Array2d(r,c): return a 2D array of size [r,c]<br>
+	dump2d(array): dump a 2D array<br>
 	
 	<!-- Footer -->
 	<hr>
