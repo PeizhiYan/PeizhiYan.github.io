@@ -1,3 +1,7 @@
+var picked_R = 0
+var picked_G = 0
+var picked_B = 0
+
 function generate(){
 	var step = document.getElementById("step").value
 	step = parseInt(step)
@@ -70,10 +74,74 @@ function generate(){
 	document.getElementById("color_chart").innerHTML = chart
 }
 
+function tuning(){
+	var R = picked_R
+	var G = picked_G
+	var B = picked_B
+	var chart = ""
+	if (R == 0) {
+		var tmp = 0
+		if (G > B) {
+			tmp = B
+		}
+		else{
+			tmp = G
+		}
+		B -= tmp
+		G -= tmp
+		while(R <= 255 && G <= 255 && B<= 255){
+			chart = chart + " <button class=\"button\" style=\"background-color: #"+toHex(R,G,B)+"\" onclick=\"pick("+R+","+G+","+B+")\"> </button>"
+			R++
+			G++
+			B++
+		}
+	}
+	else if (G == 0) {
+		var tmp = 0
+		if (R > B) {
+			tmp = B
+		}
+		else{
+			tmp = R
+		}
+		B -= tmp
+		R -= tmp
+		while(R <= 255 && G <= 255 && B<= 255){
+			chart = chart + " <button class=\"button\" style=\"background-color: #"+toHex(R,G,B)+"\" onclick=\"pick("+R+","+G+","+B+")\"> </button>"
+			R++
+			G++
+			B++
+		}
+	}
+	else{
+		var tmp = 0
+		if (G > R) {
+			tmp = R
+		}
+		else{
+			tmp = G
+		}
+		R -= tmp
+		G -= tmp
+		while(R <= 255 && G <= 255 && B<= 255){
+			chart = chart + " <button class=\"button\" style=\"background-color: #"+toHex(R,G,B)+"\" onclick=\"pick("+R+","+G+","+B+")\"> </button>"
+			R++
+			G++
+			B++
+		}
+	}
+
+	document.getElementById("tuning").innerHTML = chart
+}
+
 function pick(r, g, b){
 	var tmp = "RGB="
 	tmp = tmp + r + "," + g + "," + b + "    #" + toHex(r,g,b)
+	picked_R = r
+	picked_G = g
+	picked_B = b
 	document.getElementById("picked").innerHTML = tmp
+	tuning()
 }
 
 function toHex(r, g, b){
