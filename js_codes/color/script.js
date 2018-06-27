@@ -53,6 +53,20 @@ function generate(){
 			G = 0
 		}
 	}
+
+	chart = "<hr>" + chart
+
+	/* Gray scale: Black ->> White */
+	R = 255
+	G = 255
+	B = 255
+	while(R>0){
+		chart = " <button class=\"button\" style=\"background-color: #"+toHex(R,G,B)+"\" onclick=\"pick("+R+","+G+","+B+")\"> </button>" + chart
+		R = R - step
+		if (R < 0) {R = 0}
+		G = R
+		B = R
+	}
 	document.getElementById("color_chart").innerHTML = chart
 }
 
