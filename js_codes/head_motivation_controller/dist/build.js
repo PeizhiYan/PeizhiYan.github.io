@@ -15,6 +15,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+var HEIGHT = 15
+var WIDTH = 30
+
 var _deeplearnKnnImageClassifier = require('deeplearn-knn-image-classifier');
 
 var _deeplearn = require('deeplearn');
@@ -32,49 +35,35 @@ var GAME_START = false;
 function display_prediction(direction){
   if (GAME_START==true) {return;}
   reset_buffer()
-  if (direction == 0) {
-    for(var i=1; i<10; i++){
-      document.getElementById(''+i+'0').style.backgroundColor="green"
-      document.getElementById(''+i+'1').style.backgroundColor="green"
-    }
-  }
-  if (direction == 1) {
-    for(var i=1; i<10; i++){
-      document.getElementById(''+i+'4').style.backgroundColor="green"
-      document.getElementById(''+i+'5').style.backgroundColor="green"
-    }
-  }
-  if (direction == 2) {
-    for(var i=1; i<10; i++){
-      document.getElementById(''+i+'8').style.backgroundColor="green"
-      document.getElementById(''+i+'9').style.backgroundColor="green"
-    }
-  }
+  training_guide(direction)
 }
 
 function reset_buffer(){
-  for(var i=0;i<100;i++){
+  for(var i=0;i<WIDTH*HEIGHT;i++){
     document.getElementById(''+i).style.backgroundColor="gray"
   }
 }
 
 function training_guide(direction){
   if (direction == 0) {
-    for(var i=1; i<10; i++){
-      document.getElementById(''+i+'0').style.backgroundColor="red"
-      document.getElementById(''+i+'1').style.backgroundColor="red"
+    for(var i=0; i<HEIGHT; i++){
+      document.getElementById(''+(WIDTH*i+0)).style.backgroundColor="red"
+      document.getElementById(''+(WIDTH*i+1)).style.backgroundColor="red"
+      document.getElementById(''+(WIDTH*i+2)).style.backgroundColor="red"
     }
   }
   if (direction == 1) {
-    for(var i=1; i<10; i++){
-      document.getElementById(''+i+'4').style.backgroundColor="red"
-      document.getElementById(''+i+'5').style.backgroundColor="red"
+    for(var i=0; i<HEIGHT; i++){
+      document.getElementById(''+(WIDTH*i+14)).style.backgroundColor="green"
+      document.getElementById(''+(WIDTH*i+15)).style.backgroundColor="green"
+      document.getElementById(''+(WIDTH*i+16)).style.backgroundColor="green"
     }
   }
   if (direction == 2) {
-    for(var i=1; i<10; i++){
-      document.getElementById(''+i+'8').style.backgroundColor="red"
-      document.getElementById(''+i+'9').style.backgroundColor="red"
+    for(var i=0; i<HEIGHT; i++){
+      document.getElementById(''+(WIDTH*i+27)).style.backgroundColor="blue"
+      document.getElementById(''+(WIDTH*i+28)).style.backgroundColor="blue"
+      document.getElementById(''+(WIDTH*i+29)).style.backgroundColor="blue"
     }
   }
   if (direction == -1){
@@ -99,18 +88,19 @@ function indexOfMax(arr) {
 }
 
 // Display bugffer
+/*
 var DISP_BUFFER = new Array(10);
 for (var i = 0; i < 10; i++) {
   DISP_BUFFER[i] = new Array(10);
 }
-
+*/
 
 // Number of classes to classify
 var NUM_CLASSES = 3; // LEFT, STOP, RIGHT
 // Webcam Image size. Must be 227. 
 var IMAGE_SIZE = 227;
 // K value for KNN
-var TOPK = 20;
+var TOPK = 30;
 
 var Main = function () {
   function Main() {
@@ -138,8 +128,8 @@ var Main = function () {
     // Load the display buffer
     var tmp = "";
     var k = 0;
-    for (var i = 0; i < 10; i++) {
-      for (var j = 0; j < 10; j++) {
+    for (var i = 0; i < 15; i++) {
+      for (var j = 0; j < 30; j++) {
         tmp= tmp+'<button class=\"button\" id=\"'+k+'\" style=\"background-color: gray\"> </button>'
         k++;
       }
