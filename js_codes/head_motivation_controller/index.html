@@ -1,34 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Machine Learning Head Motion Controller</title>
-    <script src="dist/build.js"></script><hr>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Machine Learning Head Motion Controller</title>
+	<script src="dist/build.js"></script><hr>
 	<style type="text/css">
 		.title{
 			font-size: 30px;
 		}
 		.button{
 			border: none;
-		    padding: 15px 15px;
-		    text-align: center;
-		    text-decoration: none;
-		    display: inline-block;
-		    margin: 0px 0px;
-		    cursor: pointer;
+			padding: 15px 15px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			margin: 0px 0px;
+			cursor: pointer;
+		}
+		canvas {
+			border:1px solid #d3d3d3;
+			background-color: #f1f1f1;
 		}
 	</style>
 </head>
 <body>
 	<b>Instructions:</b><br>
 	Step 1: Train the network:<br>
-	-> 1) Press the [look to the left] button, and look at the left 2 columns of row<br>
-	-> 2) Press the [look straight] button, and look at the middle 2 columns of row<br>
-	-> 3) Press the [look to the right] button, and look at the right 2 columns of row<br>
+	-> 1) Press the [UP] button, and look up<br>
+	-> 2) Press the [STOP] button, and not look up<br>
 	repeat Step 1 until the network can do a good job<br>
-	Step 2:<br>
+	Step 2: Start game<br>
 	<hr>
 	<div id='display' align="center"></div>
 </body>
