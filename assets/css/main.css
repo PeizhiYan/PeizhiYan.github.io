@@ -1709,16 +1709,16 @@
 		}
 
 		.image.avatar48 {
-			width: 180px;
-			height: 180px;
+			width: 130px;
+			height: 130px;
 			margin-right: 1.5em;
 			background: #000000;
 			border-radius: 50%;
 		}
 
 			.image.avatar48 img {
-				width: 180px;
-				height: 180px;
+				width: 130px;
+				height: 130px;
 				border-radius: 50%;
 			}
 
@@ -2192,7 +2192,10 @@
 
 			#main > section.one {
 				background-color: #81918E;
-				background-image: url("../../images/banner.jpg");
+				color: white;
+				background-repeat: no-repeat;
+				background-size: cover;
+				background-image: url("../../images/banner.png");
 			}
 
 			#main > section.two {
