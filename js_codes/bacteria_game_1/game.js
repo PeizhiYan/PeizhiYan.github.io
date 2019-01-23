@@ -25,7 +25,7 @@ function main(){
 			'0.5, 0.0, 0.5, 1',
 			'0.2, 1.0, 0.2, 1'];
 
-		 var number_of_bacterias = 8;
+		 var number_of_bacterias = 5;
 		 
 		 /* generate a list of bacterias */
 		 for (var i = 0; i < number_of_bacterias; i++) {
@@ -72,7 +72,8 @@ function click_handler(event){
 	html_border = 10 // 10 pixel
 	click_x = event.clientX-html_border-250;
 	click_y = -(event.clientY-html_border-250);
-	if (inside_or_not(0,0,200,click_x,click_y)) {
+	//if (inside_or_not(0,0,200,click_x,click_y)) {
+	if (true) {
 		/**detect if the click is on any bacteria*/
 		for (var i = 0; i < bacteria_list.length; i++) {
 			if (bacteria_list[i][4]) {
