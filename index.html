@@ -23,9 +23,29 @@
 		<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
 		<script type="text/javascript">
 			<!--
+			// onload main
+			function onload_main(){
+				displayMotto();
+				displayFooter();
+			}
+			// display the current year
 			function displayFooter(){
 				var date = new Date()
 				document.getElementById("currentDate").innerHTML = "2017-" + date.getFullYear()		
+			}
+			// display my favorite mottos randomly
+			function displayMotto(){
+				var mottos = [
+					["The present is theirs; the future, for which I really worked, is mine.", "Nikola Tesla"],
+					["Be alone, that is the secret of invention; be alone, that is when ideas are born.", "Nikola Tesla"],
+					["Of all things, I liked books best.", "Nikola Tesla"],
+					["Imagination is more important than knowledge. Knowledge is limited. Imagination encircles the world.", "Albert Einstein"],
+					["Try not to become a man of success, but rather try to become a man of value.", "Albert Einstein"],
+					["Failure is an option here. If things are not failing, you are not innovating enough.","Elon Musk"],
+					["Stay hungry, stay foolish.","Steve Jobs"],
+				]
+				var randIndex = Math.floor(Math.random() * mottos.length);
+				document.getElementById("mottos").innerHTML = "\"" + mottos[randIndex][0] + "\" — <a style='font-weight:bold'>" + mottos[randIndex][1] + "</a> <a onclick=\"displayMotto()\">(Random Motto)</a>";
 			}
 			-->
 		</script>
@@ -55,7 +75,7 @@
 		</style>
 
 	</head>
-	<body  onload="displayFooter()">
+	<body  onload="onload_main()">
 
 		<!-- Header -->
 			<div id="header">
@@ -120,10 +140,12 @@
 
 				<!-- Intro -->
 					<section class="one">
-						<div style="text-align: left; margin-left: 15px; margin-right: 15px; font-weight:bold">I am a master student in computer science and a graduate assistant at Lakehead University. My research interests are machine learning (and artificial neural networks) and computer vision. In my spare time, I like to do some oil painting (<a href="gallery.html" ><u>click here to see my paintings</u></a>), go swimming and take pictures (<a href="album.html" ><u>click here to see my photos</u></a>).
+						<div style="text-align: left; margin-left: 15px; margin-right: 15px; ">I am a master student in computer science and a graduate assistant at Lakehead University. My research interests are machine learning (and artificial neural networks) and computer vision. In my spare time, I like to do some oil painting (<a href="gallery.html" ><u>click here to see my paintings</u></a>), go swimming and take pictures (<a href="album.html" ><u>click here to see my photos</u></a>).
 							<hr>
-							Peizhi Yan (Chinese: 颜培郅), The 80th Direct Descendent of <a href="https://en.wikipedia.org/wiki/Yan_Hui"><u>Yan Hui</u></a>. <br>
+							Peizhi Yan (Chinese: 颜培郅), The 80th Direct Descendent of <a href="https://en.wikipedia.org/wiki/Yan_Hui"><u>Yan Hui</u></a>.
 							<a href="https://baike.baidu.com/item/%E9%A2%9C%E5%AD%90%E4%B8%96%E7%B3%BB/7808246?fr=aladdin"><u>   My family tree (Chinese version)</u></a>
+							<hr>
+							<div id='mottos'>Random motto is loading...</div> 
 						<div style="text-align: right;"><img style="height: 70px; width: 70px; margin-right: 70px; margin-top: 20px" src="images/stamp.png"></div>
 						</div>
 					</section>
