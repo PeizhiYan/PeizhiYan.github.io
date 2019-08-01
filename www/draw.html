@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Painting</title>
+    <link rel="stylesheet" href="script/paperjs/examples/css/style.css">
+    <script type="text/javascript" src="script/paperjs/dist/paper-full.js"></script>
+    <script type="text/javascript">
+        paper.install(window);
+        // Keep global references to both tools, so the HTML
+        // links below can access them.
+        var tool1, tool2;
+        var canvas, context;
+        let path_stack = []; // paths are saved in here
+        let redo_stack = []; // removed paths are saved in here
+        var view_center; // the origin of the view coordinate
+
+        window.onload = function() {
+            paper.setup('myCanvas');
+            canvas = document.getElementById('myCanvas');
+            var context = canvas.getContext("2d");
+            var path;
+
+            view_center = view.center; // get the center of the view
+            view.center = view_center; // do not remove this line!!!
+
+            // sharable mouseDown event:
+            function onMouseDown(event) {
+                path = new Path();
+                path.strokeColor = 'black';
+                path.add(event.point);
+            }
+
+            // sharable mouseUp event:
+            function onMouseUp(event) {
+                path_stack.push(path); // store the path to path_stack
+                console.log("stack:"+path_stack.length);
+            }
+            
+            // This is normal pen
+            tool1 = new Tool();
+            tool1.onMouseDown = onMouseDown;
+            tool1.onMouseUp = onMouseUp;
+            tool1.onMouseDrag = function(event) {
+                path.add(event.point);
+            }
+
+            // This is cloud-curve style pen
+            tool2 = new Tool();
+            tool2.minDistance = 20;
+            tool2.onMouseDown = onMouseDown;
+            tool2.onMouseUp = onMouseUp;
+            tool2.onMouseDrag = function(event) {
+                path.arcTo(event.point);
+            }
+
+
+        }// end of onload
+
+        // move the page up
+        function move_up(){
+            view_center.y += 50;
+            view.center = view_center;
+        }
+
+        // move the page down
+        function move_down(){
+            view_center.y -= 50;
+            view.center = view_center;
+        }
+
+        // undo
+        function undo() {
+            if (path_stack.length > 0) {
+                p = path_stack.pop();
+                //p_clone = p.clone(); // make a clone of the path
+                redo_stack.push(p); // save it to redo stack, incase the user regrets
+                p.remove();
+                //console.log(p);
+            }
+        }
+
+        // redo
+        function redo() {
+            if (redo_stack.length > 0){
+                p = redo_stack.pop();
+                project.activeLayer.addChild(p);
+                path_stack.push(p);
+            }
+        }
+
+    </script>
+</head>
+<body>
+    <button onclick="tool1.activate();">Pen</button>
+    <button onclick="tool2.activate();">Cloud</button>
+    #
+    <button onclick="move_up()">Up</button>
+    <button onclick="move_down()">Down</button>
+    #
+    <button onclick="undo()">Undo</button>
+    <button onclick="redo()">Redo</button>
+    <canvas id="myCanvas" resize></canvas>
+</body>
+</html>
