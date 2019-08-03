@@ -28,7 +28,10 @@ window.onload = function() {
     view.zoom = view_zoom; // do not remove this line !!!
     current_color = "black";
 
-    
+
+
+
+
     ///////////////////////////////////////////////////////////////////
     ////// support mobile device's touch screen: Zoom and/or Scroll
     draw_lock = false; // when it's true, not draw anything
@@ -38,6 +41,7 @@ window.onload = function() {
     var prev_X = -1;
     var prev_Y = -1;
     function touch_screen(event) {
+        //print(path_stack.length)
         if (event.touches[1] != undefined && event.touches[2] != undefined) {
             draw_lock = true;
             // Move with three fincers
@@ -66,7 +70,6 @@ window.onload = function() {
             
             current_distance = distance(event.touches[0].clientX, event.touches[0].clientY, event.touches[1].clientX, event.touches[1].clientY)
             scale_ratio = (current_distance/prev_distance);
-            //print("XX"+scale_ratio)
             if (scale_ratio >= 0.9 && scale_ratio <= 1.2 && move_lock == false) {
                 view_center.x -= (event.touches[0].clientX - prev_X)/view_zoom;
                 view_center.y -= (event.touches[0].clientY - prev_Y)/view_zoom;
@@ -95,11 +98,14 @@ window.onload = function() {
                 //print(view_zoom)
             }
             
-       
         }
     }
     canvas.addEventListener("touchmove", touch_screen);
+    var not_add_path = false;
     function touch_end(event){
+        if (drag_lock == true || move_lock == true) {
+            not_add_path = true;
+        }
         draw_lock = false; // unlock: can draw
         move_lock = false;
         prev_distance = 0; // reset the distance register
@@ -112,18 +118,38 @@ window.onload = function() {
     /////////////////////////////////////////////////////////////////////////////////
     
 
-
-
-
-
-
-
-
-
-
-
-
-
+    ///////////////////////////////////////////////////////////////////
+    ////// support desktop browser, mouse wheel button
+    var myitem = canvas;
+    if (myitem.addEventListener) {
+        // IE9, Chrome, Safari, Opera
+        myitem.addEventListener("mousewheel", MouseWheelHandler, false);
+        // Firefox
+        myitem.addEventListener("DOMMouseScroll", MouseWheelHandler, false);
+    }
+    // IE 6/7/8
+    else{myitem.attachEvent("onmousewheel", MouseWheelHandler);}
+    function MouseWheelHandler(e) {
+        // cross-browser wheel delta
+        var e = window.event || e; // old IE support
+        var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+        if (delta == 1){
+            view_zoom += 0.07; // zoom in
+        }
+        else if (delta == -1){
+            if (view_zoom - 0.07 > 0.2){
+                view_zoom -= 0.07; // zoom out
+            }
+        }
+        view.zoom = view_zoom;
+        return false;
+    }
+    drag_lock = false;
+    function move_canvas(currentX, currentY) {
+        view_center.x -= (currentX - prev_X);//view_zoom; // the reason of divide by "view_zoom" is to control the move speed
+        view_center.y -= (currentY - prev_Y);///view_zoom; // the reason of divide by "view_zoom" is to control the move speed
+        view.center = view_center;
+    }
 
 
 
@@ -133,18 +159,34 @@ window.onload = function() {
 
     // sharable mouseDown event:
     function onMouseDown(event) {
-        sleep(10);
-        if (draw_lock == false){
+        //console.log(event)
+        //sleep(10);
+        if (draw_lock == false && drag_lock == false){
             path = new Path();
             path.strokeColor = current_color;
             path.add(event.point);
         }
+        if (drag_lock) {
+            prev_X = event.point.x;
+            prev_Y = event.point.y;
+        }
     }
+
 
     // sharable mouseUp event:
     function onMouseUp(event) {
-        path_stack.push(path); // store the path to path_stack
-        console.log("stack:"+path_stack.length);
+        if (not_add_path == false && path.length > 0) {
+            path.simplify(10); // smooth the path
+            path_raster = path.rasterize(); // rasterize the path
+            path.remove(); // remove the original vector path
+            path_stack.push(path_raster); // store the path to path_stack
+            console.log("stack:"+path_stack.length);
+        }
+        else {
+            prev_X = -1;
+            prev_Y = -1;
+        }
+        not_add_path = false;
     }
     
     // This is normal pen
@@ -152,8 +194,11 @@ window.onload = function() {
     tool1.onMouseDown = onMouseDown;
     tool1.onMouseUp = onMouseUp;
     tool1.onMouseDrag = function(event) {
-        if (draw_lock == false){
+        if (draw_lock == false && drag_lock == false){
             path.add(event.point);
+        }
+        else if (drag_lock){
+            move_canvas(event.point.x, event.point.y);
         }
     }
 
@@ -163,8 +208,15 @@ window.onload = function() {
     tool2.onMouseDown = onMouseDown;
     tool2.onMouseUp = onMouseUp;
     tool2.onMouseDrag = function(event) {
-        path.arcTo(event.point);
+        if (draw_lock == false && drag_lock == false){
+            path.arcTo(event.point);
+        }
+        else if (drag_lock){
+            move_canvas(event.point.x, event.point.y);
+        }
     }
+
+
 
 
 }// end of onload
@@ -241,11 +293,22 @@ function toolbar_right() {
 
 
 function tool1_inuse() {
+    drag_lock = false;
     document.getElementById("pen").style.color = current_color;
     document.getElementById("curve-pen").style.color = "gray";
+    document.getElementById("drag").style.color = "gray";
 }
 
 function tool2_inuse() {
+    drag_lock = false;
     document.getElementById("pen").style.color = "gray";
     document.getElementById("curve-pen").style.color = current_color;
+    document.getElementById("drag").style.color = "gray";
+}
+
+function drag_canvas() {
+    drag_lock = true;
+    document.getElementById("pen").style.color = "gray";
+    document.getElementById("curve-pen").style.color = "gray";
+    document.getElementById("drag").style.color = "black";
 }

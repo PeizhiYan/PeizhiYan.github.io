@@ -2,8 +2,12 @@
 <html>
 <head>
     <meta charset="UTF-8">
+
     <title>DrawPad</title>
     
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="HandheldFriendly" content="true">
+
     <link rel="stylesheet" href="script/paperjs/examples/css/style.css">
     <link rel=stylesheet type="text/css" href="script/styles.css"> <!--This is our own css-->
     
@@ -15,7 +19,7 @@
     <script type="text/javascript" src="script/draw.js">// This is the main code</script>
 
 </head>
-<body>
+<body class="disable-dbl-tap-zoom">
     
     <div id="output"></div>
     <hr>
@@ -44,10 +48,13 @@
         <div id="tools">
             <i id="pen" class='fas fa-marker' style='font-size:36px; color: black;' onclick="tool1.activate();tool1_inuse();"></i>
             <i id="curve-pen" class='fas fa-certificate' style='font-size:36px; color: gray;' onclick="tool2.activate();tool2_inuse();"></i>
+            <!--
             <i class="fas fa-arrow-up" style='font-size:36px'  onclick="move_up()"></i>
             <i class="fas fa-arrow-down" style='font-size:36px' onclick="move_down()"></i>
+            -->
             <i class="fas fa-undo" style='font-size:24px' onclick="undo()"></i>
             <i class="fas fa-redo" style='font-size:24px' onclick="redo()"></i>
+            <i id="drag" class="fas fa-arrows-alt" style='font-size:36px; color: gray;' onclick="drag_canvas()"></i>
             <button onclick="reset_everything()">Reset</button>
         </div>
     </div>

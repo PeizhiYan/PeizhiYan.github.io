@@ -4,7 +4,14 @@ body {
     overflow: hidden;
     height: 100%;
     font-family: 'Helvetica', 'Arial', sans-serif;
+    -webkit-text-size-adjust: none; 
 }
+
+
+.disable-dbl-tap-zoom {
+    touch-action: manipulation;
+}
+
 
 
 .option-container {
@@ -13,6 +20,7 @@ body {
     position: absolute;
     border-radius: 5px;
     margin: 10px;
+    touch-action: manipulation;
 }
 
 #color-container {
