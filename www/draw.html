@@ -2,230 +2,55 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Painting</title>
+    <title>DrawPad</title>
+    
     <link rel="stylesheet" href="script/paperjs/examples/css/style.css">
-    <script type="text/javascript" src="script/paperjs/dist/paper-full.js"></script>
-    <script type="text/javascript">
-        ////////////////////////////////////////////////////////////////////
-        ////// Utility functions
-        //////////////////////////////////////////////////////////
+    <link rel=stylesheet type="text/css" href="script/styles.css"> <!--This is our own css-->
+    
+    <!--Font awesome CSS-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    
+    <script type="text/javascript" src="script/paperjs/dist/paper-full.js">// paper.js library</script>
+    <script type="text/javascript" src="script/util.js">// some utilty functions</script>
+    <script type="text/javascript" src="script/draw.js">// This is the main code</script>
 
-        // sleep function
-        function sleep(milliseconds) {
-            var start = new Date().getTime();
-            for (var i = 0; i < 1e7; i++) {
-                if ((new Date().getTime() - start) > milliseconds){
-                break;
-                }
-            }
-        }
-
-        // Euclidean distance
-        function distance(x1, y1, x2, y2){
-            return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
-        }
-
-        // print function: for debugging
-        function print(msg) {
-            document.getElementById("output").innerHTML = msg;
-        }
-
-        ////////////////////////////////////////////////////////////////////
-        ////// Main code
-        //////////////////////////////////////////////////////////
-
-        paper.install(window);
-        // Keep global references to both tools, so the HTML
-        // links below can access them.
-        var tool1, tool2;
-        var canvas, context;
-        let path_stack = []; // paths are saved in here
-        let redo_stack = []; // removed paths are saved in here
-        var view_center; // the origin of the view coordinate
-
-        window.onload = function() {
-            paper.setup('myCanvas');
-            canvas = document.getElementById('myCanvas');
-            var context = canvas.getContext("2d");
-            var path;
-
-            view_center = view.center; // get the center of the view
-            view.center = view_center; // do not remove this line !!!
-            view_zoom = view.zoom; // get the view zoom factor
-            view.zoom = view_zoom; // do not remove this line !!!
-
-
-            ///////////////////////////////////////////////////////////////////
-            ////// support mobile device's touch screen: Zoom and/or Scroll
-            draw_lock = false; // when it's true, not draw anything
-            var prev_distance = 0;
-            var current_distance = 0;
-            var prev_X = -1;
-            var prev_Y = -1;
-            //const DIST_THRESHOLD = 10; 
-            function touch_screen(event) {
-                sleep (10);
-                if (event.touches[1] != undefined && event.touches[2] != undefined) {
-                    draw_lock = true;
-                    // Move with three fincers
-                    if (prev_X == -1){
-                        prev_X = event.touches[0].clientX;
-                        prev_Y = event.touches[0].clientY;
-                    }
-                    else {
-                        view_center.x -= (event.touches[0].clientX - prev_X);
-                        view_center.y -= (event.touches[0].clientY - prev_Y);
-                        view.center = view_center;
-                        prev_X = event.touches[0].clientX;
-                        prev_Y = event.touches[0].clientY;
-                    }
-                    print(prev_X+","+prev_Y)
-                }
-                else if (event.touches[1] != undefined ) {
-                    draw_lock = true; // lock: cannot draw
-                    //print("pinch start")
-                    var x1 = event.touches[1].clientX;
-                    if (prev_distance == 0){
-                        prev_distance = distance(event.touches[0].clientX, event.touches[0].clientY, event.touches[1].clientX, event.touches[1].clientY)
-                    }
-                    else {
-                        // Zoom with two fingers
-                        current_distance = distance(event.touches[0].clientX, event.touches[0].clientY, event.touches[1].clientX, event.touches[1].clientY)
-                        scale_ratio = (current_distance/prev_distance);
-                        print(scale_ratio)
-                        ///*
-                        //view_zoom = (view_zoom*scale_ratio);      
-                        if (scale_ratio > 1){
-                            view_zoom += 0.07; // Zoom in
-                        }
-                        else if (scale_ratio < 1){
-                            view_zoom -= 0.07; // Zoom out
-                        }
-                        if (view_zoom <= 0.5){
-                            view_zoom = 0.5; // minimum zoom factor
-                        }
-                        else if (view_zoom >= 1.5){
-                            view_zoom = 1.5; // maximum zoom factor
-                        }
-                        //*/
-                        view.zoom = view_zoom;
-                        //print(view_zoom)
-                    }
-                }
-            }
-            canvas.addEventListener("touchmove", touch_screen);
-            function touch_end(event){
-                draw_lock = false; // unlock: can draw
-                prev_distance = 0; // reset the distance register
-                prev_X = -1;
-                prev_Y = -1;
-                print("touch stop")
-            }
-            canvas.addEventListener("touchend", touch_end);
-            ///// end of touch screen optimization
-            /////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-            // sharable mouseDown event:
-            function onMouseDown(event) {
-                sleep(10);
-                if (draw_lock == false){
-                    path = new Path();
-                    path.strokeColor = 'black';
-                    path.add(event.point);
-                }
-            }
-
-            // sharable mouseUp event:
-            function onMouseUp(event) {
-                path_stack.push(path); // store the path to path_stack
-                console.log("stack:"+path_stack.length);
-            }
-            
-            // This is normal pen
-            tool1 = new Tool();
-            tool1.onMouseDown = onMouseDown;
-            tool1.onMouseUp = onMouseUp;
-            tool1.onMouseDrag = function(event) {
-                if (draw_lock == false){
-                    path.add(event.point);
-                }
-            }
-
-            // This is cloud-curve style pen
-            tool2 = new Tool();
-            tool2.minDistance = 6;
-            tool2.onMouseDown = onMouseDown;
-            tool2.onMouseUp = onMouseUp;
-            tool2.onMouseDrag = function(event) {
-                path.arcTo(event.point);
-            }
-
-
-        }// end of onload
-
-        // move the page up
-        function move_up(){
-            view_center.y += 50;
-            view.center = view_center;
-        }
-
-        // move the page down
-        function move_down(){
-            view_center.y -= 50;
-            view.center = view_center;
-        }
-
-        // undo
-        function undo() {
-            if (path_stack.length > 0) {
-                p = path_stack.pop();
-                //p_clone = p.clone(); // make a clone of the path
-                redo_stack.push(p); // save it to redo stack, incase the user regrets
-                p.remove();
-                //console.log(p);
-            }
-        }
-
-        // redo
-        function redo() {
-            if (redo_stack.length > 0){
-                p = redo_stack.pop();
-                project.activeLayer.addChild(p);
-                path_stack.push(p);
-            }
-        }
-
-        // reset canvas
-        function reset_everything() {
-            while (path_stack.length > 0){
-                p = path_stack.pop();
-                p.remove();
-            }
-            path_stack = []
-            redo_stack = []
-        }
-
-    </script>
 </head>
 <body>
-    <button onclick="tool1.activate();">Pen</button>
-    <button onclick="tool2.activate();">Curve</button>
-    #
-    <button onclick="move_up()">Up</button>
-    <button onclick="move_down()">Down</button>
-    #
-    <button onclick="undo()">Undo</button>
-    <button onclick="redo()">Redo</button>
-    #
-    <button onclick="reset_everything()">Reset</button>
-    <hr>
+    
     <div id="output"></div>
     <hr>
     <canvas id="myCanvas" resize></canvas>
+
+    <!--Color panel-->
+    <div id="color-container" class="option-container">
+        <div id="toolbar-location">
+            <i class="fas fa-angle-double-left" style="font-size:36px;" onclick="toolbar_left()"></i>
+            <i class="fas fa-angle-double-right" style="font-size:36px;" onclick="toolbar_right()"></i>
+        </div>
+
+        <div id="current-color"></div>
+        <div class="small-button color-button" id="black" onclick="set_color('black')"></div>
+        <div class="small-button color-button" id="red" onclick="set_color('red')"></div>
+        <div class="small-button color-button" id="green" onclick="set_color('green')"></div>
+        <div class="small-button color-button" id="blue" onclick="set_color('blue')"></div>
+        <div class="small-button color-button" id="purple" onclick="set_color('purple')"></div>
+        <div class="small-button color-button" id="yellow" onclick="set_color('yellow')"></div>
+        <div class="small-button color-button" id="orange" onclick="set_color('orange')"></div>
+        <div class="small-button color-button" id="pink" onclick="set_color('pink')"></div>
+    </div>
+    
+    <!--Tool panel-->
+    <div id="tool-container" class="option-container">
+        <div id="tools">
+            <i id="pen" class='fas fa-marker' style='font-size:36px; color: black;' onclick="tool1.activate();tool1_inuse();"></i>
+            <i id="curve-pen" class='fas fa-certificate' style='font-size:36px; color: gray;' onclick="tool2.activate();tool2_inuse();"></i>
+            <i class="fas fa-arrow-up" style='font-size:36px'  onclick="move_up()"></i>
+            <i class="fas fa-arrow-down" style='font-size:36px' onclick="move_down()"></i>
+            <i class="fas fa-undo" style='font-size:24px' onclick="undo()"></i>
+            <i class="fas fa-redo" style='font-size:24px' onclick="redo()"></i>
+            <button onclick="reset_everything()">Reset</button>
+        </div>
+    </div>
+
 </body>
 </html>
