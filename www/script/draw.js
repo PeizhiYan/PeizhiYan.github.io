@@ -10,7 +10,7 @@ function print(msg) {
 paper.install(window);
 // Keep global references to both tools, so the HTML
 // links below can access them.
-var tool1, tool2, tool3;
+var tool1, tool2, tool3, tool4;
 var canvas, context;
 let path_stack = []; // paths are saved in here
 let redo_stack = []; // removed paths are saved in here
@@ -240,6 +240,30 @@ window.onload = function() {
         }
     }
 
+    // This is roll-filling tool
+    tool4 = new Tool();
+    tool4.onMouseDown = function onMouseDown(event) {
+        if (draw_lock == false && drag_lock == false){
+            path = new Path();
+            path.strokeColor = current_color;
+            path.strokeWidth = 0.5; 
+            path.add(event.point);
+            path.fillColor = current_color;
+        }
+        if (drag_lock) {
+            prev_X = event.point.x;
+            prev_Y = event.point.y;
+        }
+    }
+    tool4.onMouseUp = onMouseUp;
+    tool4.onMouseDrag = function(event) {
+        if (draw_lock == false && drag_lock == false){
+            path.add(event.point);
+        }
+        else if (drag_lock){
+            move_canvas(event.point.x, event.point.y);
+        }
+    }
 
 
 
@@ -297,6 +321,9 @@ function set_color(c_str) {
     else if (document.getElementById("curve-pen").style.color != "gray"){
         document.getElementById("curve-pen").style.color = c_str;
     } 
+    else if (document.getElementById("roll").style.color != "gray"){
+        document.getElementById("roll").style.color = c_str;
+    } 
 }
 
 
@@ -322,6 +349,7 @@ function tool1_inuse() {
     document.getElementById("curve-pen").style.color = "gray";
     document.getElementById("drag").style.color = "gray";
     document.getElementById("eraser").style.color = "gray";
+    document.getElementById("roll").style.color = "gray";
 }
 
 function tool2_inuse() {
@@ -330,6 +358,7 @@ function tool2_inuse() {
     document.getElementById("curve-pen").style.color = current_color;
     document.getElementById("drag").style.color = "gray";
     document.getElementById("eraser").style.color = "gray";
+    document.getElementById("roll").style.color = "gray";
 }
 
 function tool3_inuse() {
@@ -338,7 +367,18 @@ function tool3_inuse() {
     document.getElementById("curve-pen").style.color = "gray";
     document.getElementById("drag").style.color = "gray";
     document.getElementById("eraser").style.color = "black";
+    document.getElementById("roll").style.color = "gray";
 }
+
+function tool4_inuse() {
+    drag_lock = false;
+    document.getElementById("pen").style.color = "gray";
+    document.getElementById("curve-pen").style.color = "gray";
+    document.getElementById("drag").style.color = "gray";
+    document.getElementById("eraser").style.color = "gray";
+    document.getElementById("roll").style.color = current_color;
+}
+
 
 function drag_canvas() {
     drag_lock = true;
