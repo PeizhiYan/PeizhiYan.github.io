@@ -10,7 +10,7 @@ function print(msg) {
 paper.install(window);
 // Keep global references to both tools, so the HTML
 // links below can access them.
-var tool1, tool2;
+var tool1, tool2, tool3;
 var canvas, context;
 let path_stack = []; // paths are saved in here
 let redo_stack = []; // removed paths are saved in here
@@ -216,6 +216,30 @@ window.onload = function() {
         }
     }
 
+    // This is eraser
+    tool3 = new Tool();
+    tool3.onMouseDown = function onMouseDown(event) {
+        if (draw_lock == false && drag_lock == false){
+            path = new Path();
+            path.strokeColor = "white";
+            path.strokeWidth = 9; 
+            path.add(event.point);
+        }
+        if (drag_lock) {
+            prev_X = event.point.x;
+            prev_Y = event.point.y;
+        }
+    }
+    tool3.onMouseUp = onMouseUp;
+    tool3.onMouseDrag = function(event) {
+        if (draw_lock == false && drag_lock == false){
+            path.add(event.point);
+        }
+        else if (drag_lock){
+            move_canvas(event.point.x, event.point.y);
+        }
+    }
+
 
 
 
@@ -297,6 +321,7 @@ function tool1_inuse() {
     document.getElementById("pen").style.color = current_color;
     document.getElementById("curve-pen").style.color = "gray";
     document.getElementById("drag").style.color = "gray";
+    document.getElementById("eraser").style.color = "gray";
 }
 
 function tool2_inuse() {
@@ -304,6 +329,15 @@ function tool2_inuse() {
     document.getElementById("pen").style.color = "gray";
     document.getElementById("curve-pen").style.color = current_color;
     document.getElementById("drag").style.color = "gray";
+    document.getElementById("eraser").style.color = "gray";
+}
+
+function tool3_inuse() {
+    drag_lock = false;
+    document.getElementById("pen").style.color = "gray";
+    document.getElementById("curve-pen").style.color = "gray";
+    document.getElementById("drag").style.color = "gray";
+    document.getElementById("eraser").style.color = "black";
 }
 
 function drag_canvas() {

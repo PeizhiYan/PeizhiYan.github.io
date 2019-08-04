@@ -19,14 +19,14 @@
     <script type="text/javascript" src="script/draw.js">// This is the main code</script>
 
 </head>
-<body class="disable-dbl-tap-zoom">
+<body>
     
     <div id="output"></div>
     <hr>
     <canvas id="myCanvas" resize></canvas>
 
     <!--Color panel-->
-    <div id="color-container" class="option-container">
+    <div id="color-container" class="option-container" >
         <div id="toolbar-location">
             <i class="fas fa-angle-double-left" style="font-size:36px;" onclick="toolbar_left()"></i>
             <i class="fas fa-angle-double-right" style="font-size:36px;" onclick="toolbar_right()"></i>
@@ -48,6 +48,7 @@
         <div id="tools">
             <i id="pen" class='fas fa-marker' style='font-size:36px; color: black;' onclick="tool1.activate();tool1_inuse();"></i>
             <i id="curve-pen" class='fas fa-certificate' style='font-size:36px; color: gray;' onclick="tool2.activate();tool2_inuse();"></i>
+            <i id="eraser" class='fas fa-eraser' style='font-size:36px; color: gray;' onclick="tool3.activate();tool3_inuse();"></i>
             <!--
             <i class="fas fa-arrow-up" style='font-size:36px'  onclick="move_up()"></i>
             <i class="fas fa-arrow-down" style='font-size:36px' onclick="move_down()"></i>
