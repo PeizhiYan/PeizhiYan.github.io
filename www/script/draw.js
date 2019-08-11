@@ -3,6 +3,11 @@ function print(msg) {
     document.getElementById("output").innerHTML = msg;
 }
 
+function Point(x, y) {
+    this.x = x;
+    this.y = y;
+}
+
 ////////////////////////////////////////////////////////////////////
 ////// Main code
 //////////////////////////////////////////////////////////
@@ -224,19 +229,62 @@ window.onload = function() {
         }
     }
 
-    // This is cloud-curve style pen
+
+
+
+
+    // This is brush
     tool2 = new Tool();
-    tool2.minDistance = 6;
-    tool2.onMouseDown = onMouseDown;
-    tool2.onMouseUp = onMouseUp;
+    var paths = [];
+    tool2.onMouseDown = function(event) {
+        if (draw_lock == false && drag_lock == false){
+            paths = [];
+            for (i=0;i<10;i++){
+                p = new Path();
+                p.strokeColor = current_color+opacity;
+                p.add(new Point(event.point.x+i, event.point.y))
+                paths.push(p);
+            }
+        }
+        if (drag_lock) {
+            prev_X = event.point.x;
+            prev_Y = event.point.y;
+        }
+    }
+    tool2.onMouseUp = function(event) {
+        if (not_add_path == false && paths[0].length > 0) {
+            console.log(paths)
+            paths_raster = []
+            for (i=0;i<10;i++){
+                p = paths[i];
+                p.simplify(10); // smooth the path
+                path_raster = p.rasterize(); // rasterize the path
+                paths_raster.push(path_raster);
+                p.remove(); // remove the original vector path
+            }
+            path_stack.push(paths_raster); // store the path to path_stack
+        }
+        else {
+            prev_X = -1;
+            prev_Y = -1;
+        }
+        not_add_path = false;
+    }
     tool2.onMouseDrag = function(event) {
         if (draw_lock == false && drag_lock == false){
-            path.arcTo(event.point);
+            for (i=0;i<10;i++){
+                p = paths[i];
+                p.add(new Point(event.point.x+i, event.point.y));
+            }
         }
         else if (drag_lock){
             move_canvas(event.point.x, event.point.y);
         }
     }
+
+
+
+
 
     // This is eraser
     tool3 = new Tool();
@@ -307,9 +355,16 @@ function move_down(){
 function undo() {
     if (path_stack.length > 0) {
         p = path_stack.pop();
-        //p_clone = p.clone(); // make a clone of the path
-        redo_stack.push(p); // save it to redo stack, incase the user regrets
-        p.remove();
+        if (p.length > 1){
+            // remove sub-paths
+            for (i=0;i<p.length;i++){
+                p[i].remove();
+            }
+        }
+        else{
+            p.remove();
+        }
+        redo_stack.push(p);
         //console.log(p);
     }
 }
@@ -318,7 +373,14 @@ function undo() {
 function redo() {
     if (redo_stack.length > 0){
         p = redo_stack.pop();
-        project.activeLayer.addChild(p);
+        if (p.length > 1){
+            for (i=0;i<p.length;i++){
+                project.activeLayer.addChild(p[i]);
+            }
+        }
+        else{
+            project.activeLayer.addChild(p);
+        }
         path_stack.push(p);
     }
 }

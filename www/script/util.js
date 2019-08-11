@@ -41,7 +41,7 @@ function toolbar_right() {
 
 
 
-TOOL_IDs = ["pen","curve-pen","drag","eraser","roll"];
+TOOL_IDs = ["pen","brush","drag","eraser","roll"];
 function highlight_tool(tool_id) {
     for (i=0; i<TOOL_IDs.length; i++){
         document.getElementById(TOOL_IDs[i]).style.color = "gray";
@@ -56,7 +56,7 @@ function tool1_inuse() {
 
 function tool2_inuse() {
     drag_lock = false;
-    highlight_tool("curve-pen");
+    highlight_tool("brush");
 }
 
 function tool3_inuse() {
