@@ -10,6 +10,7 @@
 
     <link rel="stylesheet" href="script/paperjs/examples/css/style.css">
     <link rel=stylesheet type="text/css" href="script/styles.css"> <!--This is our own css-->
+    <link rel=stylesheet type="text/css" href="script/palette.css"> <!--CSS for color pallet-->
     
     <!--Font awesome CSS-->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
@@ -31,17 +32,26 @@
             <i class="fas fa-angle-double-left" style="font-size:36px;" onclick="toolbar_left()"></i>
             <i class="fas fa-angle-double-right" style="font-size:36px;" onclick="toolbar_right()"></i>
         </div>
-
-        <div id="current-color"></div>
-        <div class="small-button color-button" id="black" onclick="set_color('black')"></div>
-        <div class="small-button color-button" id="red" onclick="set_color('red')"></div>
-        <div class="small-button color-button" id="green" onclick="set_color('green')"></div>
-        <div class="small-button color-button" id="blue" onclick="set_color('blue')"></div>
-        <div class="small-button color-button" id="purple" onclick="set_color('purple')"></div>
-        <div class="small-button color-button" id="yellow" onclick="set_color('yellow')"></div>
-        <div class="small-button color-button" id="orange" onclick="set_color('orange')"></div>
-        <div class="small-button color-button" id="pink" onclick="set_color('pink')"></div>
+        <div class="small-button color-button" id="color_1" onclick="set_color('color_1')"></div>
+        <div class="small-button color-button" id="color_2" onclick="set_color('color_2')"></div>
+        <div class="small-button color-button" id="color_3" onclick="set_color('color_3')"></div>
+        <div class="small-button color-button" id="color_4" onclick="set_color('color_4')"></div>
+        <div class="small-button color-button" id="color_5" onclick="set_color('color_5')"></div>
+        <div class="small-button color-button" id="color_6" onclick="set_color('color_6')"></div>
+        <div class="small-button color-button" id="color_7" onclick="set_color('color_7')"></div>
+        <div class="small-button color-button" id="color_8" onclick="set_color('color_8')"></div>
+        <div id="palette_icon_holder"><i id="palette_icon" class="fas fa-palette" style="font-size:36px; color: black" onclick="palette()"></i></div>
+        <div id="palette">
+            <!--This is the palette-->
+            <div style="position: absolute; top: 10px; left: 10px;">
+                <input type="color" id="color_picker" value="black" onchange="pick_color()">
+            </div>
+            <div style="position: absolute; width:160px; top: 10px; left: 70px;">
+                <input type="range" min="0" max="255" value="255" class="slider" id="opacity" onchange="opacity_change()">
+            </div>
+        </div>
     </div>
+
     
     <!--Tool panel-->
     <div id="tool-container" class="option-container">

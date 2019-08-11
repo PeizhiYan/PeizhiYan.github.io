@@ -56,50 +56,50 @@ body {
     border-radius: 5px;
 }
 
-#black {
-    background-color: black;
+#color_1 {
+    background-color: #17202A;
     top: 70px;
     left: 10px;
 }
 
-#red {
-    background-color: red;
+#color_2 {
+    background-color: #E74C3C;
     top: 100px;
     left: 10px;
 }
 
-#green {
-    background-color: green;
+#color_3 {
+    background-color: #7D3C98;
     top: 130px;
     left: 10px;
 }
 
-#blue {
-    background-color: blue;
+#color_4 {
+    background-color: #2E86C1;
     top: 160px;
     left: 10px;
 }
 
-#purple {
-    background-color: purple;
+#color_5 {
+    background-color: #229954;
     top: 70px;
     left: 40px;
 }
 
-#yellow {
-    background-color: yellow;
+#color_6 {
+    background-color: #F39C12;
     top: 100px;
     left: 40px;
 }
 
-#orange {
-    background-color: orange;
+#color_7 {
+    background-color: #A6ACAF;
     top: 130px;
     left: 40px;
 }
 
-#pink {
-    background-color: pink;
+#color_8 {
+    background-color: #5D6D7E;
     top: 160px;
     left: 40px;
 }
