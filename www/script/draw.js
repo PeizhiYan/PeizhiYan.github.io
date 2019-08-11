@@ -23,6 +23,8 @@ var view_center; // the origin of the view coordinate
 var current_color = "#000000";
 var opacity = "FF"; // from 0 to 255
 var frequent_color_pointer = 0; // 8 frequently used colors
+var smooth_rate = 5; // smooth the path
+var brush_1_size = 5;
 
 window.onload = function() {
     paper.setup('myCanvas');
@@ -95,10 +97,6 @@ window.onload = function() {
                 current_distance = distance(event.touches[0].clientX, event.touches[0].clientY, event.touches[1].clientX, event.touches[1].clientY)
                 scale_ratio = (current_distance/prev_distance);
 
-                // log for any base
-                function log(base, n) {
-                    return Math.log10(n)/Math.log10(base);
-                }
                 // Zoom in
                 if (scale_ratio > 1.4) {
                     zoom_rate = 0.2*(1-log(20,view.zoom));
@@ -203,7 +201,7 @@ window.onload = function() {
     // sharable mouseUp event:
     function onMouseUp(event) {
         if (not_add_path == false && path.length > 0) {
-            path.simplify(10); // smooth the path
+            path.simplify(smooth_rate); // smooth the path
             path_raster = path.rasterize(); // rasterize the path
             path.remove(); // remove the original vector path
             path_stack.push(path_raster); // store the path to path_stack
@@ -233,16 +231,20 @@ window.onload = function() {
 
 
 
-    // This is brush
+    // This is brush-1
     tool2 = new Tool();
     var paths = [];
     tool2.onMouseDown = function(event) {
         if (draw_lock == false && drag_lock == false){
             paths = [];
-            for (i=0;i<10;i++){
+            for (i=0;i<brush_1_size;i++){
                 p = new Path();
-                p.strokeColor = current_color+opacity;
-                p.add(new Point(event.point.x+i, event.point.y))
+                p.strokeColor = current_color+ to_hex(parseInt(parseInt(opacity,16)));
+                p.shadowBlur = 1;
+                p.strokeWidth = Math.log(brush_1_size+1)*2;
+                calculated_x = event.point.x + (i-brush_1_size/2)*p.strokeWidth/2;
+                calculated_y = event.point.y;
+                p.add(new Point(calculated_x, calculated_y))
                 paths.push(p);
             }
         }
@@ -253,11 +255,10 @@ window.onload = function() {
     }
     tool2.onMouseUp = function(event) {
         if (not_add_path == false && paths[0].length > 0) {
-            console.log(paths)
             paths_raster = []
-            for (i=0;i<10;i++){
+            for (i=0;i<brush_1_size;i++){
                 p = paths[i];
-                p.simplify(10); // smooth the path
+                //p.simplify(smooth_rate); // smooth the path
                 path_raster = p.rasterize(); // rasterize the path
                 paths_raster.push(path_raster);
                 p.remove(); // remove the original vector path
@@ -272,15 +273,18 @@ window.onload = function() {
     }
     tool2.onMouseDrag = function(event) {
         if (draw_lock == false && drag_lock == false){
-            for (i=0;i<10;i++){
+            for (i=0;i<brush_1_size;i++){
                 p = paths[i];
-                p.add(new Point(event.point.x+i, event.point.y));
+                calculated_x = event.point.x + (i-brush_1_size/2)*p.strokeWidth/2;
+                calculated_y = event.point.y;
+                p.add(new Point(calculated_x, calculated_y))
             }
         }
         else if (drag_lock){
             move_canvas(event.point.x, event.point.y);
         }
     }
+    
 
 
 
@@ -389,7 +393,14 @@ function redo() {
 function reset_everything() {
     while (path_stack.length > 0){
         p = path_stack.pop();
-        p.remove();
+        if (p.length > 1){
+            for (i=0;i<p.length;i++){
+                p[i].remove();
+            }
+        }
+        else{
+            p.remove();
+        }
     }
     path_stack = []
     redo_stack = []
@@ -420,6 +431,7 @@ function set_color(c_str) {
     document.getElementById("palette").style.backgroundColor = current_color;
     document.getElementById("color_picker").setAttribute("value", current_color);
     document.getElementById("color_picker").value = current_color;
+    highlight_tool_auto();
 }
 
 function pick_color () {
@@ -452,6 +464,10 @@ function to_hex(decimal) {
 function opacity_change () {
     opacity = to_hex(parseInt(document.getElementById("opacity").value));
     document.getElementById("palette").style.backgroundColor = current_color+opacity;
+}
+
+function brush_1_size_change () {
+    brush_1_size = parseInt(document.getElementById("brush_1_size").value)
 }
 
 

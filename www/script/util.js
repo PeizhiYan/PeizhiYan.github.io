@@ -17,6 +17,10 @@ function distance(x1, y1, x2, y2){
     return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
 }
 
+// log for any base
+function log(base, n) {
+    return Math.log10(n)/Math.log10(base);
+}
 
 
 
@@ -25,6 +29,7 @@ function toolbar_left() {
     document.getElementById("color-container").style.left = "0px";
     document.getElementById("tool-container").style.left = "0px";
     document.getElementById("palette").style.left = "80px";
+    document.getElementById("brush_1_setting").style.left = "80px";
     document.getElementById("color-container").style.right = "";
     document.getElementById("tool-container").style.right = "";
 }
@@ -33,6 +38,7 @@ function toolbar_right() {
     document.getElementById("color-container").style.left = "";
     document.getElementById("tool-container").style.left = "";
     document.getElementById("palette").style.left = "-260px";
+    document.getElementById("brush_1_setting").style.left = "-260px";
     document.getElementById("color-container").style.right = "0px";
     document.getElementById("tool-container").style.right = "0px";
 }
@@ -40,13 +46,33 @@ function toolbar_right() {
 
 
 
-
-TOOL_IDs = ["pen","brush","drag","eraser","roll"];
+DRAW_TOOLS = ["pen","brush_1","roll"];
+TOOL_IDs = ["pen","brush_1","drag","eraser","roll"];
 function highlight_tool(tool_id) {
     for (i=0; i<TOOL_IDs.length; i++){
         document.getElementById(TOOL_IDs[i]).style.color = "gray";
     }
-    document.getElementById(tool_id).style.color = "black";
+    flag = false;
+    for (i=0; i<DRAW_TOOLS.length; i++){
+        if (tool_id == DRAW_TOOLS[i]){
+            flag = true;
+        }
+    }
+    if (flag){
+        document.getElementById(tool_id).style.color = document.getElementById("palette_icon").style.color;
+    }
+    else{
+        document.getElementById(tool_id).style.color = "black";
+    }
+}
+
+function highlight_tool_auto() {
+    for (i=0; i<DRAW_TOOLS.length; i++){
+        if (document.getElementById(DRAW_TOOLS[i]).style.color != "gray") {
+            document.getElementById(DRAW_TOOLS[i]).style.color = document.getElementById("palette_icon").style.color;
+            break;
+        }
+    }
 }
 
 function tool1_inuse() {
@@ -56,7 +82,18 @@ function tool1_inuse() {
 
 function tool2_inuse() {
     drag_lock = false;
-    highlight_tool("brush");
+    if (document.getElementById("brush_1").style.color != "gray") {
+        if (document.getElementById("brush_1_setting").style.visibility == "hidden") {
+            document.getElementById("brush_1_setting").style.visibility = "visible";
+        }
+        else{
+            document.getElementById("brush_1_setting").style.visibility = "hidden";
+        }
+    }
+    else {
+        document.getElementById("brush_1_setting").style.visibility = "hidden";
+    }
+    highlight_tool("brush_1");
 }
 
 function tool3_inuse() {
