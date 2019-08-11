@@ -15,7 +15,7 @@ var canvas, context;
 let path_stack = []; // paths are saved in here
 let redo_stack = []; // removed paths are saved in here
 var view_center; // the origin of the view coordinate
-var current_color = "#FFFFFF";
+var current_color = "#000000";
 var opacity = "FF"; // from 0 to 255
 var frequent_color_pointer = 0; // 8 frequently used colors
 
@@ -29,7 +29,7 @@ window.onload = function() {
     view.center = view_center; // do not remove this line !!!
     view_zoom = view.zoom; // get the view zoom factor
     view.zoom = view_zoom; // do not remove this line !!!
-    current_color = "#FFFFFF";
+    current_color = "#000000";
 
     ///////////////////////////////////////////////////////////////////
     ////// support mobile device's touch screen: Zoom and/or Scroll
