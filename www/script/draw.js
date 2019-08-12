@@ -239,11 +239,11 @@ window.onload = function() {
             paths = [];
             for (i=0;i<brush_1_size;i++){
                 p = new Path();
-                p.strokeColor = current_color+ to_hex(parseInt(parseInt(opacity,16)));
+                p.strokeColor = current_color+ to_hex(parseInt(parseInt(opacity,16)/20));
                 p.shadowBlur = 1;
                 p.strokeWidth = Math.log(brush_1_size+1)*2;
-                calculated_x = event.point.x + (i-brush_1_size/2)*p.strokeWidth/2;
-                calculated_y = event.point.y;
+                calculated_x = event.point.x + (i-brush_1_size/2)*p.strokeWidth/3 + 0.5*(0.5-Math.random());
+                calculated_y = event.point.y + 0.5*Math.random();
                 p.add(new Point(calculated_x, calculated_y))
                 paths.push(p);
             }
@@ -275,8 +275,8 @@ window.onload = function() {
         if (draw_lock == false && drag_lock == false){
             for (i=0;i<brush_1_size;i++){
                 p = paths[i];
-                calculated_x = event.point.x + (i-brush_1_size/2)*p.strokeWidth/2;
-                calculated_y = event.point.y;
+                calculated_x = event.point.x + (i-brush_1_size/2)*p.strokeWidth/3 + 0.1*(0.5-Math.random());
+                calculated_y = event.point.y + 0.1*Math.random();
                 p.add(new Point(calculated_x, calculated_y))
             }
         }
