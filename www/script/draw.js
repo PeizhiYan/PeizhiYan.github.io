@@ -17,6 +17,7 @@ paper.install(window);
 // links below can access them.
 var tool1, tool2, tool3, tool4;
 var canvas, context;
+let STACK_SIZE = 20; // maximum 20 paths
 let path_stack = []; // paths are saved in here
 let redo_stack = []; // removed paths are saved in here
 var view_center; // the origin of the view coordinate
@@ -204,8 +205,12 @@ window.onload = function() {
             path.simplify(smooth_rate); // smooth the path
             path_raster = path.rasterize(); // rasterize the path
             path.remove(); // remove the original vector path
+            delete path;
             path_stack.push(path_raster); // store the path to path_stack
-            console.log("stack:"+path_stack.length);
+            if (path_stack.length > STACK_SIZE) {
+                path_stack.shift()
+            }
+            //console.log("stack:"+path_stack.length);
         }
         else {
             prev_X = -1;
@@ -240,8 +245,8 @@ window.onload = function() {
             for (i=0;i<brush_1_size;i++){
                 p = new Path();
                 p.strokeColor = current_color+ to_hex(parseInt(parseInt(opacity,16)/20));
-                p.shadowBlur = 1;
-                p.strokeWidth = Math.log(brush_1_size+1)*2;
+                p.shadowBlur = 3;
+                p.strokeWidth = Math.log(brush_1_size+1)*4;
                 calculated_x = event.point.x + (i-brush_1_size/2)*p.strokeWidth/3 + 0.5*(0.5-Math.random());
                 calculated_y = event.point.y + 0.5*Math.random();
                 p.add(new Point(calculated_x, calculated_y))
@@ -258,12 +263,16 @@ window.onload = function() {
             paths_raster = []
             for (i=0;i<brush_1_size;i++){
                 p = paths[i];
-                //p.simplify(smooth_rate); // smooth the path
+                p.simplify(smooth_rate); // smooth the path
                 path_raster = p.rasterize(); // rasterize the path
                 paths_raster.push(path_raster);
                 p.remove(); // remove the original vector path
+                delete p;
             }
             path_stack.push(paths_raster); // store the path to path_stack
+            if (path_stack.length > STACK_SIZE) {
+                path_stack.shift()
+            }
         }
         else {
             prev_X = -1;
@@ -369,6 +378,9 @@ function undo() {
             p.remove();
         }
         redo_stack.push(p);
+        if (redo_stack.length > STACK_SIZE) {
+            redo_stack.shift()
+        }
         //console.log(p);
     }
 }
@@ -386,6 +398,9 @@ function redo() {
             project.activeLayer.addChild(p);
         }
         path_stack.push(p);
+        if (path_stack.length > STACK_SIZE) {
+            path_stack.shift()
+        }
     }
 }
 
