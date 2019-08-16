@@ -26,6 +26,7 @@ var opacity = "FF"; // from 0 to 255
 var frequent_color_pointer = 0; // 8 frequently used colors
 var smooth_rate = 5; // smooth the path
 var brush_1_size = 5;
+var brush_1_layer; // only store the path created by brush_1
 
 window.onload = function() {
     paper.setup('myCanvas');
@@ -38,6 +39,7 @@ window.onload = function() {
     view_zoom = view.zoom; // get the view zoom factor
     view.zoom = view_zoom; // do not remove this line !!!
     current_color = "#000000";
+    brush_1_layer = new Layer();
 
     ///////////////////////////////////////////////////////////////////
     ////// support mobile device's touch screen: Zoom and/or Scroll
@@ -206,6 +208,7 @@ window.onload = function() {
             path_raster = path.rasterize(); // rasterize the path
             path.remove(); // remove the original vector path
             delete path;
+
             path_stack.push(path_raster); // store the path to path_stack
             if (path_stack.length > STACK_SIZE) {
                 path_stack.shift()
@@ -246,7 +249,7 @@ window.onload = function() {
                 p = new Path();
                 p.strokeColor = current_color+ to_hex(parseInt(parseInt(opacity,16)/20));
                 p.shadowBlur = 3;
-                p.strokeWidth = Math.log(brush_1_size+1)*4;
+                p.strokeWidth = Math.log(brush_1_size+1)*3;
                 calculated_x = event.point.x + (i-brush_1_size/2)*p.strokeWidth/3 + 0.5*(0.5-Math.random());
                 calculated_y = event.point.y + 0.5*Math.random();
                 p.add(new Point(calculated_x, calculated_y))
@@ -260,16 +263,25 @@ window.onload = function() {
     }
     tool2.onMouseUp = function(event) {
         if (not_add_path == false && paths[0].length > 0) {
-            paths_raster = []
+            //paths_raster = []
             for (i=0;i<brush_1_size;i++){
                 p = paths[i];
                 p.simplify(smooth_rate); // smooth the path
-                path_raster = p.rasterize(); // rasterize the path
-                paths_raster.push(path_raster);
-                p.remove(); // remove the original vector path
-                delete p;
+                //path_raster = p.rasterize(); // rasterize the path
+                //paths_raster.push(path_raster);
+                //p.remove(); // remove the original vector path
+                //delete p;
+                //brush_1_layer.addChild(path_raster);
             }
-            path_stack.push(paths_raster); // store the path to path_stack
+
+            //if (brush_1_layer.children.length >= 100) {
+            //    brush_1_layer.rasterize();
+            //    brush_1_layer.opacity = 0.7;
+            //    brush_1_layer = new Layer();
+            //}
+            
+            //path_stack.push(paths_raster); // store the path to path_stack      
+            path_stack.push(paths)
             if (path_stack.length > STACK_SIZE) {
                 path_stack.shift()
             }
