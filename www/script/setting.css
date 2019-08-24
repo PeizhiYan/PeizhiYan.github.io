@@ -1,0 +1,15 @@
+#setting_menu {
+    width: 250px;
+    height:400px;
+    position: absolute;
+    border-radius: 20px;
+    top: 0px;
+    left: 80px;
+    visibility: hidden;
+    background-color: rgba(0, 0, 0, 0.192);
+}
+
+#save_to_png {
+    margin-top: 15px;
+    margin-left: 15px;
+}

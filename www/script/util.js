@@ -29,6 +29,7 @@ function toolbar_left() {
     document.getElementById("color-container").style.left = "0px";
     document.getElementById("tool-container").style.left = "0px";
     document.getElementById("palette").style.left = "80px";
+    document.getElementById("setting_menu").style.left = "80px";
     document.getElementById("brush_1_setting").style.left = "80px";
     document.getElementById("color-container").style.right = "";
     document.getElementById("tool-container").style.right = "";
@@ -38,6 +39,7 @@ function toolbar_right() {
     document.getElementById("color-container").style.left = "";
     document.getElementById("tool-container").style.left = "";
     document.getElementById("palette").style.left = "-260px";
+    document.getElementById("setting_menu").style.left = "-260px";
     document.getElementById("brush_1_setting").style.left = "-260px";
     document.getElementById("color-container").style.right = "0px";
     document.getElementById("tool-container").style.right = "0px";
@@ -124,5 +126,15 @@ function palette() {
     }
 }
 
-
-
+var setting_menu_visible = false;
+function setting_menu() {
+    drag_lock = false;
+    if (setting_menu_visible){
+        document.getElementById("setting_menu").style.visibility = "hidden";
+        setting_menu_visible = false;
+    }
+    else{
+        document.getElementById("setting_menu").style.visibility = "visible";
+        setting_menu_visible = true;
+    }
+}

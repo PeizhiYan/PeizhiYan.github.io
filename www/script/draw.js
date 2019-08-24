@@ -505,3 +505,21 @@ function brush_1_size_change () {
 }
 
 
+function downloadURI(uri, name) {
+    var link = document.createElement("a");
+    link.download = name;
+    link.href = uri;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    delete link;
+}
+// save the canvas to png and download 
+function save_to_png () {
+    download_canvas = document.getElementById('myCanvas');
+    var today = new Date();
+    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var dateTime = date+' '+time;
+    downloadURI(download_canvas.toDataURL(), "Matthew_Draw_"+dateTime+".png");
+}

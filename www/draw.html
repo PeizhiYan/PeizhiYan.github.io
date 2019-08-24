@@ -12,6 +12,7 @@
     <link rel=stylesheet type="text/css" href="script/styles.css"> <!--This is our own css-->
     <link rel=stylesheet type="text/css" href="script/palette.css"> <!--CSS for color pallet-->
     <link rel=stylesheet type="text/css" href="script/brush.css"> <!--CSS for brushes-->
+    <link rel=stylesheet type="text/css" href="script/setting.css"> <!--CSS for setting-->
     
     <!--Font awesome CSS-->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
@@ -34,6 +35,12 @@
         <div id="toolbar-location">
             <i class="fas fa-angle-double-left" style="font-size:36px;" onclick="toolbar_left()"></i>
             <i class="fas fa-angle-double-right" style="font-size:36px;" onclick="toolbar_right()"></i>
+        </div>
+        <div style="margin-left: 22px;">
+            <i class="fas fa-cog"  style="font-size:30px;" onclick="setting_menu()"></i>
+        </div>
+        <div id="setting_menu">
+            <i id="save_to_png" class="far fa-save"  style="font-size:36px;" onclick="save_to_png()"></i>
         </div>
         <!--8 frequently used colors-->
         <div class="small-button color-button" id="color_1" onclick="set_color('color_1')"></div>
@@ -71,7 +78,11 @@
             <i class="fas fa-undo" style='font-size:24px' onclick="undo()"></i>
             <i class="fas fa-redo" style='font-size:24px' onclick="redo()"></i>
             <i id="drag" class="fas fa-arrows-alt" style='font-size:36px; color: gray;' onclick="drag_canvas()"></i>
+            
+            <!--
             <button onclick="reset_everything()">Reset</button>
+            -->
+
             <div id="brush_1_setting">
                 <div style="position: absolute; width:160px; top: 15px; left: 20px;">
                     Size:
