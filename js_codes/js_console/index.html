@@ -13,7 +13,7 @@
 			js += "\nfunction print(x){document.getElementById('console').innerHTML = document.getElementById('console').value + x}"
 			js += "<"
 			js += "/script>"
-			var newPage = "<!DOCTYPE html><html><head><title>Runtime</title><style>#console{border: none;background-color: black;color:  #00FF0D;padding: 0px 0px;width: 100%;height: 350px;text-decoration: none;display: inline-block;font-size: 20px;margin: 0px 0px;cursor: pointer;}</style><script type='text/javascript'>"+js+"<script type='text/javascript' src='lib.js'>"+"<"+"/script>"+"</head><body onload='main()'><textarea id='console'></textarea></body></html>"
+			var newPage = "<!DOCTYPE html><html><head><title>Runtime</title><style>#console{border: none;background-color: black;color:  #00FF0D;padding: 0px 0px;width: 100%;height: 350px;text-decoration: none;display: inline-block;font-size: 20px;margin: 0px 0px;cursor: pointer;}</style><script type='text/javascript'>"+js+"<script type='text/javascript' src='lib.js'>"+"<"+"/script>"+"<script src='jquery-3.5.1.min.js'>"+"<"+"/script>"+"</head><body onload='main()'><textarea id='console'></textarea></body></html>"
 
 			win.document.write(newPage);
 			//win.focus();
