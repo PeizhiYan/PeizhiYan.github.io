@@ -19,11 +19,17 @@ function createOption(text, value, ie8) {
   return opt;
 }
 
+console.log("creating board")
 var board = new Board(container, "images/", "sounds/");
 board.setSearch(16);
 board.millis = 10;
 board.millis = 2000;
-console.log (board.millis );
+console.log("board created")
+console.log(board.millis);
+
+// Hide the board and undo button
+$("#game_board").hide();
+$("#undo_button").hide();
 
 board.computer = 1;
 board.onAddMove = function() {
@@ -47,11 +53,26 @@ function level_change() {
 }
 
 
-function restart_click() {
+function start_click() {
   selMoveList.options.length = 1;
   selMoveList.selectedIndex = 0;
   board.computer = 1 - selMoveMode.selectedIndex;
-  board.restart(STARTUP_FEN[selHandicap.selectedIndex]);
+  //board.restart(STARTUP_FEN[selHandicap.selectedIndex]);
+  $("#game_board").show();
+  $("#undo_button").show();
+  $("#type_selector").hide();
+  $("#level_selector").hide();
+  $("#start_button").hide();
+  console.log("mode: ", selMoveMode.selectedIndex)
+  if(selMoveMode.selectedIndex == 1){
+    // Computer First
+    console.log('Computer First')
+    retract_click();
+  }
+  if(selTheme.selectedIndex == 1){
+    board.images='images_international/';
+  }
+  board.flushBoard();
 }
 
 function retract_click() {

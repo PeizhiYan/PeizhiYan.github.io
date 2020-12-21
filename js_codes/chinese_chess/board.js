@@ -1,25 +1,3 @@
-/*
-board.js - Source Code for XiangQi Wizard Light, Part IV
-
-XiangQi Wizard Light - a Chinese Chess Program for JavaScript
-Designed by Morning Yellow, Version: 1.0, Last Modified: Sep. 2012
-Copyright (C) 2004-2012 www.xqbase.com
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
-
 "use strict";
 
 var RESULT_UNKNOWN = 0;
@@ -32,7 +10,7 @@ var BOARD_HEIGHT = 577;
 var SQUARE_SIZE = 57;
 var SQUARE_LEFT = (BOARD_WIDTH - SQUARE_SIZE * 9) >> 1;
 var SQUARE_TOP = (BOARD_HEIGHT - SQUARE_SIZE * 10) >> 1;
-var THINKING_SIZE = 32;
+var THINKING_SIZE = 250;
 var THINKING_LEFT = (BOARD_WIDTH - THINKING_SIZE) >> 1;
 var THINKING_TOP = (BOARD_HEIGHT - THINKING_SIZE) >> 1;
 var MAX_STEP = 8;

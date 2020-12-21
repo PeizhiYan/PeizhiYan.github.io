@@ -1,106 +1,96 @@
 ﻿<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<style>
-div.input80233 {
-margin:1.5rem;
-}
-</style>
+		<style>
+		div.input80233 {
+		margin:1.5rem;
+		}
+		</style>
 
-<script defer="" src="book.js"></script>
-<script defer="" src="position.js"></script>
-<script defer="" src="search.js"></script>
-<script defer="" src="board.js"></script>
-<script defer="" src="cchess.js"></script>
-<script defer="" src="main.js"></script>
+		<script defer="" src="jquery-3.5.1.min.js"></script>
+		<script defer="" src="book.js"></script>
+		<script defer="" src="position.js"></script>
+		<script defer="" src="search.js"></script>
+		<script defer="" src="board.js"></script>
+		<script defer="" src="cchess.js"></script>
+		<script defer="" src="main.js"></script>
 
-<script>
-document.addEventListener ('contextmenu', ((x) =>  x.preventDefault ()) , false);
-</script>
+		<script>
+			document.addEventListener ('contextmenu', ((x) =>  x.preventDefault ()) ,false);
+		</script>
 
-<title>Play Chinese Chess Online</title>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async="" src="../gtag/js.js?id=UA-10884311-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+		<title>Play Chinese Chess</title>
+	</head>
 
-  gtag('config', 'UA-10884311-1');
-</script>
-<script data-ad-client="ca-pub-5125343095650532" async="" src="../pagead/js/f.txt"></script>
-</head>
-<body>
+	<body>
 
-<main>
+		<main>
 
-<div class="ad_top_39054">
-<script async="" src="../pagead/js/f.txt"></script>
-<!-- xlinfo_top_autosize_20171107 -->
-<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5125343095650532" data-ad-slot="2984018199" data-ad-format="auto" data-full-width-responsive="true"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-</div>
+		<div><b>Chinese Chess 中国象棋</b></div><hr>
 
-<div>Chinese Chess</div>
+		<!-- Message Area -->
+		<div id="message_area_84423"></div>
 
-<div id="message_area_84423">
+		<!-- Game Board -->
+		<span class="td" id='game_board'>
+		<div id="container"></div>
+		</span>
 
-</div>
+		<!-- Undo Button -->
+		<div class="input80233" id="undo_button">
+		<input type="button" class="button" value="Undo Move" onclick="retract_click()">
+		</div>
 
-<span class="td">
-<div id="container"></div>
-</span>
+		<!-- Type Selector -->
+		<div class="input80233" id="type_selector">
+		<div class="label">Choose Type</div>
+		<select id="selMoveMode" size="1">
+		<option selected="" value="0">Human First</option>
+		<option value="1">Computer First</option>
+		<option value="2">Human vs. Human</option>
+		</select>
+		</div>
 
-<div class="input80233">
-<input type="button" class="button" value="Undo move" onclick="retract_click()">
-</div>
+		<!-- Level Selector -->
+		<div class="input80233" id="level_selector">
+		<div class="label">Computer Skill Level</div>
+		<select id="selLevel" size="1" onchange="level_change()">
+		<option value="500">Newbie</option>
+		<option value="1000">Normal</option>
+		<option selected="" value="2000">Above Average</option>
+		<option value="3000">Expert</option>
+		<option value="4000">Master</option>
+		</select>
+		</div>
 
+		<!-- Theme Selector -->
+		<div class="input80233" id="theme_selector">
+		<div class="label">Theme</div>
+		<select id="selTheme" size="1">
+		<option selected="" value="0">Chinese Default</option>
+		<option value="1">International</option>
+		</select>
+		</div>
 
-<div class="input80233">
-<div class="label">Who goes first?</div>
-<select id="selMoveMode" size="1">
-<option selected="" value="0">Human</option>
-<option value="1">Computer</option>
-<option value="2">Play without computer</option>
-</select>
-</div>
-
-
-<div class="input80233">
-<div class="label">Computer skill level</div>
-<select id="selLevel" size="1" onchange="level_change()">
-<option value="500">Newbie</option>
-<option value="1000">Normal</option>
-<option selected="" value="2000">Above Average</option>
-<option value="3000">Expert</option>
-<option value="4000">Master</option>
-</select>
-</div>
-
-<div class="input80233">
-<input type="checkbox" class="checkbox" id="chkAnimated" checked="" onclick="board.animated = checked">
-<label for="chkAnimated">Animation</label>
-</div>
-
-<div class="input80233">
-<input type="button" class="button" value="Restart" onclick="restart_click()">
-</div>
+		<!-- Start Button -->
+		<div class="input80233" id="start_button">
+		<input type="button" class="button" value="Start" onclick="start_click()">
+		</div>
 
 
-<div class="input80233" id="move_history">
-<div class="label">Moves</div>
-<select id="selMoveList" size="10" onchange="moveList_change()">
-<option selected="" value="0">=== Start ===</option>
-</select>
-</div>
+		<div class="input80233" id="move_history" style="display: none;">
+		<div class="label">Moves</div>
+		<select id="selMoveList" size="10" onchange="moveList_change()">
+		<option selected="" value="0">=== Start ===</option>
+		</select>
+		</div>
 
-</main>
+		</main>
 
-<!-- <img src="i/chinese_chess_e78d7.png" alt="chinese chess e78d7" width="521px" /> -->
 
-</body></html>
+	</body>
+
+</html>
 
