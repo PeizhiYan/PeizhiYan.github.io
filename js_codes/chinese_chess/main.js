@@ -76,6 +76,14 @@ function start_click() {
   $("#theme_selector").hide();
   $("#board_selector").show();
   board.flushBoard();
+
+  // game board width is 521 pixels
+  var scale_ = (window.innerWidth-20)/521
+  document.body.style.transform = 'scale(' + scale_ + ')';
+  console.log(window.innerWidth)
+  document.body.style['-o-transform'] = 'scale(' + scale_ + ')';
+  document.body.style['-webkit-transform'] = 'scale(' + scale_ + ')';
+  document.body.style['-moz-transform'] = 'scale(' + scale_ + ')';
 }
 
 function retract_click() {
