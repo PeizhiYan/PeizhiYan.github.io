@@ -30,6 +30,7 @@ console.log(board.millis);
 // Hide the board and undo button
 $("#game_board").hide();
 $("#undo_button").hide();
+$("#board_selector").hide();
 
 board.computer = 1;
 board.onAddMove = function() {
@@ -72,6 +73,8 @@ function start_click() {
   if(selTheme.selectedIndex == 1){
     board.images='images_international/';
   }
+  $("#theme_selector").hide();
+  $("#board_selector").show();
   board.flushBoard();
 }
 

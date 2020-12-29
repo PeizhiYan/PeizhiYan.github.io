@@ -220,15 +220,15 @@ Board.prototype.postAddMove = function(mv, computerMove) {
     if (vlRep > -WIN_VALUE && vlRep < WIN_VALUE) {
       this.playSound("draw");
       this.result = RESULT_DRAW;
-      alertDelay("双方不变作和，辛苦了！");
+      alertDelay("Draw");
     } else if (computerMove == (vlRep < 0)) {
       this.playSound("loss");
       this.result = RESULT_LOSS;
-      alertDelay("长打作负，请不要气馁！");
+      alertDelay("Lose");
     } else {
       this.playSound("win");
       this.result = RESULT_WIN;
-      alertDelay("长打作负，祝贺你取得胜利！");
+      alertDelay("Win");
     }
     this.postAddMove2();
     this.busy = false;
@@ -246,7 +246,7 @@ Board.prototype.postAddMove = function(mv, computerMove) {
     if (!hasMaterial) {
       this.playSound("draw");
       this.result = RESULT_DRAW;
-      alertDelay("双方都没有进攻棋子了，辛苦了！");
+      alertDelay("Draw");
       this.postAddMove2();
       this.busy = false;
       return;
@@ -262,7 +262,7 @@ Board.prototype.postAddMove = function(mv, computerMove) {
     if (!captured) {
       this.playSound("draw");
       this.result = RESULT_DRAW;
-      alertDelay("超过自然限着作和，辛苦了！");
+      alertDelay("Draw");
       this.postAddMove2();
       this.busy = false;
       return;
@@ -288,7 +288,7 @@ Board.prototype.postAddMove2 = function() {
 }
 
 Board.prototype.postMate = function(computerMove) {
-  alertDelay(computerMove ? "请再接再厉！" : "祝贺你取得胜利！");
+  alertDelay(computerMove ? "Lose" : "Win");
   this.postAddMove2();
   this.busy = false;
 }
