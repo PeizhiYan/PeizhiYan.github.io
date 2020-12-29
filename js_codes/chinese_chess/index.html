@@ -40,11 +40,22 @@
 		<span class="td" id='game_board'>
 		<div id="container"></div>
 		</span>
+		<br>
 
 		<!-- Undo Button -->
 		<div class="input80233" id="undo_button">
 		<input type="button" class="button" value="Undo Move" onclick="retract_click()">
 		</div>
+		<br>
+
+		
+		<!-- Board Background Selector -->
+		<div class="input80233" id="board_selector">
+		<div class="label">Board Style</div>
+		<button onclick="$('#container').css('background', 'url(images/board.jpg)')">Grass</button>
+		<button onclick="$('#container').css('background', 'url(images/board_.jpg)')">Wood</button>
+		</div>
+		<br>
 
 		<!-- Type Selector -->
 		<div class="input80233" id="type_selector">
@@ -55,6 +66,7 @@
 		<option value="2">Human vs. Human</option>
 		</select>
 		</div>
+		<br>
 
 		<!-- Level Selector -->
 		<div class="input80233" id="level_selector">
@@ -67,6 +79,7 @@
 		<option value="4000">Master</option>
 		</select>
 		</div>
+		<br>
 
 		<!-- Theme Selector -->
 		<div class="input80233" id="theme_selector">
@@ -76,19 +89,13 @@
 		<option value="1">International</option>
 		</select>
 		</div>
-
-		<!-- Board Background Selector -->
-		<div class="input80233" id="board_selector">
-		<div class="label">Board Style</div>
-		<button onclick="$('#container').css('background', 'url(images/board.jpg)')">Grass</button>
-		<button onclick="$('#container').css('background', 'url(images/board_.jpg)')">Wood</button>
-		</div>
+		<br>
 
 		<!-- Start Button -->
 		<div class="input80233" id="start_button">
 		<input type="button" class="button" value="Start" onclick="start_click()">
 		</div>
-
+		<br>
 
 		<div class="input80233" id="move_history" style="display: none;">
 		<div class="label">Moves</div>
