@@ -1,6 +1,7 @@
 var board
 var board_ai
 var value
+var value_human
 var current
 
 // Good patterns
@@ -86,36 +87,38 @@ function start(){
 	board = new Array(15)
 	board_ai = new Array(15)
 	value = new Array(15)
+	value_human = new Array(15)
 	current = 1
 	for (var i = 0; i < 15; i++) {
 		board[i] = new Array(15)
 		board_ai[i] = new Array(15)
 		value[i] = new Array(15)
+		value_human[i] = new Array(15)
 		for (var j = 0; j < 15; j++) {
 			/* initialize values */
 			board[i][j] = 0
 			board_ai[i][j] = 0
 			value[i][j] = 0
+			value_human[i][j] = 0
 		}
 	}
 
 	/** Create the GUI */
-	/* board */
+	/* game board */
 	var temp = ""
 	for (var i = 0; i < 15; i++){
 		for (var j = 0; j < 15; j++){
-			temp += "<button class=\"cell\" id=\"btn"+i+"-"+j+"\" onclick=\"clk("+i+","+j+")\"></button>"
+			temp += "<div class=\"cell\" style=\"position:absolute;"+"left:"+32*j+"px;top:"+32*i+"px; border-radius: 50px; opacity: 0; width:28px;height:28px;padding:0;margin:2px;\" id=\"btn"+i+"-"+j+"\" onclick=\"clk("+i+","+j+")\"></div>"
 		}
-		temp += "<br>"
+		//temp += "<br>"
 	}
 	document.getElementById("board").innerHTML = temp
-	/* insight */
+	/* insight visualization */
 	var temp = ""
 	for (var i = 0; i < 15; i++){
 		for (var j = 0; j < 15; j++){
-			temp += "<button class=\"cell value\" id=\"val"+i+"-"+j+"\"></button>"
+			temp += "<div <div class=\"cell\" style=\"position:absolute;"+"left:"+32*j+"px;top:"+32*i+"px; opacity: 0.5; width:32px;height:32px;padding:0;margin:0px;\" id=\"val"+i+"-"+j+"\"></div>"
 		}
-		temp += "<br>"
 	}
 	document.getElementById("value").innerHTML = temp
 	computeValue()
@@ -128,40 +131,47 @@ function start(){
 }
 
 /* Insight! Display the value gradient */
-function insight(){
+function insight(is_ai=false){
 	var max_value = 0
+	var min_value = 0
 	for (var i = 0; i < 15; i++) {
 		for (var j = 0; j < 15; j++) {
-			if (value[i][j] > max_value) {
-				max_value = value[i][j] 
+			if (value_human[i][j] > max_value) {
+				max_value = value_human[i][j] 
+			}
+			if (value_human[i][j] < min_value) {
+				min_value = value_human[i][j] 
 			}
 		}
 	}
-	var R = 0
-	var G = 0
-	var B = 0
-	for (var i = 0; i < 15; i++) {
-		for (var j = 0; j < 15; j++) {
-			R = 0
-			G = 0
-			B = 255
-			var scale = parseInt((255*3)*((value[i][j])/max_value))
-			B -= scale
-			if (B <= 0) {
-				B = 0
-				scale -= 255
-			}
-			if (scale > 0) {
-				G = scale
-				if (G >= 255) {
-					G = 255
-					scale -= 255
-					R = scale
+	if(is_ai == false){
+		var R = 0
+		var G = 0
+		var B = 0
+		for (var i = 0; i < 15; i++) {
+			for (var j = 0; j < 15; j++) {
+				var scale = parseInt((255)*((value_human[i][j])/(max_value)))
+				if (board[i][j] != 0 || board_ai[i][j] != 0){
+					R = 0;
+					G = 0;
+					B = 0;
 				}
+				else if (scale > 0) {
+					R = scale
+					//G = 255*scale
+					/*
+					if (G >= 255) {
+						G = 255
+						scale -= 255
+						R = scale
+					}*/
+				}
+				document.getElementById("val"+i+"-"+j).style.background="#"+toHex(R,G,B);
 			}
-			document.getElementById("val"+i+"-"+j).style.background="#"+toHex(R,G,B);
 		}
+
 	}
+
 	return max_value
 }
 
@@ -204,6 +214,7 @@ function clk(i, j){
 		/* Can put the stone */
 		if (current == 1) {
 			var name = "btn"+i+"-"+j
+			document.getElementById(name).style.opacity="1.0"; // Black stone
 			document.getElementById(name).style.background="black"; // Black stone
 			board[i][j] = current
 			board_ai[i][j] = 0 - current
@@ -219,7 +230,7 @@ function clk(i, j){
 			/* AI's turn */
 			print(">>> Computer is thinking... ")
 			computeValue()
-			var max_value = insight() // show the value gradient
+			var max_value = insight(is_ai=true) // show the value gradient
 			ai_move(max_value) // computer make the move
 			print(">>> Your turn. ")
 			var flag = count(conv2d(board_ai, filter1a), 5)
@@ -244,7 +255,8 @@ function ai_move(max_value){
 		for (var j = 0; j<15; j++){
 			if (value[i][j] == max_value) {
 				var name = "btn"+i+"-"+j
-				document.getElementById(name).style.background="red"; // Red stone
+				document.getElementById(name).style.opacity="1.0"; // White stone
+				document.getElementById(name).style.background="white"; // White stone
 				board[i][j] = current
 				board_ai[i][j] = 0 - current
 				current = 0 - current
@@ -256,6 +268,7 @@ function ai_move(max_value){
 
 /* Get the value gradient */
 function computeValue(){
+	// AI
 	for (var i = 0; i<15; i++){
 		for (var j = 0; j<15; j++){
 			if (board[i][j] != 0) {
@@ -265,6 +278,19 @@ function computeValue(){
 			value_a = evaluate(board_ai, i, j)
 			value_b = evaluate(board, i, j)
 			value[i][j] = (value_a+value_b)/2 + 2/((15/2 - i)*(15/2 - i) + (15/2 - j)*(15/2 - j))
+			//value[i][j] = value_a
+		}
+	}
+	// Human
+	for (var i = 0; i<15; i++){
+		for (var j = 0; j<15; j++){
+			if (board_ai[i][j] != 0 || board[i][j] != 0) {
+				value_human[i][j] = -99999
+				continue
+			}
+			value_a = evaluate(board, i, j)
+			value_b = evaluate(board_ai, i, j)
+			value_human[i][j] = (value_a+value_b)/2 + 2/((15/2 - i)*(15/2 - i) + (15/2 - j)*(15/2 - j))
 			//value[i][j] = value_a
 		}
 	}
@@ -375,8 +401,18 @@ function count(feature_map, n){
 	return counter
 }
 
-
-
+/* Show or hide insight view */
+var insight_show = false;
+function insight_show_hide(){
+	if(insight_show == false){
+		insight_show = true;
+		document.getElementById('value').style.visibility = 'visible';
+	}
+	else{
+		insight_show = false;
+		document.getElementById('value').style.visibility = 'hidden';
+	}
+}
 
 
 

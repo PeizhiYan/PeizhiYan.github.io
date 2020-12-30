@@ -4,6 +4,10 @@
 	<title>Conv_Gomoku Demo</title>
 	<script type="text/javascript" src="script.js"></script>
 	<style type="text/css">
+		.br { 
+            display: block; 
+            margin-bottom: 0em; 
+        } 
 		.title{
 			font-size: 30px;
 		}
@@ -60,24 +64,18 @@
 
 	<textarea id="console"></textarea>	
 	<button class="button" id="Re-Start" onclick="start()">Strat</button><hr>
-	<table border="1">
-		<tr>
-			<td style="color: red;"><b>Game Board (Play here!)</b></td>
-		</tr>
-		<tr>
-			<td id="board"></td>
-		</tr>
-		<tr>
-			<td>Insight (The visualized value gradient)</td>
-		</tr>
-		<tr>
-			<td id="value"></td>
-		</tr>
-	</table>
+	<button class="button" id="Insight_btn" onclick="insight_show_hide()">Show Insight</button><hr>
+	
+	<div style="position:relative; width:500px;height:500px;">
+		<!-- Game Board -->
+		<div id="board" style="width:480px;height:480px; position:static; background: url('board.gif'); z-index:2"></div>
+		<!-- Insight Visualization-->
+		<div id="value" style="width:480px;height:480px; position:static; opacity: 1; z-index:1; visibility:hidden;"></div>
+	</div>
 
 
 	<!-- Footer -->
 	<hr>
-	<div style="text-align: center; color: grey">Peizhi Yan, All rights reserved. <br>2018</div>
+	<div style="text-align: center; color: grey; top:">Peizhi Yan, All rights reserved. <br>2018</div>
 </body>
 </html>
