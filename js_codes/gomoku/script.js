@@ -133,15 +133,19 @@ function start(){
 /* Insight! Display the value gradient */
 function insight(is_ai=false){
 	var max_value = 0
-	var min_value = 0
 	for (var i = 0; i < 15; i++) {
 		for (var j = 0; j < 15; j++) {
-			if (value_human[i][j] > max_value) {
-				max_value = value_human[i][j] 
+			if (is_ai == false){
+				if (value_human[i][j] > max_value) {
+					max_value = value_human[i][j] 
+				}	
 			}
-			if (value_human[i][j] < min_value) {
-				min_value = value_human[i][j] 
+			else{
+				if (value[i][j] > max_value) {
+					max_value = value_human[i][j] 
+				}
 			}
+
 		}
 	}
 	if(is_ai == false){
