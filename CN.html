@@ -28,16 +28,16 @@
 			// display my favorite mottos randomly
 			function displayMotto(){
 				var mottos = [
-					["The present is theirs; the future, for which I really worked, is mine.", "尼古拉 特斯拉"],
-					["Be alone, that is the secret of invention; be alone, that is when ideas are born.", "尼古拉 特斯拉"],
-					["Of all things, I liked books best.", "尼古拉 特斯拉"],
-					["Imagination is more important than knowledge. Knowledge is limited. Imagination encircles the world.", "阿尔伯特 爱因斯坦"],
-					["Try not to become a man of success, but rather try to become a man of value.", "阿尔伯特 爱因斯坦"],
-					["Failure is an option here. If things are not failing, you are not innovating enough.","马一龙"],
-					["Stay hungry, stay foolish.","史蒂夫 乔布斯"],
+					["学而不思则罔，思而不学则殆。","《论语·为政》"],
+					["言必信，行必果。","《论语·子路》"],
+					["人无远虑，必有近忧。","《论语·卫灵公》"],
+					["天行健，君子以自强不息；地势坤，君子以厚德载物","《周易》"],
+					["不积跬步，无以至千里，不积小流，无以成江海。","《荀子·劝学》"],
+					["欲速则不达，见小利则大事不成。","《论语》"],
+					["学然后知不足。","《礼记》"],
 				]
 				var randIndex = Math.floor(Math.random() * mottos.length);
-				document.getElementById("mottos").innerHTML = "\"" + mottos[randIndex][0] + "\" — <a style='font-weight:bold'>" + mottos[randIndex][1] + "</a> <a onclick=\"displayMotto()\">(Random Motto)</a>";
+				document.getElementById("mottos").innerHTML = "\"" + mottos[randIndex][0] + "\" — <a style='font-weight:bold'>" + mottos[randIndex][1] + "</a> <a onclick=\"displayMotto()\">(随机生成)</a>";
 			}
 			-->
 		</script>
