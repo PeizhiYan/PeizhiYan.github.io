@@ -108,8 +108,8 @@ MoveSort.prototype.next = function() {
   return 0;
 }
 
-var LIMIT_DEPTH = 64;
-var NULL_DEPTH = 2;
+var LIMIT_DEPTH = 10;
+var NULL_DEPTH = 1;
 var RANDOMNESS = 8;
 
 var HASH_ALPHA = 1;
