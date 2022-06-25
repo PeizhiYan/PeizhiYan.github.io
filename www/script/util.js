@@ -30,6 +30,7 @@ function toolbar_left() {
     document.getElementById("tool-container").style.left = "0px";
     document.getElementById("palette").style.left = "80px";
     document.getElementById("setting_menu").style.left = "80px";
+    document.getElementById("pen_setting").style.left = "80px";
     document.getElementById("brush_1_setting").style.left = "80px";
     document.getElementById("color-container").style.right = "";
     document.getElementById("tool-container").style.right = "";
@@ -40,6 +41,7 @@ function toolbar_right() {
     document.getElementById("tool-container").style.left = "";
     document.getElementById("palette").style.left = "-260px";
     document.getElementById("setting_menu").style.left = "-260px";
+    document.getElementById("pen_setting").style.left = "-260px";
     document.getElementById("brush_1_setting").style.left = "-260px";
     document.getElementById("color-container").style.right = "0px";
     document.getElementById("tool-container").style.right = "0px";
@@ -79,6 +81,17 @@ function highlight_tool_auto() {
 
 function tool1_inuse() {
     drag_lock = false;
+    if (document.getElementById("pen").style.color != "gray") {
+        if (document.getElementById("pen_setting").style.visibility == "hidden") {
+            document.getElementById("pen_setting").style.visibility = "visible";
+        }
+        else{
+            document.getElementById("pen_setting").style.visibility = "hidden";
+        }
+    }
+    else {
+        document.getElementById("brush_1_setting").style.visibility = "hidden";
+    }
     highlight_tool("pen");
 }
 

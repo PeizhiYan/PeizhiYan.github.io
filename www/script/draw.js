@@ -8,9 +8,9 @@ function Point(x, y) {
     this.y = y;
 }
 
-////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////
 ////// Main code
-//////////////////////////////////////////////////////////
+////////////////////////////////////////////////
 
 paper.install(window);
 // Keep global references to both tools, so the HTML
@@ -25,6 +25,7 @@ var current_color = "#000000";
 var opacity = "FF"; // from 0 to 255
 var frequent_color_pointer = 0; // 8 frequently used colors
 var smooth_rate = 5; // smooth the path
+var pen_size = 1;
 var brush_1_size = 5;
 var brush_1_raster; // only store the path created by brush_1    http://sketch.paperjs.org/#V/0.12.3/S/rVXBctMwEP2VnZyctuMGmHJI6AECTDtDodM0F9JMR7XXsYgteSQlIXTy76wk23FSmwPggxNrd9+u3lutnnuC5dgb9iZLNFHaO+tFMrbf5+cwlsIomWlI5QZyJrZQMJNqYArpc8nFAkyK8KRWOg0f1IOIpNAGbt/fX00ex9+mX+/hEl4NBiNra+LZKM1/IcikFeHD3XRy9Ti5/v6JAF5fuPgSY2IkZbdBvpaVxhiMhESq3C1HK6VQGI8JsWIbqtNhZ2jKoEuYzUcvABXTBhWVFcMTi5YLJVciBrlGBZuUR2k3PHBdotkFUWfziFWmzxlb1PXGSJacCyRsJGDKgZCyNTojoYBUIKQBLiCXFEVvMuKaktf4ZfomP98q91hSIaFzTVYiMlwKkOLG2j6SKXBIfXi2DkAPxZI7F9xwlllt/A4dYWHlRCxDYDNz4nAwop93Tblp4fS0gWkfD1AQViBwA7f0GRw4lMmnutwdFJLTm2nQhilj6XUr4XGQxkVO/noIM0+Lc5ufdYAzkkPEModIZlK9RKPWXOLY2obgfkLvH/Sbrrt+f1R97xrcTfZyEM01erV0CUat0EXu2tSy4naodUOmLrUS2zX2OFZ9HtaZyRaUq0eK+FgWx3tKPOXUecgir/kBP38hey39jM9trqAhEZyCawX7P3iGDMXCpMPGqT8ZhBdnwMQiwyHc2GoqKeAE3rwdHKhwoMSuk+FV0cHvtOhgF+n013zAhhs/ARpN+s/nooWc9va6q2YTjQtGaXQ1iLItxFwXGdtiXJdjKyGGfRBVVCj5AyMTMtr4Gr+Qr23uEjHYZ6RE1wl1RaFwzYmbjpGIP7k2+qjXvGtrq8VIBSHwwyPsA0KFtveDjlNVD2fbMK3V1Jiq2m298+a+7lwaYFnWuDzsvaHQ9gbkZFfb/yLon3fUnBNJ0jIoEpZpbJY+zpCp+upVbF/l0W3m8tAN/qSQLV0z6d5wNt/9Bg==
 
@@ -228,6 +229,7 @@ window.onload = function() {
     tool1.onMouseUp = onMouseUp;
     tool1.onMouseDrag = function(event) {
         if (draw_lock == false && drag_lock == false){
+            path.strokeWidth = pen_size
             path.add(event.point);
         }
         else if (drag_lock){
@@ -423,6 +425,13 @@ function redo() {
     }
 }
 
+// clear canvas button event
+function clear_canvas() {
+    if (confirm("Clear everything? (you cannot redo after this!)")) {
+        reset_everything();
+    } 
+}
+
 // reset canvas
 function reset_everything() {
     while (path_stack.length > 0){
@@ -498,6 +507,10 @@ function to_hex(decimal) {
 function opacity_change () {
     opacity = to_hex(parseInt(document.getElementById("opacity").value));
     document.getElementById("palette").style.backgroundColor = current_color+opacity;
+}
+
+function pen_size_change () {
+    pen_size = parseInt(document.getElementById("pen_size").value)
 }
 
 function brush_1_size_change () {

@@ -67,22 +67,30 @@
     <!--Tool panel-->
     <div id="tool-container" class="option-container">
         <div id="tools">
-            <i id="pen" class='fas fa-marker' style='font-size:36px; color: black;' onclick="tool1.activate();tool1_inuse();"></i>
-            <i id="brush_1" class="fas fa-brush" style='font-size:36px; color: gray;' onclick="tool2.activate();tool2_inuse();"></i>
-            <i id="roll" class="fas fa-paint-roller" style='font-size:36px; color: gray;' onclick="tool4.activate();tool4_inuse();"></i>
-            <i id="eraser" class='fas fa-eraser' style='font-size:36px; color: gray;' onclick="tool3.activate();tool3_inuse();"></i>
+            <i id="pen" class='fas fa-marker' style='font-size:36px; color: black;' onclick="tool1.activate();tool1_inuse();"></i><hr>
+            <i id="brush_1" class="fas fa-brush" style='font-size:36px; color: gray;' onclick="tool2.activate();tool2_inuse();"></i><hr>
+            <i id="roll" class="fas fa-paint-roller" style='font-size:36px; color: gray;' onclick="tool4.activate();tool4_inuse();"></i><hr>
+            <i id="eraser" class='fas fa-eraser' style='font-size:36px; color: gray;' onclick="tool3.activate();tool3_inuse();"></i><hr>
             <!--
             <i class="fas fa-arrow-up" style='font-size:36px'  onclick="move_up()"></i>
             <i class="fas fa-arrow-down" style='font-size:36px' onclick="move_down()"></i>
             -->
             <i class="fas fa-undo" style='font-size:24px' onclick="undo()"></i>
-            <i class="fas fa-redo" style='font-size:24px' onclick="redo()"></i>
-            <i id="drag" class="fas fa-arrows-alt" style='font-size:36px; color: gray;' onclick="drag_canvas()"></i>
+            <i class="fas fa-redo" style='font-size:24px' onclick="redo()"></i><hr>
+            <i id="drag" class="fas fa-arrows-alt" style='font-size:36px; color: gray;' onclick="drag_canvas()"></i><hr>
+            <i id="clear" class="fas fa-trash-alt" style='font-size:36px; color: gray;' onclick="clear_canvas()"></i>
             
             <!--
             <button onclick="reset_everything()">Reset</button>
             -->
-
+            <div id="pen_setting" style="visibility: hidden;">
+                <div style="position: absolute; width:160px; top: 15px; left: 20px;">
+                    Size:
+                </div>
+                <div style="position: absolute; width:160px; top: 10px; left: 70px;">
+                    <input type="range" min="1" max="10" value="1" class="slider" id="pen_size" onchange="pen_size_change()">
+                </div>
+            </div>
             <div id="brush_1_setting">
                 <div style="position: absolute; width:160px; top: 15px; left: 20px;">
                     Size:
