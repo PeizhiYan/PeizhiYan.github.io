@@ -153,6 +153,8 @@ window.onload = function() {
     if (myitem.addEventListener) {
         // IE9, Chrome, Safari, Opera
         myitem.addEventListener("mousewheel", MouseWheelHandler, false);
+        myitem.addEventListener("mousedown", MouseClickDownHandler, false);
+        myitem.addEventListener("mouseup", MouseClickUpHandler, false);
         // Firefox
         myitem.addEventListener("DOMMouseScroll", MouseWheelHandler, false);
     }
@@ -173,10 +175,30 @@ window.onload = function() {
         view.zoom = view_zoom;
         return false;
     }
+    function MouseClickDownHandler(e) {
+        if (e.which == '2') {
+            // when the wheel button (middle) is clicked
+            // allow moving the canvas
+            prev_X = e.x;
+            prev_Y = e.y;
+            currentX = prev_X;
+            currentY = prev_Y;
+            drag_lock = true;
+        }
+    }
+    function MouseClickUpHandler(e) {
+        if (e.which == '2') {
+            // when the wheel button (middle) is released
+            // stop drag-and-move the canvas
+            drag_lock = false;
+        }
+    }
     drag_lock = false;
     function move_canvas(currentX, currentY) {
-        view_center.x -= (currentX - prev_X);//view_zoom; // the reason of divide by "view_zoom" is to control the move speed
-        view_center.y -= (currentY - prev_Y);///view_zoom; // the reason of divide by "view_zoom" is to control the move speed
+        deltaX = currentX - prev_X
+        deltaY = currentY - prev_Y
+        view_center.x -= deltaX;//view_zoom; // the reason of divide by "view_zoom" is to control the move speed
+        view_center.y -= deltaY;///view_zoom; // the reason of divide by "view_zoom" is to control the move speed
         view.center = view_center;
     }
 
@@ -447,6 +469,8 @@ function reset_everything() {
     }
     path_stack = []
     redo_stack = []
+    brush_1_raster.remove();
+    brush_1_raster = new Layer();
 }
 
 // change path color
@@ -480,6 +504,7 @@ function set_color(c_str) {
 function pick_color () {
     var get_color = document.getElementById("color_picker").value;
     set_color(get_color);
+    /*
     switch(frequent_color_pointer){
         case 0: color_1 = get_color; document.getElementById("color_1").style.backgroundColor=get_color; break;
         case 1: color_2 = get_color; document.getElementById("color_2").style.backgroundColor=get_color; break;
@@ -489,7 +514,7 @@ function pick_color () {
         case 5: color_6 = get_color; document.getElementById("color_6").style.backgroundColor=get_color; break;
         case 6: color_7 = get_color; document.getElementById("color_7").style.backgroundColor=get_color; break;
         case 7: color_8 = get_color; document.getElementById("color_8").style.backgroundColor=get_color; break;
-    }
+    }*/
     frequent_color_pointer += 1;
     if (frequent_color_pointer >= 8){
         frequent_color_pointer = 0;
@@ -536,3 +561,6 @@ function save_to_png () {
     var dateTime = date+' '+time;
     downloadURI(download_canvas.toDataURL(), "Matthew_Draw_"+dateTime+".png");
 }
+
+
+
