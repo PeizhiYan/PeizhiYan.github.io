@@ -13,10 +13,11 @@
     <link rel=stylesheet type="text/css" href="script/palette.css"> <!--CSS for color pallet-->
     <link rel=stylesheet type="text/css" href="script/brush.css"> <!--CSS for brushes-->
     <link rel=stylesheet type="text/css" href="script/setting.css"> <!--CSS for setting-->
+    <link rel=stylesheet type="text/css" href="script/layers.css"> <!--CSS for setting-->
     
-    <!--Font awesome CSS-->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
-    
+    <!--load all Font Awesome styles -->
+    <link href="script/fontawesome-free-5.15.4-web/css/all.css" rel="stylesheet">
+
     <script type="text/javascript" src="script/paperjs/dist/paper-full.js">// paper.js library</script>
     <script type="text/javascript" src="script/util.js">// some utilty functions</script>
     <script type="text/javascript" src="script/draw.js">// This is the main code</script>
@@ -25,24 +26,28 @@
 <body>
     
     <!--For debugging on mobile devices-->
-    <div id="output"></div>
-    <hr>
+    <div id="output" style="visibility: hidden;"></div>
 
-    <canvas id="myCanvas" resize></canvas>
+    <canvas id="myCanvas" resize style="background-color: #eeeeee;"></canvas>
 
     <!--Color panel-->
     <div id="color-container" class="option-container" >
         <div id="toolbar-location">
-            <i class="fas fa-angle-double-left" style="font-size:36px;" onclick="toolbar_left()"></i>
-            <i class="fas fa-angle-double-right" style="font-size:36px;" onclick="toolbar_right()"></i>
-        </div>
-        <div style="margin-left: 22px;">
-            <i class="fas fa-cog"  style="font-size:30px;" onclick="setting_menu()"></i>
+            <i class="fas fa-angle-left" style="font-size:28px;" onclick="toolbar_left()"></i>
+            <i class="fas fa-cog"  style="font-size:28px;" onclick="setting_menu()"></i>
+            <i class="fas fa-angle-right" style="font-size:28px;" onclick="toolbar_right()"></i>
         </div>
         <div id="setting_menu">
-            <i id="save_to_png" class="far fa-save"  style="font-size:36px;" onclick="save_to_png()"></i>
+            <i id="save_to_png" class="far fa-save"  style="font-size:36px;" onclick="save_to_png()"></i><hr>
+            <button id="set_bg_color" 
+                    style="position: absolute; left: 20px; border-radius: 10px; font-size: 18px; text-shadow: -1px 0 white,  0.5px 0 gray;" 
+                    onclick="set_as_bg_color()">
+                set as background color
+            </button>
         </div>
         <!--8 frequently used colors-->
+        <div class="small-button color-button" id="color_b" onclick="set_color('color_b')"></div>
+        <div class="small-button color-button" id="color_w" onclick="set_color('color_w')"></div>
         <div class="small-button color-button" id="color_1" onclick="set_color('color_1')"></div>
         <div class="small-button color-button" id="color_2" onclick="set_color('color_2')"></div>
         <div class="small-button color-button" id="color_3" onclick="set_color('color_3')"></div>
@@ -67,25 +72,23 @@
     <!--Tool panel-->
     <div id="tool-container" class="option-container">
         <div id="tools">
-            <i id="pen" class='fas fa-marker' style='font-size:36px; color: black;' onclick="tool1.activate();tool1_inuse();"></i><hr>
-            <i id="brush_1" class="fas fa-brush" style='font-size:36px; color: gray;' onclick="tool2.activate();tool2_inuse();"></i><hr>
-            <i id="roll" class="fas fa-paint-roller" style='font-size:36px; color: gray;' onclick="tool4.activate();tool4_inuse();"></i><hr>
-            <i id="eraser" class='fas fa-eraser' style='font-size:36px; color: gray;' onclick="tool3.activate();tool3_inuse();"></i><hr>
-            <!--
-            <i class="fas fa-arrow-up" style='font-size:36px'  onclick="move_up()"></i>
-            <i class="fas fa-arrow-down" style='font-size:36px' onclick="move_down()"></i>
-            -->
-            <i class="fas fa-undo" style='font-size:24px' onclick="undo()"></i>
-            <i class="fas fa-redo" style='font-size:24px' onclick="redo()"></i><hr>
-            <i id="drag" class="fas fa-arrows-alt" style='font-size:36px; color: gray;' onclick="drag_canvas()"></i><hr>
-            <i id="clear" class="fas fa-trash-alt" style='font-size:36px; color: gray;' onclick="clear_canvas()"></i>
+            <i id="pen" class='fas fa-marker' style='font-size:36px; color: black; text-shadow: 0px 0px 5px cornflowerblue;' onclick="tool1.activate();tool1_inuse();"></i><hr>
+            <i id="brush_1" class="fas fa-brush" style='font-size:36px; color: gray; text-shadow: 0px 0px 2px cornflowerblue;' onclick="tool2.activate();tool2_inuse();"></i><hr>
+            <i id="roll" class="fas fa-paint-roller" style='font-size:36px; color: gray; text-shadow: 0px 0px 2px cornflowerblue;' onclick="tool4.activate();tool4_inuse();"></i><hr>
+            <i id="eraser" class='fas fa-eraser' style='font-size:36px; color: gray; text-shadow: 0px 0px 2px cornflowerblue;' onclick="tool3.activate();tool3_inuse();"></i><hr>
+            <i class="fas fa-undo" style='font-size:24px; color: gray; text-shadow: 0px 0px 2px cornflowerblue;' onclick="undo()"></i>
+            <i class="fas fa-redo" style='font-size:24px; color: gray; text-shadow: 0px 0px 2px cornflowerblue;' onclick="redo()"></i><hr>
+            <i id="drag" class="fas fa-arrows-alt" style='font-size:36px; color: gray; text-shadow: 0px 0px 2px cornflowerblue;' onclick="drag_canvas()"></i><hr>
+            <i id="layers" class="fas fa-layer-group" style='font-size:36px; color: gray; text-shadow: 0px 0px 2px cornflowerblue;' onclick="layers()">1</i><hr>
+            <i id="clear" class="fas fa-trash-alt" style='font-size:36px; color: gray; text-shadow: 0px 0px 2px cornflowerblue;' onclick="clear_canvas()"></i>
             
+
             <!--
             <button onclick="reset_everything()">Reset</button>
             -->
             <div id="pen_setting" style="visibility: hidden;">
                 <div style="position: absolute; width:160px; top: 15px; left: 20px;">
-                    Size:
+                    size
                 </div>
                 <div style="position: absolute; width:160px; top: 10px; left: 70px;">
                     <input type="range" min="1" max="10" value="1" class="slider" id="pen_size" onchange="pen_size_change()">
@@ -93,15 +96,31 @@
             </div>
             <div id="brush_1_setting">
                 <div style="position: absolute; width:160px; top: 15px; left: 20px;">
-                    Size:
+                    size
                 </div>
                 <div style="position: absolute; width:160px; top: 10px; left: 70px;">
                     <input type="range" min="5" max="30" value="5" class="slider" id="brush_1_size" onchange="brush_1_size_change()">
                 </div>
             </div>
+            <div id="layer_group"  style="visibility: hidden;">
+                <div style="text-align: center;">Layer</div>
+                <hr>
+                <button id="layer1" class="layer_icon" onclick="set_layer('1')">1</button><hr>
+                <button id="layer2" class="layer_icon" onclick="set_layer('2')">2</button><hr>
+                <button id="layer3" class="layer_icon" onclick="set_layer('3')">3</button><hr>
+                <button id="layer4" class="layer_icon" onclick="set_layer('4')">4</button><hr>
+                <button id="layer5" class="layer_icon" onclick="set_layer('5')">5</button>
+            </div>
+            <div id="layer_setting"  style="visibility: hidden;">
+                <div style="position: relative; top: 5px; left: 15px;">opacity</div>
+                <div style="position: relative; width: 105px; top: 5px; left: 5px;">
+                    <input type="range" min="0" max="255" value="255" class="slider" id="layer_opacity" onchange="change_layer_opacity()">
+                </div>
+                <hr>
+                <button style="position: relative; top: 5px; left: 15px;" onclick="clear_layer()">clear layer</button>
+            </div>
         </div>
-    </div>
-
+        
 
 </body>
 </html>

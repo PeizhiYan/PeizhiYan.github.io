@@ -27,7 +27,13 @@ var frequent_color_pointer = 0; // 8 frequently used colors
 var smooth_rate = 5; // smooth the path
 var pen_size = 1;
 var brush_1_size = 5;
-var brush_1_raster; // only store the path created by brush_1    http://sketch.paperjs.org/#V/0.12.3/S/rVXBctMwEP2VnZyctuMGmHJI6AECTDtDodM0F9JMR7XXsYgteSQlIXTy76wk23FSmwPggxNrd9+u3lutnnuC5dgb9iZLNFHaO+tFMrbf5+cwlsIomWlI5QZyJrZQMJNqYArpc8nFAkyK8KRWOg0f1IOIpNAGbt/fX00ex9+mX+/hEl4NBiNra+LZKM1/IcikFeHD3XRy9Ti5/v6JAF5fuPgSY2IkZbdBvpaVxhiMhESq3C1HK6VQGI8JsWIbqtNhZ2jKoEuYzUcvABXTBhWVFcMTi5YLJVciBrlGBZuUR2k3PHBdotkFUWfziFWmzxlb1PXGSJacCyRsJGDKgZCyNTojoYBUIKQBLiCXFEVvMuKaktf4ZfomP98q91hSIaFzTVYiMlwKkOLG2j6SKXBIfXi2DkAPxZI7F9xwlllt/A4dYWHlRCxDYDNz4nAwop93Tblp4fS0gWkfD1AQViBwA7f0GRw4lMmnutwdFJLTm2nQhilj6XUr4XGQxkVO/noIM0+Lc5ufdYAzkkPEModIZlK9RKPWXOLY2obgfkLvH/Sbrrt+f1R97xrcTfZyEM01erV0CUat0EXu2tSy4naodUOmLrUS2zX2OFZ9HtaZyRaUq0eK+FgWx3tKPOXUecgir/kBP38hey39jM9trqAhEZyCawX7P3iGDMXCpMPGqT8ZhBdnwMQiwyHc2GoqKeAE3rwdHKhwoMSuk+FV0cHvtOhgF+n013zAhhs/ARpN+s/nooWc9va6q2YTjQtGaXQ1iLItxFwXGdtiXJdjKyGGfRBVVCj5AyMTMtr4Gr+Qr23uEjHYZ6RE1wl1RaFwzYmbjpGIP7k2+qjXvGtrq8VIBSHwwyPsA0KFtveDjlNVD2fbMK3V1Jiq2m298+a+7lwaYFnWuDzsvaHQ9gbkZFfb/yLon3fUnBNJ0jIoEpZpbJY+zpCp+upVbF/l0W3m8tAN/qSQLV0z6d5wNt/9Bg==
+//var brush_1_raster; // only store the path created by brush_1    http://sketch.paperjs.org/#V/0.12.3/S/rVXBctMwEP2VnZyctuMGmHJI6AECTDtDodM0F9JMR7XXsYgteSQlIXTy76wk23FSmwPggxNrd9+u3lutnnuC5dgb9iZLNFHaO+tFMrbf5+cwlsIomWlI5QZyJrZQMJNqYArpc8nFAkyK8KRWOg0f1IOIpNAGbt/fX00ex9+mX+/hEl4NBiNra+LZKM1/IcikFeHD3XRy9Ti5/v6JAF5fuPgSY2IkZbdBvpaVxhiMhESq3C1HK6VQGI8JsWIbqtNhZ2jKoEuYzUcvABXTBhWVFcMTi5YLJVciBrlGBZuUR2k3PHBdotkFUWfziFWmzxlb1PXGSJacCyRsJGDKgZCyNTojoYBUIKQBLiCXFEVvMuKaktf4ZfomP98q91hSIaFzTVYiMlwKkOLG2j6SKXBIfXi2DkAPxZI7F9xwlllt/A4dYWHlRCxDYDNz4nAwop93Tblp4fS0gWkfD1AQViBwA7f0GRw4lMmnutwdFJLTm2nQhilj6XUr4XGQxkVO/noIM0+Lc5ufdYAzkkPEModIZlK9RKPWXOLY2obgfkLvH/Sbrrt+f1R97xrcTfZyEM01erV0CUat0EXu2tSy4naodUOmLrUS2zX2OFZ9HtaZyRaUq0eK+FgWx3tKPOXUecgir/kBP38hey39jM9trqAhEZyCawX7P3iGDMXCpMPGqT8ZhBdnwMQiwyHc2GoqKeAE3rwdHKhwoMSuk+FV0cHvtOhgF+n013zAhhs/ARpN+s/nooWc9va6q2YTjQtGaXQ1iLItxFwXGdtiXJdjKyGGfRBVVCj5AyMTMtr4Gr+Qr23uEjHYZ6RE1wl1RaFwzYmbjpGIP7k2+qjXvGtrq8VIBSHwwyPsA0KFtveDjlNVD2fbMK3V1Jiq2m298+a+7lwaYFnWuDzsvaHQ9gbkZFfb/yLon3fUnBNJ0jIoEpZpbJY+zpCp+upVbF/l0W3m8tAN/qSQLV0z6d5wNt/9Bg==
+var active_layer;
+var layer_1;
+var layer_2;
+var layer_3;
+var layer_4;
+var layer_5;
 
 window.onload = function() {
     paper.setup('myCanvas');
@@ -40,7 +46,16 @@ window.onload = function() {
     view_zoom = view.zoom; // get the view zoom factor
     view.zoom = view_zoom; // do not remove this line !!!
     current_color = "#000000";
-    brush_1_raster = new Layer();
+    layer_bg = new Layer();
+    document.getElementById("set_bg_color").style.backgroundColor = current_color;
+
+    layer_1 = new Layer();
+    layer_2 = new Layer();
+    layer_3 = new Layer();
+    layer_4 = new Layer();
+    layer_5 = new Layer();
+    active_layer = layer_1;
+    highlight_layer('1');
 
     ///////////////////////////////////////////////////////////////////
     ////// support mobile device's touch screen: Zoom and/or Scroll
@@ -233,6 +248,7 @@ window.onload = function() {
             delete path;
 
             path_stack.push(path_raster); // store the path to path_stack
+            active_layer.addChild(path_raster);
             if (path_stack.length > STACK_SIZE) {
                 path_stack.shift()
             }
@@ -313,7 +329,7 @@ window.onload = function() {
             if (path_stack.length > STACK_SIZE) {
                 path_stack.shift();
             }
-            brush_1_raster.addChild(newLayer.children[0]);
+            active_layer.addChild(newLayer.children[0]);
             newLayer.remove();
         }
         else {
@@ -456,6 +472,7 @@ function clear_canvas() {
 
 // reset canvas
 function reset_everything() {
+    /*
     while (path_stack.length > 0){
         p = path_stack.pop();
         if (p.length > 1){
@@ -467,14 +484,60 @@ function reset_everything() {
             p.remove();
         }
     }
+    */
+    //active_layer.removeChildren();
+    layer_1.removeChildren();
+    layer_2.removeChildren();
+    layer_3.removeChildren();
+    layer_4.removeChildren();
+    layer_5.removeChildren();
     path_stack = []
     redo_stack = []
-    brush_1_raster.remove();
-    brush_1_raster = new Layer();
 }
 
+
+
+function set_layer(layer_idx) {
+    switch (layer_idx) {
+        case "1": active_layer = layer_1; break;
+        case "2": active_layer = layer_2; break;
+        case "3": active_layer = layer_3; break;
+        case "4": active_layer = layer_4; break;
+        case "5": active_layer = layer_5; break;
+    }
+    highlight_layer(layer_idx);
+    document.getElementById('layers').textContent = layer_idx;
+    layer_opacity = active_layer.opacity;
+    layer_opacity = parseInt(layer_opacity * 255);
+    document.getElementById("layer_opacity").value = layer_opacity;
+}
+
+function set_as_bg_color() {
+    // set the current color as background color
+    var rect = new Path.Rectangle({
+        point: [0, 0],
+        size: [view.size.width, view.size.height],
+    });
+    rect.sendToBack();
+    rect.fillColor = current_color;
+    layer_bg.addChild(rect)
+}
+
+function change_layer_opacity() {
+    layer_opacity = parseInt(document.getElementById("layer_opacity").value);
+    active_layer.opacity = layer_opacity / 255.;
+}
+
+function clear_layer() {
+    active_layer.removeChildren();
+}
+
+
+
 // change path color
-var color_1 = "#17202A";
+var color_b = "#000000";
+var color_w = "#FFFFFF";
+var color_1 = "#666666";
 var color_2 = "#E74C3C";
 var color_3 = "#7D3C98";
 var color_4 = "#2E86C1";
@@ -485,6 +548,8 @@ var color_8 = "#5D6D7E";
 function set_color(c_str) {
     current_color = c_str;
     switch(c_str){
+        case "color_b": current_color = color_b; break;
+        case "color_w": current_color = color_w; break;
         case "color_1": current_color = color_1; break;
         case "color_2": current_color = color_2; break;
         case "color_3": current_color = color_3; break;
@@ -499,6 +564,7 @@ function set_color(c_str) {
     document.getElementById("color_picker").setAttribute("value", current_color);
     document.getElementById("color_picker").value = current_color;
     highlight_tool_auto();
+    document.getElementById("set_bg_color").style.backgroundColor = current_color;
 }
 
 function pick_color () {

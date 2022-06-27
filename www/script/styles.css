@@ -15,7 +15,7 @@ body {
 
 
 .option-container {
-    background-color: #ddd;
+    background-color: rgba(230, 230, 230, 0.592);
     width: 75px;
     position: absolute;
     border-radius: 5px;
@@ -29,7 +29,7 @@ body {
 }
 
 #tool-container {
-    height: 380px;
+    height: 420px;
     top: 250px;
     margin-left: 10px;
 }
@@ -56,8 +56,20 @@ body {
     border-radius: 5px;
 }
 
+#color_b {
+    background-color: #000000;
+    top: 40px;
+    left: 10px;
+}
+
+#color_w {
+    background-color: #FFFFFF;
+    top: 40px;
+    left: 40px;
+}
+
 #color_1 {
-    background-color: #17202A;
+    background-color: #666666;
     top: 70px;
     left: 10px;
 }
@@ -112,3 +124,4 @@ body {
 #tools{
     margin: 10px;
 }
+

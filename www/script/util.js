@@ -32,6 +32,8 @@ function toolbar_left() {
     document.getElementById("setting_menu").style.left = "80px";
     document.getElementById("pen_setting").style.left = "80px";
     document.getElementById("brush_1_setting").style.left = "80px";
+    document.getElementById("layer_group").style.left = "80px";
+    document.getElementById("layer_setting").style.left = "165px";
     document.getElementById("color-container").style.right = "";
     document.getElementById("tool-container").style.right = "";
 }
@@ -43,6 +45,8 @@ function toolbar_right() {
     document.getElementById("setting_menu").style.left = "-260px";
     document.getElementById("pen_setting").style.left = "-260px";
     document.getElementById("brush_1_setting").style.left = "-260px";
+    document.getElementById("layer_group").style.left = "-85px";
+    document.getElementById("layer_setting").style.left = "-210px";
     document.getElementById("color-container").style.right = "0px";
     document.getElementById("tool-container").style.right = "0px";
 }
@@ -151,3 +155,31 @@ function setting_menu() {
         setting_menu_visible = true;
     }
 }
+
+var layers_visible = false;
+function layers() {
+    drag_lock = false;
+    if (layers_visible){
+        document.getElementById("layer_group").style.visibility = "hidden";
+        document.getElementById("layer_setting").style.visibility = "hidden";
+        layers_visible = false;
+        document.getElementById('layers').style.color = 'gray';
+    }
+    else{
+        document.getElementById("layer_group").style.visibility = "visible";
+        document.getElementById("layer_setting").style.visibility = "visible";
+        layers_visible = true;
+        document.getElementById('layers').style.color = 'black';
+    }
+}
+
+function highlight_layer(layer_idx) {
+    document.getElementById('layer1').style.backgroundColor = 'lightgray';
+    document.getElementById('layer2').style.backgroundColor = 'lightgray';
+    document.getElementById('layer3').style.backgroundColor = 'lightgray';
+    document.getElementById('layer4').style.backgroundColor = 'lightgray';
+    document.getElementById('layer5').style.backgroundColor = 'lightgray';
+    document.getElementById('layer'+layer_idx).style.backgroundColor = 'lightslategray';
+}
+
+

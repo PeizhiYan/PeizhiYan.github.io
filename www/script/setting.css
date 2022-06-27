@@ -1,12 +1,12 @@
 #setting_menu {
     width: 250px;
-    height:400px;
+    height:200px;
     position: absolute;
     border-radius: 20px;
     top: 0px;
     left: 80px;
     visibility: hidden;
-    background-color: rgba(0, 0, 0, 0.192);
+    background-color: rgba(162, 162, 162, 0.592);
 }
 
 #save_to_png {
