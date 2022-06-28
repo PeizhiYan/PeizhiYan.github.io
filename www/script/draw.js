@@ -29,11 +29,21 @@ var pen_size = 1;
 var brush_1_size = 5;
 //var brush_1_raster; // only store the path created by brush_1    http://sketch.paperjs.org/#V/0.12.3/S/rVXBctMwEP2VnZyctuMGmHJI6AECTDtDodM0F9JMR7XXsYgteSQlIXTy76wk23FSmwPggxNrd9+u3lutnnuC5dgb9iZLNFHaO+tFMrbf5+cwlsIomWlI5QZyJrZQMJNqYArpc8nFAkyK8KRWOg0f1IOIpNAGbt/fX00ex9+mX+/hEl4NBiNra+LZKM1/IcikFeHD3XRy9Ti5/v6JAF5fuPgSY2IkZbdBvpaVxhiMhESq3C1HK6VQGI8JsWIbqtNhZ2jKoEuYzUcvABXTBhWVFcMTi5YLJVciBrlGBZuUR2k3PHBdotkFUWfziFWmzxlb1PXGSJacCyRsJGDKgZCyNTojoYBUIKQBLiCXFEVvMuKaktf4ZfomP98q91hSIaFzTVYiMlwKkOLG2j6SKXBIfXi2DkAPxZI7F9xwlllt/A4dYWHlRCxDYDNz4nAwop93Tblp4fS0gWkfD1AQViBwA7f0GRw4lMmnutwdFJLTm2nQhilj6XUr4XGQxkVO/noIM0+Lc5ufdYAzkkPEModIZlK9RKPWXOLY2obgfkLvH/Sbrrt+f1R97xrcTfZyEM01erV0CUat0EXu2tSy4naodUOmLrUS2zX2OFZ9HtaZyRaUq0eK+FgWx3tKPOXUecgir/kBP38hey39jM9trqAhEZyCawX7P3iGDMXCpMPGqT8ZhBdnwMQiwyHc2GoqKeAE3rwdHKhwoMSuk+FV0cHvtOhgF+n013zAhhs/ARpN+s/nooWc9va6q2YTjQtGaXQ1iLItxFwXGdtiXJdjKyGGfRBVVCj5AyMTMtr4Gr+Qr23uEjHYZ6RE1wl1RaFwzYmbjpGIP7k2+qjXvGtrq8VIBSHwwyPsA0KFtveDjlNVD2fbMK3V1Jiq2m298+a+7lwaYFnWuDzsvaHQ9gbkZFfb/yLon3fUnBNJ0jIoEpZpbJY+zpCp+upVbF/l0W3m8tAN/qSQLV0z6d5wNt/9Bg==
 var active_layer;
+var active_layer_idx;
 var layer_1;
 var layer_2;
 var layer_3;
 var layer_4;
 var layer_5;
+var layer_6;
+var layer_7;
+var layer_8;
+var layer_9;
+var bg_color = '#FFFFFF';
+var circle_path;
+var circle_center_x;
+var circle_center_y;
+var inverted_circle;
 
 window.onload = function() {
     paper.setup('myCanvas');
@@ -54,6 +64,11 @@ window.onload = function() {
     layer_3 = new Layer();
     layer_4 = new Layer();
     layer_5 = new Layer();
+    layer_6 = new Layer();
+    layer_7 = new Layer();
+    layer_8 = new Layer();
+    layer_9 = new Layer();
+    active_layer_idx = 1;
     active_layer = layer_1;
     highlight_layer('1');
 
@@ -363,7 +378,8 @@ window.onload = function() {
     tool3.onMouseDown = function onMouseDown(event) {
         if (draw_lock == false && drag_lock == false){
             path = new Path();
-            path.strokeColor = "white";
+            //path.strokeColor = "white";
+            path.strokeColor = bg_color;
             path.strokeWidth = 9; 
             path.add(event.point);
         }
@@ -401,6 +417,72 @@ window.onload = function() {
     tool4.onMouseDrag = function(event) {
         if (draw_lock == false && drag_lock == false){
             path.add(event.point);
+        }
+        else if (drag_lock){
+            move_canvas(event.point.x, event.point.y);
+        }
+    }
+
+    // This is circle tool
+    tool5 = new Tool();
+    tool5.onMouseDown = function onMouseDown(event) {
+        if (draw_lock == false && drag_lock == false){
+            circle_center_x = event.point.x;
+            circle_center_y = event.point.y;
+            circle_path = new Path.Circle(new Point(circle_center_x, circle_center_y), 1);
+            circle_path.strokeColor = current_color + opacity;
+            circle_path.strokeWidth = 0.5; 
+            circle_path.fillColor = current_color + opacity;
+        }
+    }
+    tool5.onMouseUp = function(event) {
+        if (not_add_path == false && circle_path.length > 0) {
+            if (circle_mode == 1) { 
+                path_raster = circle_path.rasterize(); // rasterize the path
+                circle_path.remove()
+            }
+            else {
+                path_raster = inverted_circle.rasterize(); // rasterize the path
+                inverted_circle.remove()
+                circle_path.remove(); // remove the original vector path
+            }
+
+            path_stack.push(path_raster); // store the path to path_stack
+            active_layer.addChild(path_raster);
+            if (path_stack.length > STACK_SIZE) {
+                path_stack.shift()
+            }
+            //console.log("stack:"+path_stack.length);
+        }
+        else {
+            prev_X = -1;
+            prev_Y = -1;
+        }
+        not_add_path = false;
+    }    
+    tool5.onMouseDrag = function(event) {
+        if (draw_lock == false && drag_lock == false){
+            radius = distance(circle_center_x, circle_center_y, event.point.x, event.point.y)
+            circle_path.remove();
+            circle_path = new Path.Circle(new Point(circle_center_x, circle_center_y), radius);
+            circle_path.strokeColor = current_color + opacity;
+            circle_path.strokeWidth = 0.5;
+
+            if (circle_mode == 1) { 
+                circle_path.fillColor = current_color + opacity;
+            }
+            else {
+                circle_path.fillColor = bg_color;
+                var rect = new Path.Rectangle({
+                    point: [0, 0],
+                    size: [view.size.width, view.size.height],
+                });
+                rect.sendToBack();
+                rect.fillColor = current_color;
+                rect.remove()
+                inverted_circle = rect.subtract(circle_path);
+            }
+
         }
         else if (drag_lock){
             move_canvas(event.point.x, event.point.y);
@@ -504,7 +586,12 @@ function set_layer(layer_idx) {
         case "3": active_layer = layer_3; break;
         case "4": active_layer = layer_4; break;
         case "5": active_layer = layer_5; break;
+        case "6": active_layer = layer_6; break;
+        case "7": active_layer = layer_7; break;
+        case "8": active_layer = layer_8; break;
+        case "9": active_layer = layer_9; break;
     }
+    active_layer_idx = layer_idx;
     highlight_layer(layer_idx);
     document.getElementById('layers').textContent = layer_idx;
     layer_opacity = active_layer.opacity;
@@ -520,6 +607,7 @@ function set_as_bg_color() {
     });
     rect.sendToBack();
     rect.fillColor = current_color;
+    bg_color = current_color;
     layer_bg.addChild(rect)
 }
 
@@ -530,6 +618,11 @@ function change_layer_opacity() {
 
 function clear_layer() {
     active_layer.removeChildren();
+}
+
+function rename_layer() {
+    new_name = document.getElementById("layer_name").value;
+    document.getElementById('layer'+active_layer_idx).textContent = new_name;
 }
 
 

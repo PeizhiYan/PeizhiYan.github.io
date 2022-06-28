@@ -10,12 +10,12 @@
 }
 
 .layer_icon {
+    margin-top: 5px;
     left: 5px;
     width: 70px;
-    height: 35px;
+    height: 20px;
     position: relative;
     display: inline-block;
-    padding: 0.25em 0.25em 0.25em 0.25em;
     border-radius: 15px;
     background-color: lightgray;
     border-color: darkgrey;
@@ -23,7 +23,7 @@
 
 #layer_setting {
     width: 120px;
-    height:130px;
+    height:230px;
     position: absolute;
     border-radius: 10px;
     top: 80px;

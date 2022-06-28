@@ -54,8 +54,8 @@ function toolbar_right() {
 
 
 
-DRAW_TOOLS = ["pen","brush_1","roll"];
-TOOL_IDs = ["pen","brush_1","drag","eraser","roll"];
+DRAW_TOOLS = ["pen","brush_1","roll","circle"];
+TOOL_IDs = ["pen","brush_1","drag","eraser","roll","circle"];
 function highlight_tool(tool_id) {
     for (i=0; i<TOOL_IDs.length; i++){
         document.getElementById(TOOL_IDs[i]).style.color = "gray";
@@ -83,10 +83,22 @@ function highlight_tool_auto() {
     }
 }
 
+function hide_all_menus() {
+    document.getElementById("pen_setting").style.visibility = "hidden";
+    document.getElementById("brush_1_setting").style.visibility = "hidden";
+    document.getElementById("palette").style.visibility = "hidden";
+    document.getElementById("layer_setting").style.visibility = "hidden";
+    document.getElementById("layer_group").style.visibility = "hidden";
+}
+
+
+var circle_mode = 0; // 0: not inuse, 1: circle, 2: inverted circle
+
 function tool1_inuse() {
     drag_lock = false;
     if (document.getElementById("pen").style.color != "gray") {
         if (document.getElementById("pen_setting").style.visibility == "hidden") {
+            //hide_all_menus();
             document.getElementById("pen_setting").style.visibility = "visible";
         }
         else{
@@ -97,12 +109,14 @@ function tool1_inuse() {
         document.getElementById("brush_1_setting").style.visibility = "hidden";
     }
     highlight_tool("pen");
+    circle_mode = 0;
 }
 
 function tool2_inuse() {
     drag_lock = false;
     if (document.getElementById("brush_1").style.color != "gray") {
         if (document.getElementById("brush_1_setting").style.visibility == "hidden") {
+            //hide_all_menus();
             document.getElementById("brush_1_setting").style.visibility = "visible";
         }
         else{
@@ -113,17 +127,38 @@ function tool2_inuse() {
         document.getElementById("brush_1_setting").style.visibility = "hidden";
     }
     highlight_tool("brush_1");
+    circle_mode = 0;
 }
 
 function tool3_inuse() {
     drag_lock = false;
     highlight_tool("eraser");
+    circle_mode = 0;
 }
 
 function tool4_inuse() {
     drag_lock = false;
     highlight_tool("roll");
+    circle_mode = 0;
 }
+
+function tool5_inuse() {
+    drag_lock = false;
+    highlight_tool("circle");
+    if (circle_mode == 0) {
+        circle_mode = 1;
+        document.getElementById("circle").innerHTML = '';
+    }
+    else if (circle_mode == 1) {
+        circle_mode = 2; // inverse circle
+        document.getElementById("circle").innerHTML = '/';
+    }
+    else if (circle_mode == 2) {
+        circle_mode = 1;
+        document.getElementById("circle").innerHTML = '';
+    }
+}
+
 
 function drag_canvas() {
     drag_lock = true;
@@ -134,6 +169,7 @@ var palette_visible = false;
 function palette() {
     drag_lock = false;
     if (palette_visible){
+        //hide_all_menus();
         document.getElementById("palette").style.visibility = "hidden";
         palette_visible = false;
     }
@@ -147,6 +183,7 @@ var setting_menu_visible = false;
 function setting_menu() {
     drag_lock = false;
     if (setting_menu_visible){
+        //hide_all_menus();
         document.getElementById("setting_menu").style.visibility = "hidden";
         setting_menu_visible = false;
     }
@@ -160,6 +197,7 @@ var layers_visible = false;
 function layers() {
     drag_lock = false;
     if (layers_visible){
+        //hide_all_menus();
         document.getElementById("layer_group").style.visibility = "hidden";
         document.getElementById("layer_setting").style.visibility = "hidden";
         layers_visible = false;
@@ -179,6 +217,10 @@ function highlight_layer(layer_idx) {
     document.getElementById('layer3').style.backgroundColor = 'lightgray';
     document.getElementById('layer4').style.backgroundColor = 'lightgray';
     document.getElementById('layer5').style.backgroundColor = 'lightgray';
+    document.getElementById('layer6').style.backgroundColor = 'lightgray';
+    document.getElementById('layer7').style.backgroundColor = 'lightgray';
+    document.getElementById('layer8').style.backgroundColor = 'lightgray';
+    document.getElementById('layer9').style.backgroundColor = 'lightgray';
     document.getElementById('layer'+layer_idx).style.backgroundColor = 'lightslategray';
 }
 

@@ -33,9 +33,9 @@
     <!--Color panel-->
     <div id="color-container" class="option-container" >
         <div id="toolbar-location">
-            <i class="fas fa-angle-left" style="font-size:28px;" onclick="toolbar_left()"></i>
-            <i class="fas fa-cog"  style="font-size:28px;" onclick="setting_menu()"></i>
-            <i class="fas fa-angle-right" style="font-size:28px;" onclick="toolbar_right()"></i>
+            <i class="fas fa-angle-left" style="font-size:28px; position: absolute; top: 5px; left: 0px;" onclick="toolbar_left()"></i>
+            <i class="fas fa-cog"  style="font-size:28px; position: absolute; top: 5px; left: 26px;" onclick="setting_menu()"></i>
+            <i class="fas fa-angle-right" style="font-size:28px; position: absolute; top: 5px; right: 0px;" onclick="toolbar_right()"></i>
         </div>
         <div id="setting_menu">
             <i id="save_to_png" class="far fa-save"  style="font-size:36px;" onclick="save_to_png()"></i><hr>
@@ -72,44 +72,46 @@
     <!--Tool panel-->
     <div id="tool-container" class="option-container">
         <div id="tools">
-            <i id="pen" class='fas fa-marker' style='font-size:36px; color: black; text-shadow: 0px 0px 5px cornflowerblue;' onclick="tool1.activate();tool1_inuse();"></i><hr>
-            <i id="brush_1" class="fas fa-brush" style='font-size:36px; color: gray; text-shadow: 0px 0px 2px cornflowerblue;' onclick="tool2.activate();tool2_inuse();"></i><hr>
-            <i id="roll" class="fas fa-paint-roller" style='font-size:36px; color: gray; text-shadow: 0px 0px 2px cornflowerblue;' onclick="tool4.activate();tool4_inuse();"></i><hr>
-            <i id="eraser" class='fas fa-eraser' style='font-size:36px; color: gray; text-shadow: 0px 0px 2px cornflowerblue;' onclick="tool3.activate();tool3_inuse();"></i><hr>
+            <i id="pen" class='tool fas fa-marker' style='color: black;' onclick="tool1.activate();tool1_inuse();"></i>&nbsp;
+            <i id="brush_1" class="tool fas fa-brush" onclick="tool2.activate();tool2_inuse();"></i><hr>
+            <i id="roll" class="tool fas fa-paint-roller" onclick="tool4.activate();tool4_inuse();"></i>&nbsp;
+            <i id="circle" class="tool fas fa-circle" style="font-size:20px;" 
+                onclick="tool5.activate();tool5_inuse();"></i><hr>
+            <i id="eraser" class='tool fas fa-eraser' onclick="tool3.activate();tool3_inuse();"></i><hr>
             <i class="fas fa-undo" style='font-size:24px; color: gray; text-shadow: 0px 0px 2px cornflowerblue;' onclick="undo()"></i>
             <i class="fas fa-redo" style='font-size:24px; color: gray; text-shadow: 0px 0px 2px cornflowerblue;' onclick="redo()"></i><hr>
-            <i id="drag" class="fas fa-arrows-alt" style='font-size:36px; color: gray; text-shadow: 0px 0px 2px cornflowerblue;' onclick="drag_canvas()"></i><hr>
-            <i id="layers" class="fas fa-layer-group" style='font-size:36px; color: gray; text-shadow: 0px 0px 2px cornflowerblue;' onclick="layers()">1</i><hr>
-            <i id="clear" class="fas fa-trash-alt" style='font-size:36px; color: gray; text-shadow: 0px 0px 2px cornflowerblue;' onclick="clear_canvas()"></i>
+            <i id="drag" class="tool fas fa-arrows-alt" onclick="drag_canvas()"></i><hr>
+            <i id="layers" class="tool fas fa-layer-group" onclick="layers()">1</i><hr>
+            <i id="clear" class="tool fas fa-trash-alt" onclick="clear_canvas()"></i>
             
 
-            <!--
-            <button onclick="reset_everything()">Reset</button>
-            -->
             <div id="pen_setting" style="visibility: hidden;">
-                <div style="position: absolute; width:160px; top: 15px; left: 20px;">
-                    size
+                <div style="position: absolute; width:160px; top: 15px; left: 10px;">
+                    pen size
                 </div>
-                <div style="position: absolute; width:160px; top: 10px; left: 70px;">
+                <div style="position: absolute; width:160px; top: 10px; left: 80px;">
                     <input type="range" min="1" max="10" value="1" class="slider" id="pen_size" onchange="pen_size_change()">
                 </div>
             </div>
             <div id="brush_1_setting">
-                <div style="position: absolute; width:160px; top: 15px; left: 20px;">
-                    size
+                <div style="position: absolute; width:160px; top: 15px; left: 10px;">
+                    brush size
                 </div>
-                <div style="position: absolute; width:160px; top: 10px; left: 70px;">
+                <div style="position: absolute; width:160px; top: 10px; left: 80px;">
                     <input type="range" min="5" max="30" value="5" class="slider" id="brush_1_size" onchange="brush_1_size_change()">
                 </div>
             </div>
             <div id="layer_group"  style="visibility: hidden;">
-                <div style="text-align: center;">Layer</div>
-                <hr>
-                <button id="layer1" class="layer_icon" onclick="set_layer('1')">1</button><hr>
-                <button id="layer2" class="layer_icon" onclick="set_layer('2')">2</button><hr>
-                <button id="layer3" class="layer_icon" onclick="set_layer('3')">3</button><hr>
-                <button id="layer4" class="layer_icon" onclick="set_layer('4')">4</button><hr>
+                <div style="position: relative; text-align: center; top: 5px;">Layer</div>
+                <button id="layer1" class="layer_icon" onclick="set_layer('1')">1</button>
+                <button id="layer2" class="layer_icon" onclick="set_layer('2')">2</button>
+                <button id="layer3" class="layer_icon" onclick="set_layer('3')">3</button>
+                <button id="layer4" class="layer_icon" onclick="set_layer('4')">4</button>
                 <button id="layer5" class="layer_icon" onclick="set_layer('5')">5</button>
+                <button id="layer6" class="layer_icon" onclick="set_layer('6')">6</button>
+                <button id="layer7" class="layer_icon" onclick="set_layer('7')">7</button>
+                <button id="layer8" class="layer_icon" onclick="set_layer('8')">8</button>
+                <button id="layer9" class="layer_icon" onclick="set_layer('9')">9</button>
             </div>
             <div id="layer_setting"  style="visibility: hidden;">
                 <div style="position: relative; top: 5px; left: 15px;">opacity</div>
@@ -118,6 +120,12 @@
                 </div>
                 <hr>
                 <button style="position: relative; top: 5px; left: 15px;" onclick="clear_layer()">clear layer</button>
+                <hr>
+                <div style="position: relative; top: 5px; left: 15px;">rename</div>
+                <div style="position: relative; top: 5px; left: 15px;">
+                    <input id="layer_name" type="text" style="width: 50px;" maxlength="8" name=""><button onclick="rename_layer()">set</button>
+                </div>
+                
             </div>
         </div>
         
