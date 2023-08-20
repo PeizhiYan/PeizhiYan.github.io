@@ -18,7 +18,7 @@ const color_map = [
 	"rgb(50,255,0)",
 	"rgb(0,250,255)",
 	"rgb(0,120,255)",
-	"rgb(175,0,255)",
+	"rgb(231,104,231)",
 ]
 
 
@@ -129,9 +129,9 @@ function draw() {
 
  	// Draw the base
 	ctx.beginPath();
- 	ctx.fillStyle = "orange";
+ 	ctx.fillStyle = "brown";
  	base_length = W-30;
- 	base_height = 30;
+ 	base_height = 40;
 	ctx.roundRect(10, H-40, base_length, base_height, 5);
  	ctx.fill();
 	ctx.closePath();
@@ -153,7 +153,8 @@ function draw() {
 
 		 	if (selected == i) {   
 			 	if (j == pole_data.length - 1) {
-			 		ctx.fillStyle = "rgb(0,0,0)"; // selected color
+			 		//ctx.fillStyle = "rgb(0,0,0)"; // selected color
+			 		y -= 20;
 			 	}
 		 	}
 
