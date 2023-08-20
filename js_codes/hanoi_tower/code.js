@@ -1,14 +1,23 @@
+/*
+Author: Peizhi Yan
+Date: Aug. 20, 2023
+*/
+
 
 /*========= Global variables ==========*/
 
 // Data for the three stacks
-var stacks = [[6,5,4,3,2,1,0], [], []]
+//var stacks = [[6,5,4,3,2,1,0], [], []]
+//var stacks = [[0], [], [6,5,4,3,2,1]]
+var stacks = [[],[],[]]
 
 // Canvas and content
 var canvas
 var ctx
 var W
 var H
+
+
 
 // Color map for disks
 const color_map = [
@@ -22,13 +31,22 @@ const color_map = [
 ]
 
 
+
+
 function int(x){
 	// Convert to integer
 	return Math.round(x);
 }
 
 
-var selected = -1; // -1 means no pole is selected
+// Game states
+var selected = -1;    // -1 means no pole is selected
+var started = false;  // whether the game is started
+var start_time;       // time object
+var current_time;     // time object
+var seconds;          // time used in seconds
+var steps;            // steps moved 
+var win;              // win or not
 
 
 /*=============== Main loop ===============*/
@@ -48,6 +66,18 @@ window.onload = function() {
 
 	/*=========== Draw ===========*/ 
 	draw();
+
+
+	/*=========== Timer ===========*/ 
+	var clock = setInterval(function() {
+		current_time = new Date().getTime();
+		var dt = current_time - start_time;
+		seconds = Math.floor(dt / 1000);
+		if (started) {
+			document.getElementById("timer").innerHTML = 'Time used: ' + seconds + ' seconds';
+			document.getElementById("counter").innerHTML = 'Step used: ' + steps;
+		}
+	}, 100);
 
 
 	/*=========== Click event listener ===========*/ 
@@ -70,7 +100,33 @@ window.onload = function() {
 }
 
 
+function start() {
+	// Start the game
+	reset();
+	started = true;
+	start_time = new Date().getTime();
+	//Math.floor(())
+}
+
+function reset() {
+	// Reset everything
+	//stacks = [[6,5,4,3,2,1,0], [], []];
+	stacks = [[0], [], [6,5,4,3,2,1]];
+	selected = -1;
+	started = false;
+	steps = 0;
+	win = false;
+	document.getElementById("fireworks").style.visibility = "hidden";
+	draw();
+}
+
+
 function select_or_move(pole) {
+
+	// detect whether game has started
+	if (started == false) {
+		return 0;
+	}
 
 	if (selected != -1) {
 		// try to move the disk to the target pole
@@ -78,12 +134,14 @@ function select_or_move(pole) {
 			// move if the target pole is empty
 			disk = stacks[selected].pop();
 			stacks[pole].push(disk);
+			steps += 1;
 		}
 		else {
 			disk = stacks[selected].pop();
 			if (disk < stacks[pole][stacks[pole].length-1]) {
 				// move if disk is smaller
 				stacks[pole].push(disk);
+				steps += 1;
 			}
 			else {
 				// not move: roll back
@@ -101,6 +159,15 @@ function select_or_move(pole) {
 			// empty pole
 			selected = -1; // roll back
 		}
+	}
+
+	// detect whether the player win
+	if (stacks[2].length == 7){
+		// win
+		started = false;
+		document.getElementById("win").innerHTML = 'You win !';
+		document.getElementById("info").innerHTML = 'Please take a screen shot and sent to yanpeizhi2008@yahoo.com , the author will update the list :)';
+		document.getElementById("fireworks").style.visibility = "visible";
 	}
 
 	draw();
@@ -121,9 +188,9 @@ function draw() {
  	ctx.fillStyle = "brown";
  	pole_width  = 20;
  	pole_height = H - 40;
-	ctx.roundRect(int(W/6),      20, pole_width, pole_height, 20);
-	ctx.roundRect(int(W/2)-10,   20, pole_width, pole_height, 20);
-	ctx.roundRect(int(5*W/6)-20, 20, pole_width, pole_height, 20);
+	ctx.roundRect(int(W/6)-10,   20, pole_width, pole_height, 20);
+	ctx.roundRect(int(W/2)-20,   20, pole_width, pole_height, 20);
+	ctx.roundRect(int(5*W/6)-30, 20, pole_width, pole_height, 20);
  	ctx.fill();
 	ctx.closePath();
 
@@ -131,7 +198,7 @@ function draw() {
 	ctx.beginPath();
  	ctx.fillStyle = "brown";
  	base_length = W-30;
- 	base_height = 40;
+ 	base_height = int(pole_height / 10);
 	ctx.roundRect(10, H-40, base_length, base_height, 5);
  	ctx.fill();
 	ctx.closePath();
@@ -154,12 +221,12 @@ function draw() {
 		 	if (selected == i) {   
 			 	if (j == pole_data.length - 1) {
 			 		//ctx.fillStyle = "rgb(0,0,0)"; // selected color
-			 		y -= 20;
+			 		y -= 20; // lift the top disk
 			 	}
 		 	}
 
 		 	disk_width = int((disk + 1) * disk_width_max / 7);
-			x = x_offset + int((W/6) - (disk_width / 2));
+			x = x_offset + int((W/6) - (disk_width / 2)) - 10;
 			ctx.roundRect(x, y, disk_width, disk_height, 15);
 			y -= disk_height;
 			ctx.fill();
@@ -170,8 +237,12 @@ function draw() {
 
 	}
 
-
 }
+
+
+
+
+
 
 
 
