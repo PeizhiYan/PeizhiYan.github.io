@@ -110,8 +110,8 @@ function start() {
 
 function reset() {
 	// Reset everything
-	//stacks = [[6,5,4,3,2,1,0], [], []];
-	stacks = [[0], [], [6,5,4,3,2,1]];
+	stacks = [[6,5,4,3,2,1,0], [], []];
+	//stacks = [[0], [], [6,5,4,3,2,1]]; // for testing
 	selected = -1;
 	started = false;
 	steps = 0;
