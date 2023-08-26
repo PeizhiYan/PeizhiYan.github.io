@@ -184,15 +184,27 @@ function draw() {
  	ctx.clearRect(0, 0, W, H);
 
  	// Draw the three poles
- 	ctx.beginPath();
- 	ctx.fillStyle = "brown";
- 	pole_width  = 20;
- 	pole_height = H - 40;
-	ctx.roundRect(int(W/6)-10,   20, pole_width, pole_height, 20);
-	ctx.roundRect(int(W/2)-20,   20, pole_width, pole_height, 20);
-	ctx.roundRect(int(5*W/6)-30, 20, pole_width, pole_height, 20);
- 	ctx.fill();
-	ctx.closePath();
+	pole_width  = 20;
+	pole_height = H - 40;
+ 	for (i=0; i<3; i++){
+		ctx.beginPath();
+		ctx.fillStyle = "brown";
+		if (i==0) {
+			if (selected == i){ctx.fillStyle = "cyan";}
+			ctx.roundRect(int(W/6)-10,   20, pole_width, pole_height, 20);
+		}
+		else if (i==1) {
+			if (selected == i){ctx.fillStyle = "cyan";}
+			ctx.roundRect(int(W/2)-20,   20, pole_width, pole_height, 20);			
+		}
+		else if (i==2) {
+			if (selected == i){ctx.fillStyle = "cyan";}
+			ctx.roundRect(int(5*W/6)-30, 20, pole_width, pole_height, 20);			
+		}
+	 	ctx.fill();
+		ctx.closePath();
+ 	}
+
 
  	// Draw the base
 	ctx.beginPath();
