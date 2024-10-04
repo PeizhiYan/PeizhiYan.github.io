@@ -1,0 +1,85 @@
+#portfolio .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;  /* This will center the content vertically as well */
+}
+
+.project {
+    display: flex;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    max-width: 900px;
+}
+
+.project-image img {
+    width: 200px; /* Adjust size as needed */
+    height: auto;
+    margin-right: 20px;
+}
+
+.project-info {
+    flex-grow: 1;
+    text-align: left;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 1.1;
+    color: black;
+}
+
+.project-title {
+    margin-top: 0px;
+    font-weight: bold;
+    font-size: 25px;
+    text-align: left;
+}
+
+.year-tag {
+    text-decoration: none;
+    margin-left: 5px;
+    padding: 0px 10px;
+    background-color: #103cff;
+    color: white;
+    border-radius: 5px;
+}
+
+.venue-tag {
+    text-decoration: none;
+    margin-left: 5px;
+    padding: 0px 10px;
+    background-color: #6010ff;
+    color: white;
+    border-radius: 5px;
+}
+
+.project-description {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.project-buttons {
+    margin-top: 10px;
+}
+
+
+.btn {
+    text-decoration: none;
+    padding: 5px 10px;
+    background-color: #464646;
+    color: white;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+/* Responsive styling for small screens */
+@media (max-width: 600px) {
+    .project-image {
+        display: none;
+    }
+
+    .project-info {
+        flex-basis: 100%;
+    }
+}
+

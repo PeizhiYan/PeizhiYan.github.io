@@ -12,16 +12,23 @@
 		</script>
 		
 		<title>Peizhi Yan - Homepage</title>
+
 		<link rel="icon" href="images/me.png" type="./favicon.ico" />
     		<link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
     		<link rel="apple-touch-icon" href="./favicon.ico">
 		<link rel="icon" sizes="any" mask="" href="./favicon.ico">
+
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
 		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
 		<link rel="stylesheet" href="assets/css/main.css" />
+		<link rel="stylesheet" href="assets/css/project.css" />
 		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
 		<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+		<!-- <link rel="stylesheet" href="assets/css/fontawesome.all.min.css"> -->
+
 		<script type="text/javascript">
 			<!--
 			// onload main
@@ -192,6 +199,7 @@
 							<header>
 								<h2>Publications</h2> <a href="https://scholar.google.ca/citations?user=TB-Ur1cAAAAJ&hl=en">&#127891; Google Scholar Homepage</a>
 							</header>
+
 							<!--
 							<div style="text-align: left; font-size: 17px;">
 								<b>Journal:</b><br>
@@ -219,57 +227,172 @@
 								<h2>Projects</h2>
 							</header>
 
-							<div class="row">
-
-								<div class="4u 12u$(mobile)">
-									<a href="https://peizhiyan.github.io/docs/dejavu/index.html" class="image fit"><img src="images/dejavu.png" alt="" />Gaussian Deja-vu: 3DGS-based Head</a>
+							<!-- 2024 - Gaussian Deja-vu -->
+							<div class="project">
+								<div class="project-image">
+									<img src="images/dejavu.png" alt="Project Image Description">
 								</div>
-
-								<div class="4u 12u$(mobile)">
-									<a href="https://peizhiyan.github.io/docs/neo3df/index.html" class="image fit"><img src="images/neo3df.png" alt="" />NEO-3DF: 3D Face Reconstruction and Editing</a>
+								<div class="project-info">
+									<span class="project-title">Gaussian Deja-vu</span>
+									<span class="year-tag">2024</span>
+									<span class="venue-tag">WACV&nbsp;2025</span>
+									<p class="project-description">The new "Gaussian Déjà-vu" framework speeds up 3DGS-based head avatar personalization 
+										by refining a single-image reconstructed avatar with a monocular video and specialized blendmaps. This approach 
+										significantly reduces the time to create personalized avatars and enhances their photorealistic 
+										quality.</p>
+									<div class="project-buttons">
+										<button onclick="location.href='./docs/dejavu/index.html'" class="btn">
+											<i class="fa fa-globe"></i> 
+											Project Homepage
+										</button>
+										<button onclick="location.href='https://arxiv.org/pdf/2409.16147'" class="btn">
+											<i class="ai ai-arxiv"></i> 
+											ArXiv
+										</button>
+									</div>
 								</div>
-								
-								<div class="4u 12u$(mobile)">
-										<a href="https://github.com/PeizhiYan/zenflow" class="image fit"><img src="images/zenflow.png" alt="" />ZenFlow Python Machine Learning Framework</a>
-								</div>
-
 							</div>
 
-							<div class="row">
-
-								<div class="4u 12u$(mobile)">
-										<a href="www/draw.html" class="image fit"><img src="images/whiteboard.png" alt="" />Web-App: Matthew's Whiteboard </a> 
+							
+							<!-- HeadNeRF Encoder -->
+							<div class="project">
+								<div class="project-image">
+									<img src="images/headnerf+.png" alt="Project Image Description">
 								</div>
-
-								<div class="4u 12u$(mobile)">
-									<a href="conv_gomoku.html" class="image fit"><img src="images/gomoku.png" alt="" />Convolution-Based Gomoku Evaluation Algorithm</a>
+								<div class="project-info">
+									<span class="project-title">HeadNeRF Encoder</span>
+									<span class="year-tag">2023</span>
+									<span class="venue-tag">ICIP&nbsp;2023</span>
+									<p class="project-description">
+										The 3D-aware parametric face model named HeadNeRF achieved advantages in rendering photo-realistic face images. However, it has two limitations: (1) it 
+										uses single-image fitting reconstruction that is slow and prone to overfitting; (2) it lacks explicit 3D geometry information, making using semantic 
+										facial-parts-based loss challenging. This paper presents a 3D-aware face reconstruction learning framework tailored for HeadNeRF to address the limitations.
+									</p>
+									<div class="project-buttons">
+										<button onclick="location.href='./docs/headnerf+/index.html'" class="btn">
+											<i class="fa fa-globe"></i> 
+											Project Homepage
+										</button>
+										<button onclick="location.href='https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10222432'" class="btn">
+											<i class="fa fa-file"></i> 
+											Paper
+										</button>
+									</div>
 								</div>
-
-								<!--
-								<div class="4u 12u$(mobile)">
-										<a href="gomoku.html" class="image fit">2) Convolutional Neural Network GOMOKU Game Agent (Chinese Article)</a>
-								</div>
-
-								<div class="4u 12u$(mobile)">
-										<a href="portrait_mode.html" class="image fit">3) Deep Learning-Based Portrait Mode Generator</a>
-								</div>
-
-								<div class="4u 12u$(mobile)">
-										<a href="fake_face.html" class="image fit">4) Deep Learning Fake Face</a> 
-								</div>
-								
-
-								<div class="4u 12u$(mobile)">
-										<a href="https://github.com/PeizhiYan/ELA" class="image fit">Extreme Learning Autoencoder (Tensorflow implementation)</a> 
-								</div>
-
-								-->
-
-								<div class="4u 12u$(mobile)">
-										<a href="super_resolution.html" class="image fit"><img src="images/sr.png" alt="" />Deep Learning Video Super-resolution </a> 
-								</div>
-
 							</div>
+
+
+							<!-- NEO-3DF -->
+							<div class="project">
+								<div class="project-image">
+									<img src="images/neo3df.png" alt="Project Image Description">
+								</div>
+								<div class="project-info">
+									<span class="project-title">NEO-3DF: 3D Face Reconstruction and Editing</span>
+									<span class="year-tag">2022</span>
+									<span class="venue-tag">ACCV&nbsp;2022</span>
+									<p class="project-description">
+										In the presented framework named NEO-3DF, the 3D face model we propose has independent sub-models corresponding
+										 to semantic face parts. It allows us to achieve both local intuitive editing and better 3D-to-2D alignment. Each 
+										 face part in our model has a set of controllers designed to allow users to edit the corresponding features (eg, 
+										 nose height). In addition, we propose a differentiable module for blending the face parts and making it possible 
+										 to automatically adjust the face parts (both the shapes and the locations) so that they are better aligned with 
+										 the original 2D image.
+									</p>
+									<div class="project-buttons">
+										<button onclick="location.href='./docs/neo3df/index.html'" class="btn">
+											<i class="fa fa-globe"></i> 
+											Project Homepage
+										</button>
+										<button onclick="location.href='https://openaccess.thecvf.com/content/ACCV2022/papers/Yan_NEO-3DF_Novel_Editing-Oriented_3D_Face_Creation_and_Reconstruction_ACCV_2022_paper.pdf'" class="btn">
+											<i class="fa fa-file"></i> 
+											Paper
+										</button>
+									</div>
+								</div>
+							</div>
+
+
+							<!-- Zenflow -->
+							<div class="project">
+								<div class="project-image">
+									<img src="images/zenflow.png" alt="Project Image Description">
+								</div>
+								<div class="project-info">
+									<span class="project-title">ZenFlow: Numpy Machine Learning Demo</span>
+									<span class="year-tag">2021</span>
+									<p class="project-description">
+										
+									</p>
+									<div class="project-buttons">
+										<button onclick="location.href='https://github.com/PeizhiYan/zenflow'" class="btn">
+											<i class="fa fa-github"></i> 
+											Github Repo.
+										</button>
+									</div>
+								</div>
+							</div>
+
+							<!-- Draw -->
+							<div class="project">
+								<div class="project-image">
+									<img src="images/whiteboard.png" alt="Project Image Description">
+								</div>
+								<div class="project-info">
+									<span class="project-title">Whiteboard Web-App</span>
+									<span class="year-tag">2020</span>
+									<p class="project-description">
+										
+									</p>
+									<div class="project-buttons">
+										<button onclick="location.href='www/draw.html'" class="btn">
+											<i class="fa fa-github"></i> 
+											Web-App.
+										</button>
+									</div>
+								</div>
+							</div>
+
+							<!-- Super-resolution -->
+							<div class="project">
+								<div class="project-image">
+									<img src="images/sr.png" alt="Project Image Description">
+								</div>
+								<div class="project-info">
+									<span class="project-title">Video 4X Super-Resolution</span>
+									<span class="year-tag">2019</span>
+									<p class="project-description">
+										
+									</p>
+									<div class="project-buttons">
+										<button onclick="location.href='super_resolution.html'" class="btn">
+											<i class="fa fa-globe"></i> 
+											Project Homepage.
+										</button>
+									</div>
+								</div>
+							</div>
+
+							<!-- Gomoku -->
+							<div class="project">
+								<div class="project-image">
+									<img src="images/gomoku.png" alt="Project Image Description">
+								</div>
+								<div class="project-info">
+									<span class="project-title">GOMOKU Board Game AI and Demo</span>
+									<span class="year-tag">2018</span>
+									<p class="project-description">
+										
+									</p>
+									<div class="project-buttons">
+										<button onclick="location.href='conv_gomoku.html'" class="btn">
+											<i class="fa fa-globe"></i> 
+											Project Homepage.
+										</button>
+									</div>
+								</div>
+							</div>
+
 
 						</div>
 
