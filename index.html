@@ -30,7 +30,6 @@
 		<!-- <link rel="stylesheet" href="assets/css/fontawesome.all.min.css"> -->
 
 		<script type="text/javascript">
-			<!--
 			// onload main
 			function onload_main(){
 				displayMotto();
@@ -56,8 +55,20 @@
 				var randIndex = Math.floor(Math.random() * mottos.length);
 				document.getElementById("mottos").innerHTML = "\"" + mottos[randIndex][0] + "\" — <a style='font-weight:bold'>" + mottos[randIndex][1] + "</a> <a onclick=\"displayMotto()\">(Get Random Quote)</a>";
 			}
-			-->
+
+			// show/hide the content
+			function toggleDiv() {
+				const hiddenDiv = document.getElementById("hiddenContent");
+				if (hiddenDiv.classList.contains("visible-div")) {
+					hiddenDiv.classList.remove("visible-div");
+					document.getElementById("toggleDivBtn").textContent = "Show More Projects";
+				} else {
+					hiddenDiv.classList.add("visible-div");
+					document.getElementById("toggleDivBtn").textContent = "Hide";
+				}
+        	}
 		</script>
+
 		<style type="text/css">
 			.JSCOOL{
 				background-color: #0096FF;
@@ -312,107 +323,110 @@
 								</div>
 							</div>
 
+							<hr>
 
-							<!-- Zenflow -->
-							<div class="project">
-								<div class="project-image">
-									<img src="images/zenflow.png" alt="Project Image Description">
-								</div>
-								<div class="project-info">
-									<span class="project-title">ZenFlow: Numpy Machine Learning Demo</span>
-									<span class="year-tag">2021</span>
-									<p class="project-description">
-										
-									</p>
-									<div class="project-buttons">
-										<button onclick="location.href='https://github.com/PeizhiYan/zenflow'" class="btn">
-											<i class="fa fa-github"></i> 
-											Github Repo.
-										</button>
+							<button id="toggleDivBtn" class="button" onclick="toggleDiv()">Show More Projects</button>
+
+							<div id="hiddenContent" class="hidden-div">
+
+								<!-- Zenflow -->
+								<div class="project">
+									<div class="project-image">
+										<img src="images/zenflow.png" alt="Project Image Description">
+									</div>
+									<div class="project-info">
+										<span class="project-title">ZenFlow: Numpy Machine Learning Demo</span>
+										<span class="year-tag">2021</span>
+										<p class="project-description">
+											
+										</p>
+										<div class="project-buttons">
+											<button onclick="location.href='https://github.com/PeizhiYan/zenflow'" class="btn">
+												<i class="fa fa-github"></i> 
+												Github Repo.
+											</button>
+										</div>
 									</div>
 								</div>
-							</div>
 
-							<!-- Draw -->
-							<div class="project">
-								<div class="project-image">
-									<img src="images/whiteboard.png" alt="Project Image Description">
-								</div>
-								<div class="project-info">
-									<span class="project-title">Whiteboard Web-App</span>
-									<span class="year-tag">2020</span>
-									<p class="project-description">
-										
-									</p>
-									<div class="project-buttons">
-										<button onclick="location.href='www/draw.html'" class="btn">
-											<i class="fa fa-github"></i> 
-											Web-App.
-										</button>
+								<!-- Draw -->
+								<div class="project">
+									<div class="project-image">
+										<img src="images/whiteboard.png" alt="Project Image Description">
+									</div>
+									<div class="project-info">
+										<span class="project-title">Whiteboard Web-App</span>
+										<span class="year-tag">2020</span>
+										<p class="project-description">
+											
+										</p>
+										<div class="project-buttons">
+											<button onclick="location.href='www/draw.html'" class="btn">
+												<i class="fa fa-github"></i> 
+												Web-App.
+											</button>
+										</div>
 									</div>
 								</div>
-							</div>
 
-							<!-- Super-resolution -->
-							<div class="project">
-								<div class="project-image">
-									<img src="images/sr.png" alt="Project Image Description">
-								</div>
-								<div class="project-info">
-									<span class="project-title">Video 4X Super-Resolution</span>
-									<span class="year-tag">2019</span>
-									<p class="project-description">
-										
-									</p>
-									<div class="project-buttons">
-										<button onclick="location.href='super_resolution.html'" class="btn">
-											<i class="fa fa-globe"></i> 
-											Project Homepage.
-										</button>
+								<!-- Super-resolution -->
+								<div class="project">
+									<div class="project-image">
+										<img src="images/sr.png" alt="Project Image Description">
+									</div>
+									<div class="project-info">
+										<span class="project-title">Video 4X Super-Resolution</span>
+										<span class="year-tag">2019</span>
+										<p class="project-description">
+											
+										</p>
+										<div class="project-buttons">
+											<button onclick="location.href='super_resolution.html'" class="btn">
+												<i class="fa fa-globe"></i> 
+												Project Homepage.
+											</button>
+										</div>
 									</div>
 								</div>
-							</div>
 
-							<!-- Gomoku -->
-							<div class="project">
-								<div class="project-image">
-									<img src="images/gomoku.png" alt="Project Image Description">
-								</div>
-								<div class="project-info">
-									<span class="project-title">GOMOKU Board Game AI and Demo</span>
-									<span class="year-tag">2018</span>
-									<p class="project-description">
-										
-									</p>
-									<div class="project-buttons">
-										<button onclick="location.href='conv_gomoku.html'" class="btn">
-											<i class="fa fa-globe"></i> 
-											Project Homepage.
-										</button>
+								<!-- Gomoku -->
+								<div class="project">
+									<div class="project-image">
+										<img src="images/gomoku.png" alt="Project Image Description">
+									</div>
+									<div class="project-info">
+										<span class="project-title">GOMOKU Board Game AI and Demo</span>
+										<span class="year-tag">2018</span>
+										<p class="project-description">
+											
+										</p>
+										<div class="project-buttons">
+											<button onclick="location.href='conv_gomoku.html'" class="btn">
+												<i class="fa fa-globe"></i> 
+												Project Homepage.
+											</button>
+										</div>
 									</div>
 								</div>
-							</div>
 
+								<a href="https://www.youtube.com/watch?v=pRxXQcuVQSs">Light-Field Video Click and Refocusing Graphic User Interface Demo.</a>
+								<br>
+								<hr>
+								<a href="https://github.com/PeizhiYan/Algorithm-Zoo">&#128059; &#128045; &#128046; &#128040; &#128049; My Algorithm Zoo &#128047; &#128048; &#128054; &#128060; &#128024;.</a>
+								<br>
+								<hr>
+								<a href="https://github.com/PeizhiYan/Simple_IDE">Simple IDE.</a>
+								<br>
+								<br>
+								<hr>
+								<button style="font-size: 20px" class="JSCOOL" onclick="location.href='js_codes/index.html'">My Javascript Web Apps!</button>
+			
+
+							</div>
 
 						</div>
 
-                        <hr>
-                        <header>
-                            <h3>More Projects</h3>
-                        </header>
-
-                          <a href="https://www.youtube.com/watch?v=pRxXQcuVQSs">Light-Field Video Click and Refocusing Graphic User Interface Demo.</a>
-                          <br>
-						  <hr>
-                          <a href="https://github.com/PeizhiYan/Algorithm-Zoo">&#128059; &#128045; &#128046; &#128040; &#128049; My Algorithm Zoo &#128047; &#128048; &#128054; &#128060; &#128024;.</a>
-                          <br>
-						  <hr>
-						  <a href="https://github.com/PeizhiYan/Simple_IDE">Simple IDE.</a>
-                          <br>
-                          <br>
-						  <hr>
-                          <button style="font-size: 20px" class="JSCOOL" onclick="location.href='js_codes/index.html'">My Javascript Web Apps!</button>
-                        
+                                            
 
 					</section>
 
