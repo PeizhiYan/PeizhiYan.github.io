@@ -56,17 +56,6 @@
 				document.getElementById("mottos").innerHTML = "\"" + mottos[randIndex][0] + "\" — <a style='font-weight:bold'>" + mottos[randIndex][1] + "</a> <a onclick=\"displayMotto()\">(Get Random Quote)</a>";
 			}
 
-			// show/hide the content
-			function toggleDiv() {
-				const hiddenDiv = document.getElementById("hiddenContent");
-				if (hiddenDiv.classList.contains("visible-div")) {
-					hiddenDiv.classList.remove("visible-div");
-					document.getElementById("toggleDivBtn").textContent = "Show More Projects";
-				} else {
-					hiddenDiv.classList.add("visible-div");
-					document.getElementById("toggleDivBtn").textContent = "Hide";
-				}
-        	}
 		</script>
 
 		<style type="text/css">
@@ -240,7 +229,9 @@
 
 							<!-- 2024 - Gaussian Deja-vu -->
 							<div class="project">
-								<div class="project-image">
+								<div class="image-hover-container" 
+									data-default="images/dejavu.png" 
+									data-hover="images/the-matrix-characters/The-Matrix-DejaVu.png">
 									<img src="images/dejavu.png" alt="Project Image Description">
 								</div>
 								<div class="project-info">
@@ -266,7 +257,12 @@
 							
 							<!-- HeadNeRF Encoder -->
 							<div class="project">
-								<div class="project-image">
+								<!-- <div class="project-image">
+									<img src="images/headnerf+.png" alt="Project Image Description">
+								</div> -->
+								<div class="image-hover-container" 
+									data-default="images/headnerf+.png" 
+									data-hover="images/the-matrix-characters/The-Matrix-Agent-Smith.png">
 									<img src="images/headnerf+.png" alt="Project Image Description">
 								</div>
 								<div class="project-info">
@@ -293,7 +289,9 @@
 
 							<!-- NEO-3DF -->
 							<div class="project">
-								<div class="project-image">
+								<div class="image-hover-container" 
+									data-default="images/neo3df.png" 
+									data-hover="images/the-matrix-characters/The-Matrix-Neo.png">
 									<img src="images/neo3df.png" alt="Project Image Description">
 								</div>
 								<div class="project-info">
@@ -465,6 +463,7 @@
 			<script src="assets/js/util.js"></script>
 			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
 			<script src="assets/js/main.js"></script>
+			<script src="assets/js/project.js"></script>
 
 	</body>
 </html>

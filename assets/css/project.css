@@ -97,3 +97,16 @@
         padding: 20px;
 }
 
+
+
+.image-hover-container img {
+    width: 200px; /* Adjust size as needed */
+    height: auto;
+    margin-right: 20px;
+    transition: all 0.9s ease; /* Optional: smooth transition */
+}
+
+.image-hover-container:hover img {
+    content: attr(data-hover); /* Changes the image on hover */
+}
+
