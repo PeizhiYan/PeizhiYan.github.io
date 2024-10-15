@@ -72,16 +72,7 @@
     margin-right: 10px;
 }
 
-/* Responsive styling for small screens */
-@media (max-width: 600px) {
-    .project-image {
-        display: none;
-    }
 
-    .project-info {
-        flex-basis: 100%;
-    }
-}
 
 .hidden-div {
     max-height: 0;
@@ -94,7 +85,7 @@
 .visible-div {
     max-height: 2000px; /* Set a sufficiently large value to accommodate content */
     transition: max-height 0.5s ease-in-out;
-        padding: 20px;
+    padding: 20px;
 }
 
 
@@ -108,5 +99,20 @@
 
 .image-hover-container:hover img {
     content: attr(data-hover); /* Changes the image on hover */
+}
+
+/* Responsive styling for small screens */
+@media (max-width: 600px) {
+    .project-image {
+        display: none;
+    }
+
+    .image-hover-container {
+        display: none;
+    }
+
+    .project-info {
+        flex-basis: 100%;
+    }
 }
 
