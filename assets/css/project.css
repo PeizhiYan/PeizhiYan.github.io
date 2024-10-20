@@ -11,6 +11,7 @@
     border: 1px solid #ccc;
     padding: 10px;
     max-width: 900px;
+    min-height: 200px;
 }
 
 .project-image img {
@@ -88,13 +89,16 @@
     padding: 20px;
 }
 
-
+.image-hover-container {
+    position: relative;
+    display: inline-block;
+}
 
 .image-hover-container img {
-    width: 200px; /* Adjust size as needed */
+    width: 200px; 
     height: auto;
     margin-right: 20px;
-    transition: all 0.9s ease; /* Optional: smooth transition */
+    transition: all 0.9s ease; 
 }
 
 .image-hover-container:hover img {
@@ -116,3 +120,58 @@
     }
 }
 
+
+
+
+.matrix-rain {
+    position: absolute; /* Position relative to the .project container */
+    top: 0;
+    left: 0;
+    width: 90%; /* Cover the full width of the project div */
+    height: 100%; /* Cover the full height of the project div */
+    pointer-events: none; /* Ensure it doesn’t block interaction */
+    opacity: 0; /* Initially hidden */
+    transition: opacity 0.5s ease; /* Smooth transition for opacity */
+    z-index: 100; /* Make sure it is above other content inside project */
+    overflow: hidden;
+}
+
+.matrix-column {
+    position: absolute;
+    top: 0;
+    width: 1em;
+    display: flex;
+    flex-direction: column;
+    animation: matrix-fall 10s linear infinite;
+}
+
+/* Individual characters */
+.matrix-column span {
+    color: #00FF00;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 18px;
+    text-shadow: 0 0 5px #00FF00;
+    opacity: 0;
+    animation: fadeInOut 5s linear infinite;
+    animation-delay: 0; /* calc(0.5s * var(--char-index)); */
+}
+
+/* Keyframes for falling rain */
+@keyframes matrix-fall {
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(100%);
+    }
+}
+
+/* Keyframes for individual character fading */
+@keyframes fadeInOut {
+    0%, 100% {
+        opacity: 0.0;
+    }
+    50% {
+        opacity: 1.0;
+    }
+}
