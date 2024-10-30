@@ -41,7 +41,7 @@ document.querySelectorAll('.project').forEach(function(project) {
 
     // Function to generate random Matrix-style characters
     function generateMatrixCharacters() {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789アァカサタナハマヤラワンツヒフヘホモルレロン゛';
+        const characters = 'アァカサタナハマヤラワンツヒフヘホモルレロン゛';
         return characters.charAt(Math.floor(Math.random() * characters.length));
     }
 
@@ -51,7 +51,7 @@ document.querySelectorAll('.project').forEach(function(project) {
         column.classList.add('matrix-column');
 
         // Create 20 characters per column, each character is a span
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 10; i++) {
             const charElement = document.createElement('span');
             charElement.textContent = generateMatrixCharacters();
             column.appendChild(charElement);
@@ -76,7 +76,7 @@ document.querySelectorAll('.project').forEach(function(project) {
     // Add hover event listeners to change the image source when hovering over the entire project div
     project.addEventListener('mouseenter', function() {
         img.src = hoverImage; // Set to hover image on mouse enter
-        matrixRain.style.opacity = '1'; // Show the full-page Matrix rain effect
+        matrixRain.style.opacity = '0.6'; // Show the full-page Matrix rain effect
         generateMatrixRain(); // Generate and display the Matrix rain
     });
 
