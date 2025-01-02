@@ -77,7 +77,11 @@ document.querySelectorAll('.project').forEach(function(project) {
     project.addEventListener('mouseenter', function() {
         img.src = hoverImage; // Set to hover image on mouse enter
         matrixRain.style.opacity = '0.6'; // Show the full-page Matrix rain effect
-        generateMatrixRain(); // Generate and display the Matrix rain
+        // Check if the current date is the first day of the month
+        const today = new Date();
+        if (today.getDate() === 1) {
+            generateMatrixRain(); // Generate and display the Matrix rain
+        }
     });
 
     project.addEventListener('mouseleave', function() {
