@@ -43,6 +43,73 @@
   <script src="static/js/bulma-carousel.min.js"></script>
   <script src="static/js/bulma-slider.min.js"></script>
   <script src="static/js/index.js"></script>
+
+  <!-- JavaScript to toggle images -->
+  <script>
+    function showImage(num) {
+      // Hide all images
+      document.querySelectorAll('.pdf-image').forEach(img => img.style.display = 'none');
+      // Remove 'is-selected' from all buttons and reset to 'is-not-selected'
+      document.querySelectorAll('[id^="pdf_btn_"]').forEach(btn => {
+        btn.classList.remove('is-selected');
+        btn.classList.add('is-not-selected');
+      });
+      // Add 'is-selected' to the clicked button and remove 'is-not-selected'
+      const selectedBtn = document.getElementById('pdf_btn_' + num);
+      selectedBtn.classList.add('is-selected');
+      selectedBtn.classList.remove('is-not-selected');
+      // Show selected image
+      document.getElementById('pdf' + num).style.display = 'block';
+    }
+  </script>
+  <style>
+    /* Custom selected button style */
+    .is-selected {
+      background-color: #07a075 !important; /* Custom background color */
+      border-color: #56fff1 !important;
+      color: white !important;
+    }
+
+    .is-not-selected {
+      background-color: #22e1ab !important; /* Custom background color */
+      border-color: #56fff1 !important;
+      color: white !important;
+    }
+    
+    #pdf-images {
+      display: flex;
+      justify-content: center; /* Center horizontally */
+      align-items: center;
+      height: auto; /* Adjust based on content */
+      margin-top: 20px;
+    }
+
+    .pdf-image {
+      display: none; /* Initially hidden */
+      width: auto; /* 50% of the viewport width */
+      max-width: 600px; /* Set a max width */
+      height: 300px; /* Auto height to maintain aspect ratio */
+      max-height: 80vh; /* Max height should not exceed 80% of viewport height */
+      border: none;
+    }
+
+    /* Responsive adjustments for smaller screens */
+    @media (max-width: 768px) {
+      .pdf-image {
+        width: 80vw; /* Increase width for small screens */
+        max-width: 90vw; /* Ensure it doesn’t exceed the screen width */
+        max-height: 60vh; /* Reduce max height for smaller screens */
+      }
+    }
+
+    @media (max-width: 480px) {
+      .pdf-image {
+        width: 90vw; /* Even larger percentage for tiny screens */
+        max-height: 50vh; /* Further reduce height */
+      }
+    }
+  </style>
+
 </head>
 <body>
 
@@ -231,6 +298,27 @@
   </div>
 </section>
 <!-- End youtube video -->
+
+
+<!-- PDF Image Section -->
+<section class="section">
+  <div class="container has-text-centered">
+    <h2 class="title is-4">Expression Demo</h2>
+    <div class="buttons is-centered">
+      <button id="pdf_btn_1" class="button is-primary is-selected" onclick="showImage(1)">Style 1</button>
+      <button id="pdf_btn_2" class="button is-primary is-not-selected" onclick="showImage(2)">Style 2</button>
+      <button id="pdf_btn_3" class="button is-primary is-not-selected" onclick="showImage(3)">Style 3</button>
+      <button id="pdf_btn_4" class="button is-primary is-not-selected" onclick="showImage(4)">Style 4</button>
+    </div>
+    
+    <div id="pdf-images">
+      <img id="pdf1" src="expression_demos/id_exp_style1.jpg" class="pdf-image" style="display: block;">
+      <img id="pdf2" src="expression_demos/id_exp_style2.jpg" class="pdf-image" >
+      <img id="pdf3" src="expression_demos/id_exp_style3.jpg" class="pdf-image" >
+      <img id="pdf4" src="expression_demos/id_exp_style4.jpg" class="pdf-image" >
+    </div>
+  </div>
+</section>
 
 
 
