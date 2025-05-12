@@ -87,17 +87,53 @@
 
 <body>
 
-    <div class="sliderContainer" id="sliderContainer">
-        <!-- Blend Weight:
-        <input type="range" id="blendSlider0" min="-1" max="1" step="0.01" value="0">
-        -->
-    </div>
+    <button id="toggleSliderType" style="position: absolute; top: 10px; right: 10px; z-index: 20;">
+        Switch to Expression Controls
+    </button>
 
-    <div class="sliderContainer" id="sliderContainerExpression" >
+    <div class="sliderContainer" id="sliderContainer"></div>
+    <div class="sliderContainer" id="sliderContainerExpression" ></div>
+
+    <div id="loadingMessage" style="
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-family: sans-serif;
+        font-size: 18px;
+        background: rgba(215, 229, 244, 0.9);
+        padding: 20px 30px;
+        border-radius: 8px;
+        z-index: 100;
+    ">
+    Loading...
     </div>
 
     <script>
-        const STYLE = 'style-1';
+        // const STYLE = 'style-1';
+        // Get the input argument
+        const params = new URLSearchParams(window.location.search);
+        let STYLE = params.get('style') || 'style-1'; // fallback if none passed
+        STYLE = STYLE.replace(/^"(.*)"$/, '$1'); // remove the quotation marks if possible
+        if (!["style-1", "style-2", "style-3", "style-4"].includes(STYLE)) {
+            STYLE = 'style-1';
+        }
+        
+        // choose to control identity or expression
+        let showingExpression = false;
+        const toggleBtn = document.getElementById('toggleSliderType'); 
+        toggleBtn.addEventListener('click', () => {
+            showingExpression = !showingExpression;
+            if (showingExpression) {
+                sliderContainer.style.display = 'none';
+                expressionSliderContainer.style.display = 'flex';
+                toggleBtn.textContent = 'Switch to Identity Controls';
+            } else {
+                sliderContainer.style.display = 'flex';
+                expressionSliderContainer.style.display = 'none';
+                toggleBtn.textContent = 'Switch to Expression Controls';
+            }
+        });
 
         // Editing Sliders
         // we actually have 20 blendshapes, because for each blendshape
@@ -150,7 +186,7 @@
         const expressionSliderContainer = document.getElementById('sliderContainerExpression');
         for (let i = 0; i < 10; i++) {
             const label = document.createElement('label');
-            label.textContent = `${blendshapeNames[i]}`;
+            label.textContent = `${expressionNames[i]}`;
             const slider = document.createElement('input');
             slider.type = 'range';
             slider.min = 0;
@@ -162,6 +198,7 @@
             label.appendChild(slider);
             expressionSliderContainer.appendChild(label);
         }
+        expressionSliderContainer.style.display = 'none'; // after loading, hide the expression container first
 
         function loadOBJFromText(text) {
             // Custom OBJ text parser (vertices + triangular faces only)
@@ -279,6 +316,9 @@
             blendSliders.forEach(slider => slider.addEventListener('input', display));
             expressionSliders.forEach(slider => slider.addEventListener('input', display));
             display();
+
+            // Hide loading message
+            document.getElementById('loadingMessage').style.display = 'none';
         })
         .catch(err => console.error('Load error:', err));
 
@@ -337,6 +377,7 @@
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
+
     </script>
 
 
