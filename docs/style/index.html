@@ -104,11 +104,17 @@
 
     .pdf-image {
       display: none; /* Initially hidden */
-      width: auto; /* 50% of the viewport width */
-      max-width: 600px; /* Set a max width */
-      height: 300px; /* Auto height to maintain aspect ratio */
+      width: 50%; /* 50% of the viewport width */
+      /* max-width: 600px; Set a max width */
+      height: auto; /* Auto height to maintain aspect ratio */
       max-height: 80vh; /* Max height should not exceed 80% of viewport height */
       border: none;
+    }
+
+    .interactiveDemo {
+      width: 60%; 
+      height: 500px;
+      margin: 0 auto;
     }
 
     /* Responsive adjustments for smaller screens */
@@ -118,6 +124,10 @@
         max-width: 90vw; /* Ensure it doesn’t exceed the screen width */
         max-height: 60vh; /* Reduce max height for smaller screens */
       }
+      .interactiveDemo {
+        width: 100%; /* Even larger percentage for tiny screens */
+        /* max-height: 50vh; Further reduce height */
+      }
     }
 
     @media (max-width: 480px) {
@@ -126,6 +136,7 @@
         max-height: 50vh; /* Further reduce height */
       }
     }
+
   </style>
 
 </head>
@@ -323,7 +334,7 @@
     <button id="demo_btn_3" class="button is-primary is-not-selected" onclick="showDemo(3)">Style 3</button>
     <button id="demo_btn_4" class="button is-primary is-not-selected" onclick="showDemo(4)">Style 4</button>
   </div>
-  <div style="width: 60%; height: 500px; margin: 0 auto;">
+  <div class="interactiveDemo" >
     <iframe
       id="demoIframe"
       src="interactive_demo/demo.html"
@@ -343,11 +354,11 @@
       <!-- Paper video. -->
       <h2 class="title is-4">Python-based Demo (Video)</h2>
       <div class="columns is-centered has-text-centered">
-        <div class="column is-four-fifths">
+        <div class="column is-three-fifths">
           
           <div class="publication-video">
             <!-- Youtube embed code here -->
-            <iframe width="560" height="315" src="https://www.youtube.com/embed/33AUEgyZlA4?si=dcEdGR4wO1yUZySs" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen align="center"></iframe>
+            <iframe  src="https://www.youtube.com/embed/33AUEgyZlA4?si=dcEdGR4wO1yUZySs" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen align="center"></iframe>
           </div>
         </div>
       </div>
