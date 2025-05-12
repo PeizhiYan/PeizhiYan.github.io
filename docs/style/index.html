@@ -44,11 +44,6 @@
   <script src="static/js/bulma-slider.min.js"></script>
   <script src="static/js/index.js"></script>
 
-  <!-- Three.js -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
-  <script src="interactive_demo/demo.js"></script>
-
-
   <!-- JavaScript to toggle images -->
   <script>
     function showImage(num) {
@@ -67,6 +62,24 @@
       document.getElementById('pdf' + num).style.display = 'block';
     }
   </script>
+
+  <script>
+    function showDemo(num) {
+      const iframe = document.getElementById('demoIframe');
+      iframe.src = `interactive_demo/demo-style${num}.html`;
+
+      // Button highlighting
+      for (let i = 1; i <= 4; i++) {
+        const btn = document.getElementById(`demo_btn_${i}`);
+        if (i === num) {
+          btn.classList.add('is-selected');
+        } else {
+          btn.classList.remove('is-selected');
+        }
+      }
+    }
+  </script>
+
   <style>
     /* Custom selected button style */
     .is-selected {
@@ -295,14 +308,29 @@
 
 
 <!-- Interactive Demo -->
-<section class="hero is-small is-light">
-  <div class="hero-body">
-    <div class="container has-text-centered">
-      <h2 class="title is-4">Interactive 3D Face Blendshape Demo</h2>
-
-      <!-- This div is the canvas container -->
-      <div id="blendshape-viewer" style="width: 100%; height: 40vw; background: #000;"></div>
-    </div>
+<br>
+<section class="is-small is-light">
+  <div class="container ">
+    <h2 class="title is-4 has-text-centered">Interactive Demo</h2>
+    <h6 style="font-size: 10pt; margin-left: 20%; margin-right: 20%;"><b>Note:</b> We recommend viewing this demo on a computer, preferably using the Chrome browser. 
+      The face editing blendshapes shown here are pre-generated using our neural networks and are applied linearly for 
+      demonstration purposes. For full functionality and performance, please run our Python-based demo code.</h6>
+  </div>
+  <br>
+  <div class="buttons is-centered">
+    <button id="demo_btn_1" class="button is-primary is-selected" onclick="showDemo(1)">Style 1</button>
+    <button id="demo_btn_2" class="button is-primary is-not-selected" onclick="showDemo(2)">Style 2</button>
+    <button id="demo_btn_3" class="button is-primary is-not-selected" onclick="showDemo(3)">Style 3</button>
+    <button id="demo_btn_4" class="button is-primary is-not-selected" onclick="showDemo(4)">Style 4</button>
+  </div>
+  <div style="width: 60%; height: 500px; margin: 0 auto;">
+    <iframe
+      src="interactive_demo/demo-style1.html"
+      width="100%"
+      height="100%"
+      style="border: none; display: block;"
+      allowfullscreen
+    ></iframe>
   </div>
 </section>
 
@@ -312,7 +340,7 @@
   <div class="hero-body">
     <div class="container has-text-centered">
       <!-- Paper video. -->
-      <h2 class="title is-4">Face Editing and Expression Control Demo</h2>
+      <h2 class="title is-4">Python-based Demo (Video)</h2>
       <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
           

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Interactive Demo - Style 1</title>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        .sliderContainer {
+            display: flex;
+            flex-direction: column; /* Stack vertically */
+            align-items: flex-start;
+            gap: 15px;
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            z-index: 10;
+            background: rgba(239, 239, 239, 0.8);
+            padding: 10px;
+            border-radius: 6px;
+        }
+        
+        .sliderContainer label {
+            display: flex;
+            flex-direction: column; /* label left, slider right */
+            align-items: center;
+            gap: 5px;
+        }
+
+        input[type="range"] {
+            appearance: none;
+            -webkit-appearance: none; /* for Safari/Chrome */
+            background: none; /* remove default track color */
+            width: 150px;
+            height: 4px;
+            background-color: #ccc; /* optional: neutral track */
+            border-radius: 2px;
+            outline: none;
+        }
+
+        /* Chrome, Safari, Edge - Remove the colored track */
+        input[type="range"]::-webkit-slider-runnable-track {
+            background: #ccc;
+            height: 4px;
+            border-radius: 2px;
+        }
+
+        /* Firefox - Remove the colored track */
+        input[type="range"]::-moz-range-track {
+            background: #ccc;
+            height: 4px;
+            border-radius: 2px;
+        }
+
+        /* Thumb styling (optional) */
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            background: #666;
+            border-radius: 50%;
+            cursor: pointer;
+            margin-top: -5px; /* to align thumb with track */
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            background: #666;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+    </style>
+
+    <!-- Three.js -->
+    <!-- This version is too new, does not work well with ES5 -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/controls/OrbitControls.min.js"></script> -->
+    <!-- This old version works well with ES5 -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/three@0.124.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.124.0/examples/js/controls/OrbitControls.js"></script> -->
+    <!-- We made a local copy of the js code -->
+    <script src="./three.js"></script>
+    <script src="./OrbitControls.js"></script>
+
+</head>
+
+<body>
+
+    <div class="sliderContainer" id="sliderContainer">
+        <!-- Blend Weight:
+        <input type="range" id="blendSlider0" min="-1" max="1" step="0.01" value="0">
+        -->
+    </div>
+
+    <div class="sliderContainer" id="sliderContainerExpression" >
+    </div>
+
+    <script>
+        const STYLE = 'style-1';
+
+        // Editing Sliders
+        // we actually have 20 blendshapes, because for each blendshape
+        // there is one for negative weight, one for positive weight
+        const NUM_BLENDSHAPES = 10;
+        const blendshapeNames = [
+            "Maximum Facial Width",
+            "Madibular Width",
+            "Upper Facial Depth",
+            "Facial Height",
+            "Nose Height",
+            "Nose Width",
+            "Nose Tip (Down/Up)",
+            "Nose Tip (In/Out)",
+            "Pupils Distance",
+            "Lip Thickness"
+        ]
+        const blendSliders = [];
+        const sliderContainer = document.getElementById('sliderContainer');
+        for (let i = 0; i < 10; i++) {
+            const label = document.createElement('label');
+            label.textContent = `${blendshapeNames[i]}`;
+            const slider = document.createElement('input');
+            slider.type = 'range';
+            slider.min = -1;
+            slider.max = 1;
+            slider.step = 0.01;
+            slider.value = 0;
+            slider.dataset.index = i;
+            blendSliders.push(slider);
+            label.appendChild(slider);
+            sliderContainer.appendChild(label);
+        }
+
+        // Expression Sliders
+        const NUM_EXPRESSIONS = 10;
+        const expressionNames = [
+            "Eyelid Left",
+            "Eyelid Right",
+            "Eye Open Left",
+            "Eye Open Right",
+            "Frown",
+            "Eyebrow Left",
+            "Eyebrow Right",
+            "Mouth Open",
+            "Mouth Twitch Left",
+            "Mouth Twitch Right"
+        ]
+        const expressionSliders = [];
+        const expressionSliderContainer = document.getElementById('sliderContainerExpression');
+        for (let i = 0; i < 10; i++) {
+            const label = document.createElement('label');
+            label.textContent = `${blendshapeNames[i]}`;
+            const slider = document.createElement('input');
+            slider.type = 'range';
+            slider.min = 0;
+            slider.max = 1;
+            slider.step = 0.01;
+            slider.value = 0;
+            slider.dataset.index = i;
+            expressionSliders.push(slider);
+            label.appendChild(slider);
+            expressionSliderContainer.appendChild(label);
+        }
+
+        function loadOBJFromText(text) {
+            // Custom OBJ text parser (vertices + triangular faces only)
+            const lines = text.split('\n');
+            const positions = [];
+            const indices = [];
+
+            for (const line of lines) {
+            const tokens = line.trim().split(/\s+/);
+            if (tokens.length === 0) continue;
+
+            if (tokens[0] === 'v') {
+                    positions.push(parseFloat(tokens[1]), parseFloat(tokens[2]), parseFloat(tokens[3]));
+                } else if (tokens[0] === 'f') {
+                    const verts = tokens.slice(1).map(f => parseInt(f.split('/')[0], 10) - 1);
+                    for (let i = 1; i < verts.length - 1; i++) {
+                    indices.push(verts[0], verts[i], verts[i + 1]);
+                    }
+                }
+            }
+            return { positions, indices };
+        }
+
+        // function formThreeMesh(positions, indices) {
+        //     // positions are the vertex positions
+        //     // indices are the triangle facet indices
+        //     const geometry = new THREE.BufferGeometry();
+        //     geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+        //     geometry.setIndex(indices);
+        //     geometry.computeVertexNormals();
+        //     const material = new THREE.MeshStandardMaterial({ color: 0x999999 });
+        //     return new THREE.Mesh(geometry, material);
+        // }
+
+
+        // Three.js scene setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 3.5;
+
+        // Setup Renderer and add to the HTML
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0xffffff); // white background
+        document.body.appendChild(renderer.domElement);
+
+        // Add lights
+        scene.add(new THREE.AmbientLight(0x666666));
+        const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+        dirLight.position.set(5, 10, 7);
+        scene.add(dirLight);
+
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.rotateSpeed = 0.5;
+        controls.enableZoom = true;
+
+        // Fetch and display the .obj
+        const baseURL = `https://raw.githubusercontent.com/PeizhiYan/PeizhiYan.github.io/master/docs/style/interactive_demo/avatars/${STYLE}/`;
+        const objURLs = [
+            `${baseURL}0.obj`, // this is the neutral shape
+            ...Array.from({ length: NUM_BLENDSHAPES*2 }, (_, i) => `${baseURL}${i + 1}.obj`)
+        ];
+
+        const baseExpressionURL = `https://raw.githubusercontent.com/PeizhiYan/PeizhiYan.github.io/master/docs/style/interactive_demo/expressions/${STYLE}/`;
+        const objExpressionURLs = [
+            ...Array.from({ length: NUM_EXPRESSIONS }, (_, i) => `${baseExpressionURL}${i}.obj`)
+        ];
+
+        let neutralPositions = null;
+        // let blendPositionsList = []; // array of [positions[]]
+        let blendPositionsList = [];      // identity blendshapes
+        let expressionPositionsList = []; // expression blendshapes
+        let expressionWeights = new Array(NUM_EXPRESSIONS).fill(0);
+        let mesh = null;
+
+        // Promise.all(objURLs.map(url => fetch(url).then(res => res.text()).then(loadOBJFromText)))
+        Promise.all([
+            ...objURLs.map(url => fetch(url).then(res => res.text()).then(loadOBJFromText)),
+            ...objExpressionURLs.map(url => fetch(url).then(res => res.text()).then(loadOBJFromText))
+        ])
+        .then(results => {
+            // const neutral = results[0];
+            // neutralPositions = neutral.positions;
+            // for (let i = 1; i < results.length; i++) {
+            //     blendPositionsList.push(results[i].positions);
+            // }
+
+            // Prepare the loaded identity and expression blendshapes
+            const identityResults = results.slice(0, objURLs.length);
+            const expressionResults = results.slice(objURLs.length);
+            const neutral = identityResults[0];
+            neutralPositions = neutral.positions;
+            for (let i = 1; i < identityResults.length; i++) {
+                blendPositionsList.push(identityResults[i].positions);
+            }
+            for (let expr of expressionResults) {
+                expressionPositionsList.push(expr.positions);
+            }
+            
+            // Create the geometry buffer for mesh vertices and indices
+            const geometry = new THREE.BufferGeometry();
+            const blended = neutralPositions.slice();
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(blended, 3));
+            geometry.setIndex(results[0].indices);
+            geometry.computeVertexNormals();
+
+            // Create the Mesh object
+            const material = new THREE.MeshStandardMaterial({ color: 0x999999 });
+            mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+
+            // Setup event listeners for sliders
+            blendSliders.forEach(slider => slider.addEventListener('input', display));
+            expressionSliders.forEach(slider => slider.addEventListener('input', display));
+            display();
+        })
+        .catch(err => console.error('Load error:', err));
+
+        function display() {
+            // requestAnimationFrame(display);
+            // controls.update(); // required for damping
+
+            if (!mesh) return;
+            const weightList = blendSliders.map(sl => parseFloat(sl.value));
+            const expressionWeightList = expressionSliders.map(sl => parseFloat(sl.value));
+            const pos = mesh.geometry.attributes.position.array;
+
+            // Loop through the vertices
+            for (let i = 0; i < pos.length; i++) {
+                let blended = neutralPositions[i]; // position of the i-th vertex
+                // Identity Blendshapes
+                for (let j = 0; j < NUM_BLENDSHAPES; j++) {
+                    // loop through the blendshapes
+                    weight = weightList[j];
+                    if (weight < 0) {
+                        // negative blendshape
+                        blendshape = blendPositionsList[j*2][i];
+                        blended += -weight * (blendshape - neutralPositions[i]);
+                    }
+                    else {
+                        // positive blendshape
+                        blendshape = blendPositionsList[j*2+1][i];
+                        blended += weight * (blendshape - neutralPositions[i]);
+                    }
+                }
+                // Expression Blendshapes
+                for (let j = 0; j < NUM_EXPRESSIONS; j++) {
+                    // loop through expression blendshapes
+                    weight = expressionWeightList[j];
+                    blendshape = expressionPositionsList[j][i];
+                    blended += weight * (blendshape - neutralPositions[i]);
+                }
+                pos[i] = blended;
+            }
+
+            mesh.geometry.attributes.position.needsUpdate = true;
+            renderer.render(scene, camera);
+        }
+
+        // Updates the camera
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update(); // keep rotating
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+
+
+</body>
+</html>
