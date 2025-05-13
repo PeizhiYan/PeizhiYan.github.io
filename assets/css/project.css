@@ -125,7 +125,7 @@
 }
 
 /* Responsive styling for middle screens */
-@media (max-width: 1000px) {
+@media (max-width: 1100px) {
     .project {
         min-width: 10px;
     }
