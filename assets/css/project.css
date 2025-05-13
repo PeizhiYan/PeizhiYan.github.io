@@ -1,18 +1,24 @@
 #portfolio .container {
     display: flex;
     flex-direction: column;
-    align-items: left;
+    align-items: center;
     justify-content: center;  /* This will center the content vertically as well */
 }
 
 .project {
     display: flex;
-    margin-bottom: 0px;
     margin-top: 0px;
-    /* border: 1px solid #ccc; */
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border: 1px solid transparent; /* ensures no layout shift */
     padding: 10px;
     max-width: 900px;
+    min-width: 900px;
+    border-radius: 8px; /* adjust value for more/less rounding */
     /* min-height: 250px; */
+}
+.project:hover {
+    border: 2px solid #dcdcdcaa; /* or use any desired color */
 }
 .project-after-line {
     content: "";
@@ -27,46 +33,49 @@
 .project-image img {
     width: 270px; /* Adjust size as needed */
     height: 180px;
-    margin-right: 20px;
+    margin-right: 60px;
+}
+
+.project-title {
+    margin-top: 0px;
+    font-weight: 500;
+    font-size: 21px;
+    text-align: left;
+    color: #000000;
 }
 
 .project-info {
     flex-grow: 1;
     text-align: left;
     font-weight: normal;
-    font-size: 18px;
+    font-size: 16px;
     line-height: 1.1;
     color: black;
 }
 
-.project-title {
-    margin-top: 0px;
-    font-weight: bold;
-    font-size: 21px;
-    text-align: left;
-}
-
 .year-tag {
     text-decoration: none;
-    margin-left: 5px;
+    margin-left: 0px;
+    margin-top: 10px;
     padding: 0px 10px;
-    background-color: #103cff;
+    background-color: #5271ff;
     color: white;
     border-radius: 5px;
 }
 
 .venue-tag {
     text-decoration: none;
-    margin-left: 5px;
-    padding: 0px 10px;
-    background-color: #6010ff;
+    margin-left: 0px;
+    margin-top: 15px;
+    padding: 0px 5px;
+    background-color: #007cacdf;
     color: white;
     border-radius: 5px;
 }
 
 .project-description {
     margin-top: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 19px;
 }
 
 .project-buttons {
@@ -107,7 +116,7 @@
 .image-hover-container img {
     width: 270px; 
     height: 180px;
-    margin-right: 20px;
+    margin-right: 60px;
     transition: all 0.9s ease; 
 }
 
@@ -115,8 +124,19 @@
     content: attr(data-hover); /* Changes the image on hover */
 }
 
+/* Responsive styling for middle screens */
+@media (max-width: 1000px) {
+    .project {
+        min-width: 10px;
+    }
+}
+
 /* Responsive styling for small screens */
 @media (max-width: 600px) {
+    .project {
+        width: 98%;
+    }
+
     .project-image {
         display: none;
     }

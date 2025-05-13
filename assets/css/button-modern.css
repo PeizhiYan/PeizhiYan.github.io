@@ -42,9 +42,9 @@
 
 .button-86::after {
     transform: translate(10px, 10px);
-    width: 35px;
-    height: 35px;
-    background: #ffffff15;
+    width: 15px;
+    height: 15px;
+    background: #9c9c9c75;
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
     border-radius: 50px;
