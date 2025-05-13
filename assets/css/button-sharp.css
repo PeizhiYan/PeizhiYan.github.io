@@ -1,0 +1,75 @@
+.button-sp {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    margin-left: 5px;
+    font-size: 13px;
+    font-weight: bold;
+    color: white;
+    background: #6225e6;
+    transition: 0.3s;
+    box-shadow: 3px 3px 0 black;
+    transform: skewX(-10deg);
+    border: none;
+    border-radius: 4px; /* optional: to look more like a tag */
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.button-sp:focus {
+    outline: none;
+}
+
+.button-sp:hover {
+    box-shadow: 5px 5px 0 #fbc638;
+}
+
+.button-sp .second {
+    transition: 0.3s;
+    margin-right: 0px;
+}
+
+.button-sp:hover .second {
+    margin-right: 10px;
+}
+
+.span {
+    transform: skewX(10deg);
+}
+
+.second {
+    width: 10px;
+    margin-left: 10px;
+    position: relative;
+    top: 10%;
+}
+
+.bone {
+    transition: 0.3s;
+    transform: translateX(-50%);
+}
+
+.btwo {
+    transition: 0.3s;
+    transform: translateX(-25%);
+}
+
+.button-sp:hover .three {
+    animation: color_anim 0.8s infinite 0.2s;
+}
+
+.button-sp:hover .bone {
+    transform: translateX(0%);
+    animation: color_anim 0.8s infinite 0.4s;
+}
+
+.button-sp:hover .btwo {
+    transform: translateX(0%);
+    animation: color_anim 0.8s infinite 0.3s;
+}
+
+@keyframes color_anim {
+    0% { fill: white; }
+    50% { fill: #fbc638; }
+    100% { fill: white; }
+}

@@ -1,0 +1,40 @@
+.button-52 {
+    font-size: 15px;                  /* smaller text */
+    font-weight: 400;                 /* slightly bolder for readability */
+    letter-spacing: 0.5px;            /* optional: reduce spacing */
+    padding: 6px 12px;                /* less vertical/horizontal space */
+    outline: 0;
+    border: 1px solid black;
+    cursor: pointer;
+    position: relative;
+    z-index: 0;
+    background-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    overflow: hidden;
+}
+
+.button-52:after {
+    content: "";
+    background-color: #ffe54c;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 4px;           /* smaller offset for smaller button */
+    left: 4px;
+    z-index: -1;
+    display: block;
+    transition: 0.2s;
+}
+
+.button-52:hover:after {
+    top: 0;
+    left: 0;
+}
+
+@media (min-width: 768px) {
+    .button-52 {
+        padding: 6px 20px;
+    }
+}

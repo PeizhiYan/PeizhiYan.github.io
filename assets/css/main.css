@@ -1897,7 +1897,7 @@
 
 /* Button */
 
-	input[type="button"],
+	/* input[type="button"],
 	input[type="submit"],
 	input[type="reset"],
 	button,
@@ -1936,7 +1936,7 @@
 		button:active,
 		.button:active {
 			background-color: #1a66ff;
-		}
+		} */
 
 /* Item */
 
@@ -2191,11 +2191,11 @@
 			}
 
 			#main > section.one {
-				background-color: #81918E;
+				background: linear-gradient(to bottom right, #d2d2d2, #FFFFFF);
 				color: white;
 				background-repeat: no-repeat;
 				background-size: cover;
-				background-image: url("../../images/banner.png");
+				/* background-image: url("../../images/banner.png"); */
 			}
 
 			#main > section.two {

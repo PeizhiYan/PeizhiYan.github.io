@@ -1,22 +1,32 @@
 #portfolio .container {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: left;
     justify-content: center;  /* This will center the content vertically as well */
 }
 
 .project {
     display: flex;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    /* border: 1px solid #ccc; */
     padding: 10px;
     max-width: 900px;
-    min-height: 200px;
+    /* min-height: 250px; */
+}
+.project-after-line {
+    content: "";
+    position: relative;
+    bottom: 0;
+    left: 0;
+    height: 1px; /* thickness of the line */
+    width: 100%;
+    background: linear-gradient(to right, #797979, #d9d9d9); /* gradient example */
 }
 
 .project-image img {
-    width: 200px; /* Adjust size as needed */
-    height: auto;
+    width: 270px; /* Adjust size as needed */
+    height: 180px;
     margin-right: 20px;
 }
 
@@ -32,7 +42,7 @@
 .project-title {
     margin-top: 0px;
     font-weight: bold;
-    font-size: 25px;
+    font-size: 21px;
     text-align: left;
 }
 
@@ -95,8 +105,8 @@
 }
 
 .image-hover-container img {
-    width: 200px; 
-    height: auto;
+    width: 270px; 
+    height: 180px;
     margin-right: 20px;
     transition: all 0.9s ease; 
 }
