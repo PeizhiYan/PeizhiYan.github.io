@@ -13,11 +13,12 @@
     -webkit-user-select: none;
     touch-action: manipulation;
     overflow: hidden;
+    color: white;
 }
 
 .button-52:after {
     content: "";
-    background-color: #ffe54c;
+    background-color: #595959;
     width: 100%;
     height: 100%;
     position: absolute;
