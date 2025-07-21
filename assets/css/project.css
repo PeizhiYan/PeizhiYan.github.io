@@ -63,6 +63,16 @@
     border-radius: 5px;
 }
 
+.journal-tag {
+    text-decoration: none;
+    margin-left: 0px;
+    margin-top: 15px;
+    padding: 0px 5px;
+    background-color: #f9a704;
+    color: white;
+    border-radius: 5px;
+}
+
 .venue-tag {
     text-decoration: none;
     margin-left: 0px;
