@@ -17,27 +17,12 @@
 			<!--
 			// onload main
 			function onload_main(){
-				displayMotto();
 				displayFooter();
 			}
 			// display the current year
 			function displayFooter(){
 				var date = new Date()
 				document.getElementById("currentDate").innerHTML = "2017-" + date.getFullYear()		
-			}
-			// display my favorite mottos randomly
-			function displayMotto(){
-				var mottos = [
-					["学而不思则罔，思而不学则殆。","《论语·为政》"],
-					["言必信，行必果。","《论语·子路》"],
-					["人无远虑，必有近忧。","《论语·卫灵公》"],
-					["天行健，君子以自强不息；地势坤，君子以厚德载物","《周易》"],
-					["不积跬步，无以至千里，不积小流，无以成江海。","《荀子·劝学》"],
-					["欲速则不达，见小利则大事不成。","《论语》"],
-					["学然后知不足。","《礼记》"],
-				]
-				var randIndex = Math.floor(Math.random() * mottos.length);
-				document.getElementById("mottos").innerHTML = "\"" + mottos[randIndex][0] + "\" — <a style='font-weight:bold'>" + mottos[randIndex][1] + "</a> <a onclick=\"displayMotto()\">(随机生成)</a>";
 			}
 			-->
 		</script>
@@ -163,8 +148,6 @@
 				<!-- About Me -->
 					<section id="about" class="three" style="background-color: white;">
 						<div class="container">
-
-							<div id='mottos' style='font-style: italic;'>加载中...</div><br> 
 							
 							<a href="album.html" >&#128215; 相簿</a><br><br>
 							<a href="gallery.html" >&#127912; 艺术</a><br><br>

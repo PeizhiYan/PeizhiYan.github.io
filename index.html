@@ -39,29 +39,12 @@
 		<script type="text/javascript">
 			// onload main
 			function onload_main(){
-				displayMotto();
 				displayFooter();
 			}
 			// display the current year
 			function displayFooter(){
 				var date = new Date()
 				document.getElementById("currentDate").innerHTML = "2017-" + date.getFullYear()		
-			}
-			// display my favorite mottos randomly
-			function displayMotto(){
-				var mottos = [
-					["The present is theirs; the future, for which I really worked, is mine.", "Nikola Tesla"],
-					["Be alone, that is the secret of invention; be alone, that is when ideas are born.", "Nikola Tesla"],
-					["Of all things, I liked books best.", "Nikola Tesla"],
-					["Imagination is more important than knowledge. Knowledge is limited. Imagination encircles the world.", "Albert Einstein"],
-					["Try not to become a man of success, but rather try to become a man of value.", "Albert Einstein"],
-					["Failure is an option here. If things are not failing, you are not innovating enough.","Elon Musk"],
-					["Stay hungry, stay foolish.","Steve Jobs"],
-					["I propose to consider the question: Can machines think?","A. M. Turing"],
-					["AL;BT life is good!","Peizhi Yan"],
-				]
-				var randIndex = Math.floor(Math.random() * mottos.length);
-				document.getElementById("mottos").innerHTML = "\"" + mottos[randIndex][0] + "\" — <a style='font-weight:bold'>" + mottos[randIndex][1] + "</a> <a onclick=\"displayMotto()\">(Get Random Quote)</a>";
 			}
 
 		</script>
@@ -183,7 +166,7 @@
 				<section id="about" class="two" style="background-color: white;">
 					<div class="container">
 
-						<div id='mottos' style='font-style: italic;'>Random quote is loading ...</div><br> 
+						<!-- <div id='mottos' style='font-style: italic;'>Random quote is loading ...</div><br>  -->
 						
 						<a href="album.html" >&#128215; Album</a><br><br>
 						<a href="gallery.html" >&#127912; Art Works</a><br><br>
