@@ -169,17 +169,61 @@
 <!-- End teaser video -->
 
 
+
 <!-- Teaser Image-->
 <section class="hero teaser">
   <div class="container is-max-desktop">
     <div class="hero-body">
       <img src="./teaser.png">
-      <h2 class="subtitle has-text-centered">
-      </h2>
+      <h3 class="subtitle">
+        ArchitectHead supports continuous LOD control ranging from 0 (highest) to 1.0 (lowest). 
+        This figure shows the rendered image quality under different LOD settings. 
+        For each case, we provide a zoom-in view of selected regions. We recommend viewing the figure on a digital device with zoom for better inspection. 
+        The grey dots indicate the positions of the 3D Gaussian points. The test identity is taken from the NeRFace dataset. 
+        Red arrow indicates visible artifacts (sparse Gaussians) in the lowest LOD.
+      </h3>
     </div>
   </div>
 </section>
 <!-- End teaser image -->
+
+
+<!-- Abstract
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+    <h3 class="subtitle">
+      3D Gaussian Splatting (3DGS) has enabled photorealistic and real-time rendering of 3D head avatars. 
+      Existing 3DGS-based avatars typically rely on tens of thousands of 3D Gaussian points (Gaussians), 
+      with the number of Gaussians fixed after training. However, many practical applications require 
+      adjustable levels of detail (LOD) to balance rendering efficiency and visual quality. In this work, 
+      we propose "ArchitectHead", the first framework for creating 3D Gaussian head avatars that support 
+      continuous control over LOD. Our key idea is to parameterize the Gaussians in a 2D UV feature space 
+      and propose a UV feature field composed of multi-level learnable feature maps to encode their latent features. 
+      A lightweight neural network-based decoder then transforms these latent features into 3D Gaussian attributes for 
+      rendering. ArchitectHead controls the number of Gaussians by dynamically resampling feature maps from the UV 
+      feature field at the desired resolutions. This method enables efficient and continuous control of LOD without 
+      retraining. Experimental results show that ArchitectHead achieves state-of-the-art (SOTA) quality in self and 
+      cross-identity reenactment tasks at the highest LOD, while maintaining near SOTA performance at lower LODs. 
+      At the lowest LOD, our method uses only 6.2% of the Gaussians while the quality degrades moderately 
+      (L1 Loss +7.9%, PSNR –0.97%, SSIM –0.6%, LPIPS Loss +24.1%), and the rendering speed nearly doubles. The code will be released. 
+    </h3>
+    </div>
+  </div>
+</section> -->
+
+
+<!-- Pipeline -->
+<section class="hero ">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <h2 class="title is-3 has-text-centered">
+        Pipeline
+      </h2>
+      <img src="./pipeline.png">
+    </div>
+  </div>
+</section>
 
 
 
