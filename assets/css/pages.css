@@ -1,0 +1,138 @@
+.item {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid var(--border, #e1e6ef);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm, 0 12px 24px rgba(13, 23, 41, 0.1));
+}
+
+.item img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  background: #f7f8fb;
+  max-height: 240px;
+}
+
+.item header {
+  padding: 0.75rem 1rem 1rem;
+}
+
+.item h3 {
+  margin: 0;
+  font-family: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.95rem;
+  color: var(--muted, #5a6676);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.row > div {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.awards-grid {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  align-items: start;
+}
+
+.inline-note {
+  font-size: 0.95rem;
+  color: var(--muted, #5a6676);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  background: #f2f4f8;
+  color: var(--muted, #5a6676);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.contact-card {
+  display: grid;
+  gap: 1rem;
+  font-size: 1.05rem;
+}
+
+.contact-card strong {
+  color: var(--ink, #1e2530);
+}
+
+.image-hover-container {
+  width: 100%;
+  height: 160px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #eef2f6;
+}
+
+.image-hover-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  transition: transform 0.4s ease;
+}
+
+.project-card:hover .image-hover-container img {
+  transform: scale(1.02);
+}
+
+.image-hover-container.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #eef1f6 0%, #f9fafc 100%);
+  color: var(--muted, #5a6676);
+  font-weight: 600;
+  text-align: center;
+  padding: 1rem;
+}
+
+.hero-media {
+  display: grid;
+  gap: 1rem;
+  align-items: start;
+}
+
+.hero-media .stamp {
+  width: 64px;
+  height: 64px;
+}
+
+.hero-media .pdf-preview {
+  border: 1px solid var(--border, #e1e6ef);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.hero-media .pdf-preview img {
+  width: 100%;
+  height: auto;
+  max-width: 200px;
+}
+
+.hidden-div {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease-in-out;
+}
+
+.visible-div {
+  max-height: 3000px;
+  transition: max-height 0.5s ease-in-out;
+}

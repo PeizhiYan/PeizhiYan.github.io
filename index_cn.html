@@ -1,234 +1,78 @@
-<!DOCTYPE HTML>
-<html>
-	<head>
-		
-		<title>颜培郅 - 主页</title>
-		<link rel="icon" type="./favicon.ico" />
-    		<link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
-    		<link rel="apple-touch-icon" href="./favicon.ico">
-		<link rel="icon" sizes="any" mask="" href="./favicon.ico">
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
-		<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
-		<script type="text/javascript">
-			<!--
-			// onload main
-			function onload_main(){
-				displayFooter();
-			}
-			// display the current year
-			function displayFooter(){
-				var date = new Date()
-				document.getElementById("currentDate").innerHTML = "2017-" + date.getFullYear()		
-			}
-			-->
-		</script>
-		<style type="text/css">
-			.JSCOOL{
-				background-color: #0096FF;
-			    -webkit-animation-name: example; /* Safari 4.0 - 8.0 */
-			    -webkit-animation-duration: 20s; /* Safari 4.0 - 8.0 */
-			    animation-name: example;
-			    animation-duration: 20s;
-			}
-			
-			/* Safari 4.0 - 8.0 */
-			@-webkit-keyframes example {
-			    0%   {background-color: #0096FF;}
-			    50%  {background-color: red;}
-			    100% {background-color: #0096FF;}
-			}
-			
-			/* Standard syntax */
-			@keyframes example {
-			    0%   {background-color: #0096FF;}
-			    50%  {background-color: red;}
-			    100% {background-color: #0096FF;}
-			}
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <title>颜培郅 - 主页</title>
+  <link rel="icon" type="./favicon.ico" />
+  <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" href="./favicon.ico">
+  <link rel="icon" sizes="any" mask="" href="./favicon.ico">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="assets/css/site.css" />
+  <link rel="stylesheet" href="assets/css/pages.css" />
+</head>
+<body>
+  <div id="site-header"></div>
 
-		</style>
+  <main id="main-content">
+    <section class="section section-hero">
+      <div>
+        <!-- <span class="tag">颜培郅 (Matthew Yan)</span> -->
+        <h1>颜培郅</h1>
+        <p><a href="https://www.gg.ca/en/honours/recipients/116-108211">加拿大总督学术金牌</a>获得者。</p>
+        <p><a href="https://vectorinstitute.ai/2018/12/13/vector-awards-inaugural-scholarships-second-round-of-applications-to-open-in-2019/">向量奖学金</a>获得者，多伦多向量学院。</p>
+        <p><strong><a href="https://baike.baidu.com/item/%E9%A2%9C%E5%9B%9E/188357?fromtitle=%E9%A2%9C%E5%AD%90&fromid=5346933&fr=aladdin">颜子</a>第80代嫡系长孙。</strong>
+        <a href="https://baike.baidu.com/item/%E9%A2%9C%E5%AD%90%E4%B8%96%E7%B3%BB/7808246?fr=aladdin">点击查看 颜氏宗子世表</a></p>
+        <div class="hero-actions">
+          <a class="button secondary" href="docs/CV_Peizhi.pdf">简历（英文版）</a>
+          <!-- <a class="button secondary" href="index.html">切换到英文 · English Version</a> -->
+        </div>
+      </div>
+      <div class="hero-media">
+        <a class="pdf-preview" href="docs/Table-of-Direct-Descent-Yan-Family-compressed.pdf#page=28" target="_blank">
+          <img src="docs/Table-Thumbnail.jpg" alt="颜子世家谱" />
+          <div class="inline-note">颜子世家谱</div>
+        </a>
+        <img class="stamp" src="images/stamp.png" alt="印章" />
+      </div>
+    </section>
 
-	</head>
-	<body  onload="onload_main()">
+    <section class="section">
+      <h2>导航</h2>
+      <div class="link-list">
+        <div class="link-card">
+          <span>📕 相簿</span>
+          <a href="album.html">打开</a>
+        </div>
+        <div class="link-card">
+          <span>🎨 艺术</span>
+          <a href="gallery.html">打开</a>
+        </div>
+        <div class="link-card">
+          <span>🛫 参加活动照片</span>
+          <a href="events.html">打开</a>
+        </div>
+        <div class="link-card">
+          <span>🏆 奖项及荣誉</span>
+          <a href="awards.html">打开</a>
+        </div>
+      </div>
+    </section>
 
-		<!-- Header -->
-			<div id="header">
+    <section class="section">
+      <h2>学术主页</h2>
+      <p><a href="https://scholar.google.ca/citations?user=bpHvFHgAAAAJ&hl=zh">🎓 谷歌学术主页</a></p>
+    </section>
 
-				<div class="top">
+    <section class="section">
+      <h2>联系方式</h2>
+      <p><a href="https://www.linkedin.com/in/peizhi-yan/">LinkedIn</a></p>
+      <p><a href="mailto:yanpeizhi2008@gmail.com">Email</a></p>
+    </section>
+  </main>
 
-					<!-- Logo -->
-						<div id="logo">
-							<span class="image avatar48"><img src="images/me.jpg" alt="" /></span>
-						</div>
-						<div id="logo">
-							<h1 id="title">颜培郅</h1>
-							<h1 id="title">(Matthew Yan)</h1>
-							<hr style="border-top: 3px solid">
-							<p style="font-size: 15px; color: white;"><b><a style="font-size: 15px; color: white;" href="https://www.gg.ca/en/honours/recipients/116-108211"><b style="font-weight: bold; color: white;">总督学术金牌</b>获得者</a></b>, <br> 加拿大 </p>
-							<hr>
-							<p style="font-size: 15px; color: white;"><b><a style="font-size: 15px; color: white;" href="https://vectorinstitute.ai/2018/12/13/vector-awards-inaugural-scholarships-second-round-of-applications-to-open-in-2019/"><b style="font-weight: bold; color: white;">向量奖学金</b>获得者</a></b>,<br> 多伦多向量学院
-							</p>
-							<!-- <hr>
-							<p style="font-size: 15px; color: white;"><b><a style="font-size: 15px; color: white;" href="https://www.auroratns.com">Aurora Tech 公司 <b style="font-weight: bold; color: white;">创始人</b> </a></b> </p>
-							 -->
-							
-						</div>
+  <div id="site-footer"></div>
 
-					<!-- Nav -->
-						<nav id="nav">
-							<!--
-
-								Prologue's nav expects links in one of two formats:
-
-								1. Hash link (scrolls to a different section within the page)
-
-								   <li><a href="#foobar" id="foobar-link" class="icon fa-whatever-icon-you-want skel-layers-ignoreHref"><span class="label">Foobar</span></a></li>
-
-								2. Standard link (sends the user to another page/site)
-
-								   <li><a href="http://foobar.tld" id="foobar-link" class="icon fa-whatever-icon-you-want"><span class="label">Foobar</span></a></li>
-
-							-->
-							<!--
-							<ul>
-								<li><a href="#top" id="top-link" class="skel-layers-ignoreHref"><span class="icon fa-home">Intro</span></a></li>
-								<li><a href="#portfolio" id="portfolio-link" class="skel-layers-ignoreHref"><span class="icon fa-th">Projects</span></a></li>
-								<li><a href="#about" id="about-link" class="skel-layers-ignoreHref"><span class="icon fa-user">About Me</span></a></li>
-								<li><a href="#contact" id="contact-link" class="skel-layers-ignoreHref"><span class="icon fa-envelope">Contact</span></a>
-							</ul>
-							-->
-						</nav>
-
-				</div>
-
-				<div class="bottom">
-
-					<!-- Social Icons -->
-						<ul class="icons">
-							<li><a href="https://www.linkedin.com/in/peizhi-yan/" class="icon fa-linkedin"><span class="label">Linkedin</span></a></li>
-							<li><a href="https://github.com/PeizhiYan" class="icon fa-github"><span class="label">Github</span></a></li>
-							<li><a href="mailto:yanpeizhi2008@gmail.com" class="icon fa-envelope"><span class="label">Email</span></a></li>
-						</ul>
-
-				</div>
-
-			</div>
-
-		<!-- Main -->
-			<div id="main" >
-
-				<!-- Intro -->
-					<section class="one" style="color: black;">
-						<div style="text-align: left; margin-left: 15px; margin-right: 15px; ">
-							<b style="font-weight: bold;">颜培郅</b>
-							<br>
-							<a href="https://www.gg.ca/en/honours/recipients/116-108211">加拿大总督学术金牌获得者</a>, 
-							<br>
-							<!-- <a href="https://www.auroratns.com">Aurora Technology and Solutions Ltd. 创始人</a>,
-							<br> -->
-							<a href="https://baike.baidu.com/item/%E9%A2%9C%E5%9B%9E/188357?fromtitle=%E9%A2%9C%E5%AD%90&fromid=5346933&fr=aladdin">颜子</a>第80代嫡系长孙。
-							<a href="https://baike.baidu.com/item/%E9%A2%9C%E5%AD%90%E4%B8%96%E7%B3%BB/7808246?fr=aladdin"><u>点击查看 颜氏宗子世表</u></a>
-							<br>
-
-							<br>
-							<div style="text-align:center;">
-								<a href="./docs/Table-of-Direct-Descent-Yan-Family-compressed.pdf#page=28" target="_blank" 
-								style="text-decoration:none; color:inherit; display:inline-block; font-size:16px; line-height:1.4;">
-									<img src="./docs/Table-Thumbnail.jpg" alt="PDF Preview" 
-									style="max-width:150px; display:block; margin:0 auto 8px; border:1px solid #ccc; border-radius:6px;">
-									颜子世家谱 <br>
-								</a>
-							</div>
-                            
-						<div style="text-align: right;"><img style="height: 50px; width: 50px; margin-right: 70px; margin-top: 20px" src="images/stamp.png"></div>
-						</div>
-						<a href="index.html" style="font-size: 15px;">切换到英文 · English Version</a>
-					</section>
-					
-
-					<!--
-					<footer> </footer>
-					-->
-				
-				<!-- Portfolio -->
-
-				<!-- About Me -->
-					<section id="about" class="three" style="background-color: white;">
-						<div class="container">
-							
-							<a href="album.html" >&#128215; 相簿</a><br><br>
-							<a href="gallery.html" >&#127912; 艺术</a><br><br>
-							<a href="events.html" >&#128747; 参加活动照片</a><br><br><hr>
-							<a href="awards.html" >&#127941; 奖项及荣誉</a><br><hr>
-
-							<button style="font-size: 20px" onclick="location.href='docs/CV_Peizhi.pdf'">简历（英文版）</button><br><hr>
-							<br>
-							<header>
-								<h2>发表论文</h2> <a href="https://scholar.google.ca/citations?user=bpHvFHgAAAAJ&hl=zh">&#127891; 见 谷歌学术主页</a>
-							</header>
-							<!--
-							<div style="text-align: left; font-size: 17px;">
-								<b>Journal:</b><br>
-								&#8226;<b>Yan, Peizhi., Al-Turjman Fadi, Al-Oqily Ibrhaim, & Choudhury Salimur. An Energy-Efficient Topology Control Algorithm for Optimizing the Lifetime of Wireless Information-Centric IoT Networks. Future Generation Computer Systems.<br>
-								&#8226;<b>Yan, Peizhi</b>, Choudhury, Salimur, & Wei, Ruizhong. (2020). A Machine Learning Auxiliary Approach for the Distributed Dense RFID Readers Arrangement Algorithm. IEEE Access.<br>
-								&#8226;<b>Yan, Peizhi</b>, & Feng, Yi. (2018). Using Convolution and Deep Learning in Gomoku Game Artificial Intelligence. Parallel Processing Letters, 28(No. 3). [<a href="https://doi.org/10.1142/S0129626418500111">Journal Paper</a>]<br>
-								<hr>
-								<b>Conference:</b><br>
-								&#8226;<b>Yan, Peizhi</b>, & Choudhury, Salimur, Optimizing Mobile Edge Computing Multi-Level Task Offloading via Deep Reinforcement Learning. In ICC 2020-2020 IEEE International Conference on Communications (ICC). IEEE. <br>
-								&#8226;<b>Yan, Peizhi</b>, Choudhury, Salimur, & Wei, Ruizhong. (2019). A Distributed Graph-Based Dense RFID Readers Arrangement Algorithm. IEEE International Conference on Communications (ICC): Mobile and Wireless Networks Symposium, May 20-24, 2019, Shanghai, China. <br>
-								&#8226;<b>Yan, Peizhi</b>, & Feng, Yi. (2018). A Hybrid Gomoku Deep Learning Artificial Intelligence. Artificial Intelligence and Cloud Computing Conference, Dec 21-23, 2018, Tokyo, Japan. (DOI:10.1145/3299819.3299820) [<a href="images/PaperPoster.jpg">Poster</a>] [<a href="https://dl.acm.org/citation.cfm?id=3299820">Paper</a>]<br>	
-								<hr>
-								<b>Workshop:</b><br>
-								&#8226; Emu, Mahzabeen, <b>Yan, Peizhi</b>, & Choudhury, Salimur. (2020). IEEE International Conference on Communications (ICC) Workshop on Convergent IoT. IEEE.<br>
-							</div>
-							-->
-							
-						</div>
-					</section>
-
-					
-
-				
-				<!-- Contact -->
-					<section id="contact" class="four">
-						<div class="container">
-
-							<header>
-								<h2>联系方式</h2>
-							</header>
-
-							<a href="https://www.linkedin.com/in/peizhi-yan/" class="icon fa-linkedin"><span class="label">Linkedin</span> 领英</a>
-							<br>
-							<a href="mailto:yanpeizhi2008@gmail.com" class="icon fa-envelope"><span class="label">Email</span> 邮箱</a>
-
-							<!-- <button onclick="location.href='https://goo.gl/forms/QU1NW0lobvBPNCJM2'">Leave a message to me!</button> -->
-						</div>
-					</section>
-
-			</div>
-
-		<!-- Footer -->
-			<div id="footer">
-
-				<!-- Copyright -->
-					
-					<ul class="copyright">
-						<li>&copy; Matthew (Peizhi) Yan. </li><li id="currentDate" ></li>
-					</ul>
-
-			</div>
-
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.scrolly.min.js"></script>
-			<script src="assets/js/jquery.scrollzer.min.js"></script>
-			<script src="assets/js/skel.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
-			<script src="assets/js/main.js"></script>
-
-	</body>
+  <script src="assets/js/site.js"></script>
+</body>
 </html>

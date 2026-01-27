@@ -1,145 +1,29 @@
-<!DOCTYPE HTML>
-<html>
-	<head>
-		
-		<title>颜培郅 - 主页</title>
-		<link rel="icon" href="images/me.png" type="image/x-icon" />
-    		<link rel="shortcut icon" href="images/me.png" type="image/x-icon" />
-    		<link rel="apple-touch-icon" href="images/me.png">
-		<link rel="icon" sizes="any" mask="" href="images/me.png">
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
-		<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
-		<script type="text/javascript">
-			<!--
-			// onload main
-			function onload_main(){
-				displayMotto();
-				displayFooter();
-			}
-			// display the current year
-			function displayFooter(){
-				var date = new Date()
-				document.getElementById("currentDate").innerHTML = "2017-" + date.getFullYear()		
-			}
-			
-			-->
-		</script>
-		<style type="text/css">
-			.JSCOOL{
-				background-color: #0096FF;
-			    -webkit-animation-name: example; /* Safari 4.0 - 8.0 */
-			    -webkit-animation-duration: 20s; /* Safari 4.0 - 8.0 */
-			    animation-name: example;
-			    animation-duration: 20s;
-			}
-			
-			/* Safari 4.0 - 8.0 */
-			@-webkit-keyframes example {
-			    0%   {background-color: #0096FF;}
-			    50%  {background-color: red;}
-			    100% {background-color: #0096FF;}
-			}
-			
-			/* Standard syntax */
-			@keyframes example {
-			    0%   {background-color: #0096FF;}
-			    50%  {background-color: red;}
-			    100% {background-color: #0096FF;}
-			}
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <title>Contact</title>
+  <link rel="icon" href="images/me.png" type="image/x-icon" />
+  <link rel="shortcut icon" href="images/me.png" type="image/x-icon" />
+  <link rel="apple-touch-icon" href="images/me.png">
+  <link rel="icon" sizes="any" mask="" href="images/me.png">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="assets/css/site.css" />
+  <link rel="stylesheet" href="assets/css/pages.css" />
+</head>
+<body>
+  <div id="site-header"></div>
 
-		</style>
+  <main id="main-content">
+    <section class="section">
+      <h1>Contact</h1>
+      <div class="contact-card">
+        <div><strong>Email:</strong> yan@auroratns.com</div>
+      </div>
+    </section>
+  </main>
 
-	</head>
-	<body  onload="onload_main()">
-
-		<!-- Header -->
-			<div id="header">
-
-				<div class="top">
-
-					<!-- Logo -->
-						<div id="logo">
-							<span class="image avatar48"><img src="images/me.png" alt="" /></span>
-						</div>
-						<div id="logo">
-							<h1 id="title">颜培郅</h1>
-							<h1 id="title">(Matthew Yan)</h1>
-							<hr style="border-top: 3px solid">
-							
-							
-						</div>
-
-					<!-- Nav -->
-						<nav id="nav">
-							<!--
-
-								Prologue's nav expects links in one of two formats:
-
-								1. Hash link (scrolls to a different section within the page)
-
-								   <li><a href="#foobar" id="foobar-link" class="icon fa-whatever-icon-you-want skel-layers-ignoreHref"><span class="label">Foobar</span></a></li>
-
-								2. Standard link (sends the user to another page/site)
-
-								   <li><a href="http://foobar.tld" id="foobar-link" class="icon fa-whatever-icon-you-want"><span class="label">Foobar</span></a></li>
-
-							-->
-							<!--
-							<ul>
-								<li><a href="#top" id="top-link" class="skel-layers-ignoreHref"><span class="icon fa-home">Intro</span></a></li>
-								<li><a href="#portfolio" id="portfolio-link" class="skel-layers-ignoreHref"><span class="icon fa-th">Projects</span></a></li>
-								<li><a href="#about" id="about-link" class="skel-layers-ignoreHref"><span class="icon fa-user">About Me</span></a></li>
-								<li><a href="#contact" id="contact-link" class="skel-layers-ignoreHref"><span class="icon fa-envelope">Contact</span></a>
-							</ul>
-							-->
-						</nav>
-
-				</div>
-
-				<div class="bottom">
-
-					<!-- Social Icons -->
-						<ul class="icons">
-							<li><a href="https://www.linkedin.com/in/peizhi-yan/" class="icon fa-linkedin"><span class="label">Linkedin</span></a></li>
-							<li><a href="https://github.com/PeizhiYan" class="icon fa-github"><span class="label">Github</span></a></li>
-							<li><a href="mailto:yanpeizhi2008@gmail.com" class="icon fa-envelope"><span class="label">Email</span></a></li>
-						</ul>
-
-				</div>
-
-			</div>
-
-		<!-- Main -->
-			<div id="main" >
-
-				Phone (Canada): +1 705-943-0919 <br>
-				Email: yanpz@ece.ubc.ca
-
-			</div>
-
-		<!-- Footer -->
-			<div id="footer">
-
-				<!-- Copyright -->
-					
-					<ul class="copyright">
-						<li>&copy; Matthew (Peizhi) Yan. </li><li id="currentDate" ></li>
-					</ul>
-
-			</div>
-
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.scrolly.min.js"></script>
-			<script src="assets/js/jquery.scrollzer.min.js"></script>
-			<script src="assets/js/skel.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
-			<script src="assets/js/main.js"></script>
-
-	</body>
+  <div id="site-footer"></div>
+  <script src="assets/js/site.js"></script>
+</body>
 </html>
