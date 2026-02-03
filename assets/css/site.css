@@ -312,6 +312,14 @@ main {
   gap: 1.5rem;
 }
 
+.project-list-compact {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.project-list-compact .project-card {
+  grid-template-columns: 1fr;
+}
+
 .project-card {
   display: grid;
   grid-template-columns: 240px 1fr;
@@ -466,6 +474,10 @@ main {
   .project-card {
     grid-template-columns: 1fr;
   }
+
+  .project-list-compact {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 640px) {
@@ -480,6 +492,10 @@ main {
 
   .section {
     padding: 1.6rem;
+  }
+
+  .project-list-compact {
+    grid-template-columns: 1fr;
   }
 }
 
