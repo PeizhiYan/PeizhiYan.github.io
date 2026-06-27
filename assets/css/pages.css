@@ -136,3 +136,54 @@
   max-height: 3000px;
   transition: max-height 0.5s ease-in-out;
 }
+
+/* Progressive image loading (blur-up) */
+.progressive-img {
+  position: relative;
+  overflow: hidden;
+  background: #f7f8fb;
+}
+
+.progressive-img .thumb {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  max-height: 240px;
+  filter: blur(10px);
+  transform: scale(1.05);
+  transition: opacity 0.4s ease;
+}
+
+.progressive-img .full {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.progressive-img .full.loaded {
+  opacity: 1;
+}
+
+/* Prevent copying / downloading images */
+.progressive-img::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.progressive-img img {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+  pointer-events: none;
+}
