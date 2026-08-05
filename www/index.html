@@ -1,16 +1,226 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<title>Art Works</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DrawPad</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg: #f4f4f8;
+      --text-main: #1a1a24;
+      --text-muted: #6b6b7b;
+      --accent: #5b51e8;
+      --accent-hover: #4a41cc;
+      --surface: #ffffff;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,0.05) 0, transparent 50%), 
+                        radial-gradient(at 50% 0%, hsla(225,39%,30%,0.05) 0, transparent 50%), 
+                        radial-gradient(at 100% 0%, hsla(339,49%,30%,0.05) 0, transparent 50%);
+      color: var(--text-main);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Navbar */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 3rem;
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text-main);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .logo i { color: var(--accent); }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 6rem 2rem;
+      flex: 1;
+    }
+    .hero h1 {
+      font-size: 4rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #1a1a24, #5b51e8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 3rem auto;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2rem;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      border: 2px solid var(--accent);
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(91, 81, 232, 0.25);
+    }
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text-main);
+      border: 2px solid #e0e0e8;
+    }
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    /* Gallery Section */
+    .gallery-section {
+      padding: 4rem 2rem;
+      background: var(--surface);
+      text-align: center;
+      border-top: 1px solid #e0e0e8;
+    }
+    .gallery-section h2 {
+      font-size: 2.5rem;
+      margin-bottom: 3rem;
+      font-weight: 800;
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+    .gallery-item {
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      background: #fafafa;
+    }
+    .gallery-item:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+    }
+    .gallery-item img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+    .gallery-item:hover img {
+      transform: scale(1.03);
+    }
+    .gallery-item-wide {
+      grid-column: 1 / -1;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      background: var(--surface);
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 3rem; }
+      nav { padding: 1.5rem 1rem; }
+    }
+  </style>
 </head>
 <body>
-	<a href="draw.html">Open MatthewDraw App</a><hr>
-	Art Works:<hr>
 
-	<a href="art_works/demo1.PNG" class="image fit"><img src="art_works/demo1.PNG" width="200"  alt="" /></a>
-	<a href="art_works/demo2.PNG" class="image fit"><img src="art_works/demo2.PNG" width="200" alt="" /></a>
-	<a href="art_works/iPad.PNG" class="image fit"><img src="art_works/iPad.PNG" width="500" alt="" /></a>
-	
+  <nav>
+    <a href="#" class="logo"><i class="fa-solid fa-pen-nib"></i> DrawPad</a>
+  </nav>
+
+  <section class="hero">
+    <h1>Your Canvas,<br>Reimagined.</h1>
+    <p>A modern, lightweight, and elegant web-based drawing experience designed for creativity without the clutter.</p>
+    
+    <div class="cta-buttons">
+      <a href="drawpad-v2.html" class="btn btn-primary">
+        <i class="fa-solid fa-wand-magic-sparkles"></i> Launch Modern Edition
+      </a>
+      <a href="draw.html" class="btn btn-secondary">
+        <i class="fa-solid fa-clock-rotate-left"></i> Legacy Version
+      </a>
+    </div>
+  </section>
+
+  <section class="gallery-section">
+    <h2>Art Works Showcase</h2>
+    <div class="gallery">
+      <div class="gallery-item">
+        <a href="art_works/demo1.PNG" target="_blank">
+          <img src="art_works/demo1.PNG" alt="Artwork Demo 1">
+        </a>
+      </div>
+      <div class="gallery-item">
+        <a href="art_works/demo2.PNG" target="_blank">
+          <img src="art_works/demo2.PNG" alt="Artwork Demo 2">
+        </a>
+      </div>
+      <div class="gallery-item gallery-item-wide">
+        <a href="art_works/iPad.PNG" target="_blank">
+          <img src="art_works/iPad.PNG" alt="iPad Demo">
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    &copy; Copyright Peizhi Yan 2026. All rights reserved.
+  </footer>
 
 </body>
 </html>

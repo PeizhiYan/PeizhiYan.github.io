@@ -1,113 +1,146 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<!-- Global site tag (gtag.js) - Google Analytics -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151616505-1"></script>
-	<script>
-		  window.dataLayer = window.dataLayer || [];
-		  function gtag(){dataLayer.push(arguments);}
-		  gtag('js', new Date());
-
-		  gtag('config', 'UA-151616505-1');
-	</script>
-		
-	<title>Written in Javascript</title>
-	<style>
-		.button {
-		    border: none;
-		    color: white;
-		    padding: 15px 32px;
-		    text-align: center;
-		    text-decoration: none;
-		    display: inline-block;
-		    font-size: 24px;
-		    margin: 4px 2px;
-		    cursor: pointer;
-		}
-		.button1 {background-color: #ff6666; color: black} /* Red */
-		.button2 {background-color: #ffbf80; color: black} /* Orange */ 
-		.button3 {background-color: #ffff80; color: black} /* Yellow */ 
-		.button4 {background-color: #80ff80; color: black} /* Green */
-		.button5 {background-color: #80ffff; color: black} /* Aqua */
-		.button6 {background-color: #66a3ff; color: black} /* Blue */ 
-		.button7 {background-color: #df80ff; color: black} /* Purple */ 
-	</style>	
-	<style type="text/css">
-		body{
-			animation-name: bgChange;
-			animation-duration: 80s;
-			animation-iteration-count: infinite;
-		}
-		@keyframes bgChange{
-			0%{background-color: white}
-			10%{background-color: #F7FFA3}
-			20%{background-color: #FD9697}
-			30%{background-color: #FD85F2}
-			40%{background-color: #B371FF}
-			50%{background-color: #8094FF}
-			60%{background-color: #7BE7FF}
-			70%{background-color: #93FFD8}
-			80%{background-color: #7DFF78}
-			90%{background-color: #BBFF76}
-			100%{background-color: white}
-		}
-	</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Projects & Experiments</title>
+    <link rel="icon" type="image/jpeg" href="./favicon.jpg" />
+    <link rel="shortcut icon" href="./favicon.jpg" type="image/jpeg" />
+    <link rel="apple-touch-icon" href="./favicon.jpg">
+    <link rel="icon" sizes="any" mask="" href="./favicon.jpg">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-151616505-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-151616505-1');
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-	<!-- Home button -->
-	<button onclick="location.href='https://PeizhiYan.github.io'">Home</button><br><hr>
+    <div class="animated-background"></div>
+    
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="https://PeizhiYan.github.io" class="home-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                Home
+            </a>
+            <h1>JavaScript Experiments</h1>
+        </div>
+    </nav>
 
-	<!-- Scientific Calculator -->
-	<button class="button button1" onclick="location.href='scientific_calculator/index.html'">🧮 Scientific Calculator</button>
+    <main class="container">
+        <header class="hero">
+            <h2>Welcome to my Playground</h2>
+            <p>A collection of tools, games, and WebGL demos built with vanilla JavaScript, HTML, and CSS.</p>
+        </header>
 
-	<!-- Hashing -->
-	<button class="button button2" onclick="location.href='hashing/index.html'">Hashing</button>
+        <section class="category-section">
+            <h3 class="category-title">Utilities & Tools</h3>
+            <div class="grid">
+                <a href="scientific_calculator/index.html" class="card card-red">
+                    <div class="card-icon">🧮</div>
+                    <h4>Scientific Calculator</h4>
+                    <p>Advanced calculator for complex math</p>
+                </a>
+                <a href="hashing/index.html" class="card card-orange">
+                    <div class="card-icon">🔐</div>
+                    <h4>Hashing Tools</h4>
+                    <p>Cryptographic hash generation</p>
+                </a>
+                <a href="matrix/index.html" class="card card-yellow">
+                    <div class="card-icon">🔢</div>
+                    <h4>Matrix Calculator</h4>
+                    <p>Linear algebra computations</p>
+                </a>
+                <a href="color/index.html" class="card card-green">
+                    <div class="card-icon">🌈</div>
+                    <h4>Color Selector</h4>
+                    <p>Pick and convert color codes</p>
+                </a>
+                <a href="flipbook/index.html" class="card card-blue">
+                    <div class="card-icon">📖</div>
+                    <h4>Flipbook Maker</h4>
+                    <p>Create interactive flipbooks</p>
+                </a>
+                <a href="../www/index.html" class="card card-purple">
+                    <div class="card-icon">🎨</div>
+                    <h4>Matthew DrawPad</h4>
+                    <p>A simple drawing application</p>
+                </a>
+            </div>
+        </section>
 
-	<!-- Matrix Calculator -->
-	<button class="button button3" onclick="location.href='matrix/index.html'">Matrix Calculator</button><hr>
+        <section class="category-section">
+            <h3 class="category-title">Development & Playgrounds</h3>
+            <div class="grid">
+                <a href="js_playground/index.html" class="card card-cyan">
+                    <div class="card-icon">⚡</div>
+                    <h4>JS + HTML Playground</h4>
+                    <p>Test web snippets instantly</p>
+                </a>
+                <a href="js_console/index.html" class="card card-blue">
+                    <div class="card-icon">💻</div>
+                    <h4>JavaScript Console</h4>
+                    <p>Execute JS code in browser</p>
+                </a>
+                <a href="tf_console/index.html" class="card card-purple">
+                    <div class="card-icon">🧠</div>
+                    <h4>Tensorflow.JS Console</h4>
+                    <p>Machine learning in browser</p>
+                </a>
+            </div>
+        </section>
 
-	<!-- Color Picker -->
-	<button class="button button4" onclick="location.href='color/index.html'">🌈 Color Selector</button>
+        <section class="category-section">
+            <h3 class="category-title">Games & WebGL Demos</h3>
+            <div class="grid">
+                <a href="head_motivation_controller/index.html" class="card card-red">
+                    <div class="card-icon">🕹️</div>
+                    <h4>Head Motion Controller</h4>
+                    <p>Control the game using head movements</p>
+                </a>
+                <a href="bacteria_game_1/index.html" class="card card-orange">
+                    <div class="card-icon">🦠</div>
+                    <h4>Bacteria Game (2D)</h4>
+                    <p>WebGL 2D survival game</p>
+                </a>
+                <a href="bacteria_game_2/index.html" class="card card-yellow">
+                    <div class="card-icon">🧬</div>
+                    <h4>Bacteria Game (3D)</h4>
+                    <p>WebGL 3D environment exploration</p>
+                </a>
+                <a href="real_3d_viewer/index.html" class="card card-purple">
+                    <div class="card-icon">🧊</div>
+                    <h4>3D Mesh Viewer</h4>
+                    <p>Render and view 3D models</p>
+                </a>
+                <a href="gomoku/index.html" class="card card-green">
+                    <div class="card-icon">⚫⚪</div>
+                    <h4>Gomoku vs AI</h4>
+                    <p>Classic board game with AI opponent</p>
+                </a>
+                <a href="chinese_chess/" class="card card-cyan">
+                    <div class="card-icon">♞</div>
+                    <h4>Chinese Chess</h4>
+                    <p>Strategic gameplay against AI</p>
+                </a>
+                <a href="hanoi_tower/index.html" class="card card-blue">
+                    <div class="card-icon">🛕</div>
+                    <h4>Hanoi Tower</h4>
+                    <p>The classic mathematical puzzle</p>
+                </a>
+            </div>
+        </section>
+    </main>
 
-	<!-- Js Playground -->
-	<button class="button button5" onclick="location.href='js_playground/index.html'">Javascript + HTML Playground</button><hr>
-
-	<!-- Js Console -->
-	<button class="button button6" onclick="location.href='js_console/index.html'">💻 Javascript Console</button>
-
-	<!-- Tensorflow Js Console -->
-	<button class="button button7" onclick="location.href='tf_console/index.html'">Tensorflow.JS Console</button><hr>
-
-	<!-- Head Position Controller -->
-	<button class="button button1" onclick="location.href='head_motivation_controller/index.html'">🕹️Head Motion Controller Game</button><br>
-
-	<!-- WebGL demo game 1 -->
-	<button class="button button2" onclick="location.href='bacteria_game_1/index.html'">WebGL Demo Game 1 (WebGL 2D)</button><br>
-	
-	<!-- WebGL demo game 2 -->
-	<button class="button button2" onclick="location.href='bacteria_game_2/index.html'">WebGL Demo Game 2 (WebGL 3D)</button><br>
-
-	<!-- WebGL 3D Mesh Viewer -->
-	<button class="button button7" onclick="location.href='real_3d_viewer/index.html'">WebGL 3D Mesh Viewer (WebGL 3D)</button><br>
-
-	<!-- Conv_Gomoku Demonstration -->
-	<button class="button button3" onclick="location.href='gomoku/index.html'">⚫ ⚪ ⚫ Play Gomoku (vs. AI) ⚫ ⚪ ⚫</button><br>
-
-	<!-- Chinese Chess -->
-	<button class="button button4" onclick="location.href='chinese_chess/'"> ♞ ♘ Play Chinese Chess (vs. AI) ♘ ♞ </button><hr>
-
-	<!-- Hanoi Tower -->
-	<button class="button button6" onclick="location.href='hanoi_tower/index.html'"> 🛕 Play Hanoi Tower  </button><hr>
-
-	<!-- Matthew Draw -->
-	<button class="button button5" onclick="location.href='../www/draw.html'">🎨 🖌️Matthew Whiteboard (web app)</button><button class="button button4" onclick="location.href='../www/index.html'">>>> 🖼️ Art Works (created by this app)</button><br>
-
-	<!-- Flipbook Maker -->
-	<button class="button button6" onclick="location.href='flipbook/index.html'">📖 Flipbook Maker (web app)</button><br>
-
-
-	<!-- Footer -->
-	<hr>
-	<div style="text-align: center; color: grey">Matthew (Peizhi) Yan, All rights reserved <br>2017-2020</div>
+    <footer>
+        <p>&copy; 2017-2026 Matthew (Peizhi) Yan. All rights reserved.</p>
+    </footer>
 </body>
 </html>
