@@ -1,147 +1,225 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<title>Scientific Calculator</title>
-	<script type="text/javascript" src="script.js"></script>
-	<style type="text/css">
-		button.btn{
-			width: 59px;
-		}
-		button.btn2{
-			width: 48%;
-		}
-	</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scientific Calculator</title>
+  <script src="script.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f1f5f9; --surface: #ffffff; --border: rgba(0,0,0,0.08);
+      --text: #0f172a; --muted: #475569; --accent: #f43f5e;
+      --accent-soft: rgba(244,63,94,0.08); --radius: 16px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* Navbar */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(241,245,249,0.88); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.7rem 1.25rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    nav h1 { flex: 1; text-align: center; font-size: 1rem; font-weight: 600; }
+    .nav-btn {
+      display: flex; align-items: center; gap: 0.35rem;
+      padding: 0.4rem 0.85rem; border-radius: 99px; border: 1px solid rgba(0,0,0,0.1);
+      background: rgba(0,0,0,0.05); color: var(--text);
+      font-family: inherit; font-size: 0.82rem; font-weight: 600;
+      text-decoration: none; cursor: pointer; transition: background 0.2s; white-space: nowrap;
+    }
+    .nav-btn:hover { background: rgba(0,0,0,0.1); }
+    .nav-btn.legacy { color: var(--muted); font-weight: 400; }
+
+    main { max-width: 560px; margin: 0 auto; padding: 2rem 1rem 3rem; display: flex; flex-direction: column; gap: 1.25rem; }
+
+    /* Result display */
+    .result-card {
+      background: var(--text); color: #f8fafc;
+      border-radius: var(--radius); padding: 1.25rem 1.5rem;
+      display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+    }
+    #result { font-size: 1.6rem; font-weight: 700; flex: 1; word-break: break-all; }
+    .clear-all {
+      padding: 0.4rem 0.9rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.1); color: #f8fafc;
+      font-family: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer;
+      transition: background 0.2s; white-space: nowrap;
+    }
+    .clear-all:hover { background: rgba(255,255,255,0.2); }
+
+    /* Input variables */
+    .inputs-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.25rem;
+      display: flex; flex-direction: column; gap: 0.75rem;
+    }
+    .var-row { display: flex; align-items: center; gap: 0.5rem; }
+    .var-label { font-size: 0.9rem; font-weight: 600; color: var(--muted); width: 1.5rem; }
+    .var-input {
+      flex: 1; padding: 0.5rem 0.75rem; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--bg);
+      font-family: inherit; font-size: 0.95rem; color: var(--text); outline: none;
+      transition: border-color 0.2s;
+    }
+    .var-input:focus { border-color: var(--accent); }
+    .var-clear {
+      padding: 0.4rem 0.7rem; border-radius: 8px; border: 1px solid var(--border);
+      background: var(--bg); color: var(--muted); font-family: inherit;
+      font-size: 0.8rem; cursor: pointer; transition: all 0.2s;
+    }
+    .var-clear:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .transfer-row { display: flex; gap: 0.5rem; }
+    .transfer-btn {
+      flex: 1; padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border);
+      background: var(--accent-soft); color: var(--accent);
+      font-family: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .transfer-btn:hover { background: var(--accent); color: #fff; }
+
+    /* Button sections */
+    .section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; }
+    .section-title {
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--muted); margin-bottom: 0.75rem;
+    }
+    .btn-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .calc-btn {
+      padding: 0.55rem 0.9rem; border-radius: 10px; border: 1px solid var(--border);
+      background: var(--bg); color: var(--text);
+      font-family: inherit; font-size: 0.82rem; font-weight: 600; cursor: pointer;
+      transition: all 0.18s; white-space: nowrap;
+    }
+    .calc-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); transform: translateY(-1px); }
+    .calc-btn:active { transform: translateY(0); }
+    .calc-btn.wide { flex: 1; min-width: 120px; }
+
+    footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.85rem; }
+  </style>
 </head>
 <body>
-	<!-- Home button & Back button -->
-	<button onclick="location.href='https://PeizhiYan.github.io'">Home</button>
-	<button onclick="location.href='../index.html'">Back</button><br><hr>
+  <nav>
+    <a class="nav-btn" href="https://PeizhiYan.github.io">&#127968; Home</a>
+    <a class="nav-btn" href="../index.html">&#8592; Back</a>
+    <h1>Scientific Calculator</h1>
+    <a class="nav-btn legacy" href="legacy.html">&#128196; Legacy</a>
+  </nav>
 
-	<!-- Calculator -->
-	<table border="1">
-		<!-- Result -->
-		<tr>
-			<p id="result"> RESULT </p>
-			<button onclick="clearAll()">Clear All</button>
-		</tr>
-		<tr>
-			<!-- Input -->
-			<td>
-				<table style="width: 100%">
-					<tr>
-						<td>x=<input type="text" id="textInput1" style="width: 70%;">
-							<button onclick="clearX()">C</button>
-						</td>
-					</tr>
-					<tr>
-						<td>y=<input type="text" id="textInput2" style="width: 70%;">
-						<button onclick="clearY()">C</button>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<button onclick="toX()" class="btn2">RESULT => x</button>
-							<button onclick="toY()" class="btn2">RESULT => y</button>
-						</td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-		<!-- constants -->
-		<tr>
-			<td>
-				<button onclick="e()" class="btn">e</button>
-				<button onclick="pi()" class="btn">PI</button>
-			</td>
-		</tr>
-		<!-- basics -->
-		<tr>
-			<td>
-				<button onclick="add()" class="btn">+</button>
-				<button onclick="sub()" class="btn">-</button>
-				<button onclick="mul()" class="btn">x</button>
-				<button onclick="div()" class="btn">/</button>
-			</td>
-		</tr>
-		<!-- logs -->
-		<tr>
-			<td>
-				<button onclick="log2()" class="btn">log_2(x)</button>
-				<button onclick="log10()" class="btn">lg(x)</button>
-				<button onclick="log()" class="btn">ln(x)</button>
-				<button onclick="logxy()" class="btn">log_x(y)</button>
-			</td>
-		</tr>
-		<!-- triangulars -->
-		<tr>
-			<td>
-				<button onclick="sin()" class="btn">sin(x)</button>
-				<button onclick="cos()" class="btn">cos(x)</button>
-				<button onclick="tan()" class="btn">tan(x)</button>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<button onclick="radian()" class="btn2">x=Radian(y)</button>
-				<button onclick="degree()" class="btn2">y=Degree(x)</button>
-			</td>
-		</tr>
+  <main>
+    <!-- Result -->
+    <div class="result-card">
+      <div id="result">RESULT</div>
+      <button class="clear-all" onclick="clearAll()">Clear All</button>
+    </div>
 
-		<!-- Exps -->
-		<tr>
-			<td>
-				<button onclick="sqrt()" class="btn">sqrt(x)</button>
-				<button onclick="root3()" class="btn">root^3(x)</button>
-				<button onclick="square()" class="btn">x^2</button>
-				<button onclick="cube()" class="btn">x^3</button>
-				<button onclick="pow()" class="btn">x^y</button>
-			</td>
-		</tr>
+    <!-- Variables -->
+    <div class="inputs-card">
+      <div class="var-row">
+        <span class="var-label">x =</span>
+        <input type="text" id="textInput1" class="var-input" placeholder="x value">
+        <button class="var-clear" onclick="clearX()">C</button>
+      </div>
+      <div class="var-row">
+        <span class="var-label">y =</span>
+        <input type="text" id="textInput2" class="var-input" placeholder="y value">
+        <button class="var-clear" onclick="clearY()">C</button>
+      </div>
+      <div class="transfer-row">
+        <button class="transfer-btn" onclick="toX()">RESULT → x</button>
+        <button class="transfer-btn" onclick="toY()">RESULT → y</button>
+      </div>
+    </div>
 
-		<!-- Random number -->
-		<tr>
-			<td>
-				<button onclick="rand()" class="btn2">random(x,y)</button>
-				<button onclick="randint()" class="btn2">randint(x,y)</button>
-			</td>
-		</tr>
+    <!-- Constants & Basics -->
+    <div class="section">
+      <div class="section-title">Constants &amp; Arithmetic</div>
+      <div class="btn-grid">
+        <button class="calc-btn" onclick="e()">e</button>
+        <button class="calc-btn" onclick="pi()">π</button>
+        <button class="calc-btn" onclick="add()">x + y</button>
+        <button class="calc-btn" onclick="sub()">x − y</button>
+        <button class="calc-btn" onclick="mul()">x × y</button>
+        <button class="calc-btn" onclick="div()">x ÷ y</button>
+      </div>
+    </div>
 
-		<!-- Base Converter -->
-		<tr style="color: grey;">
-			<td>Dec:x => 
-				<button onclick="dec2bin()" class="btn">Bin</button>
-				<button onclick="dec2oct()" class="btn">Oct</button>
-				<button onclick="dec2hex()" class="btn">Hex</button>
-			</td>
-		</tr>
-		<tr style="color: grey;">
-			<td>Bin:x  => 
-				<button onclick="bin2dec()" class="btn">Dec</button>
-				<button onclick="bin2oct()" class="btn">Oct</button>
-				<button onclick="bin2hex()" class="btn">Hex</button>
-			</td>
-		</tr>
-		<tr style="color: grey;">
-			<td>Hex:x  => 
-				<button onclick="hex2dec()" class="btn">Dec</button>
-				<button onclick="hex2oct()" class="btn">Oct</button>
-				<button onclick="hex2bin()" class="btn">Bin</button>
-			</td>
-		</tr>
+    <!-- Logarithms -->
+    <div class="section">
+      <div class="section-title">Logarithms</div>
+      <div class="btn-grid">
+        <button class="calc-btn" onclick="log2()">log₂(x)</button>
+        <button class="calc-btn" onclick="log10()">lg(x)</button>
+        <button class="calc-btn" onclick="log()">ln(x)</button>
+        <button class="calc-btn" onclick="logxy()">logₓ(y)</button>
+      </div>
+    </div>
 
-		<!-- Factorial, Combination and Permutation -->
-		<tr style="color: grey;">
-			<td>
-				<button onclick="factorial()" class="btn">!</button>
-				<button onclick="combination()" class="btn">nCy</button>
-				<button onclick="permutation()" class="btn">nPy</button>
-			</td>
-		</tr>
+    <!-- Trigonometry -->
+    <div class="section">
+      <div class="section-title">Trigonometry</div>
+      <div class="btn-grid">
+        <button class="calc-btn" onclick="sin()">sin(x)</button>
+        <button class="calc-btn" onclick="cos()">cos(x)</button>
+        <button class="calc-btn" onclick="tan()">tan(x)</button>
+        <button class="calc-btn wide" onclick="radian()">x = Radian(y)</button>
+        <button class="calc-btn wide" onclick="degree()">y = Degree(x)</button>
+      </div>
+    </div>
 
-	</table>
+    <!-- Powers & Roots -->
+    <div class="section">
+      <div class="section-title">Powers &amp; Roots</div>
+      <div class="btn-grid">
+        <button class="calc-btn" onclick="sqrt()">√x</button>
+        <button class="calc-btn" onclick="root3()">∛x</button>
+        <button class="calc-btn" onclick="square()">x²</button>
+        <button class="calc-btn" onclick="cube()">x³</button>
+        <button class="calc-btn" onclick="pow()">xʸ</button>
+      </div>
+    </div>
 
-	<!-- Footer -->
-	<hr>
-	<div style="text-align: center; color: grey">Peizhi Yan, All rights reserved. <br>2018</div>
+    <!-- Random -->
+    <div class="section">
+      <div class="section-title">Random</div>
+      <div class="btn-grid">
+        <button class="calc-btn wide" onclick="rand()">random(x, y)</button>
+        <button class="calc-btn wide" onclick="randint()">randint(x, y)</button>
+      </div>
+    </div>
+
+    <!-- Base Conversion -->
+    <div class="section">
+      <div class="section-title">Base Conversion</div>
+      <div class="btn-grid">
+        <button class="calc-btn" onclick="dec2bin()">Dec→Bin</button>
+        <button class="calc-btn" onclick="dec2oct()">Dec→Oct</button>
+        <button class="calc-btn" onclick="dec2hex()">Dec→Hex</button>
+        <button class="calc-btn" onclick="bin2dec()">Bin→Dec</button>
+        <button class="calc-btn" onclick="bin2oct()">Bin→Oct</button>
+        <button class="calc-btn" onclick="bin2hex()">Bin→Hex</button>
+        <button class="calc-btn" onclick="hex2dec()">Hex→Dec</button>
+        <button class="calc-btn" onclick="hex2oct()">Hex→Oct</button>
+        <button class="calc-btn" onclick="hex2bin()">Hex→Bin</button>
+      </div>
+    </div>
+
+    <!-- Combinatorics -->
+    <div class="section">
+      <div class="section-title">Combinatorics</div>
+      <div class="btn-grid">
+        <button class="calc-btn" onclick="factorial()">x!</button>
+        <button class="calc-btn" onclick="combination()">C(x,y)</button>
+        <button class="calc-btn" onclick="permutation()">P(x,y)</button>
+      </div>
+    </div>
+  </main>
+
+  <footer>&copy; 2018–2026 Peizhi Yan. All rights reserved.</footer>
 </body>
 </html>

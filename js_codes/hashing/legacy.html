@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Hashing</title>
+	<script type="text/javascript" src="jquery.min.js"></script>
+	<script type="text/javascript" src="md5.js"></script>
+	<script type="text/javascript">
+		function toMD5(){
+  			var s = document.getElementById("inputText").value
+  			var h = $.md5(s)
+  			document.getElementById("outputHash").innerHTML = "MD5: " + h
+		}
+	</script>
+	<style type="text/css">
+		
+	</style>
+</head>
+<body>
+	<!-- Home button & Back button -->
+	<button onclick="location.href='https://PeizhiYan.github.io'">Home</button>
+	<button onclick="location.href='../index.html'">Back</button><br><hr>
+
+
+	<table border="1">
+		<tr>
+			<td><textarea id="inputText"></textarea></td>
+		</tr>
+		<tr>
+			<td><p id="outputHash">RESULT</p></td>
+		</tr>
+	</table>
+
+	<button onclick="toMD5()">MD5</button>
+
+	<!-- Footer -->
+	<hr>
+	<div style="text-align: center; color: grey">Peizhi Yan, All rights reserved. <br>2018</div>
+</body>
+</html>

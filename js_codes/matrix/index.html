@@ -1,55 +1,154 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<title>Matrix Calculator</title>
-	<script type="text/javascript" src="script.js"></script>
-	<style type="text/css">
-		tr.matrice{
-			height: 50px;
-		}
-		table.tb{
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matrix Calculator</title>
+  <script src="script.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f1f5f9; --surface: #ffffff; --border: rgba(0,0,0,0.08);
+      --text: #0f172a; --muted: #475569; --accent: #eab308;
+      --accent-soft: rgba(234,179,8,0.1); --radius: 16px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(241,245,249,0.88); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.7rem 1.25rem; display: flex; align-items: center; gap: 0.75rem;
+    }
+    nav h1 { flex: 1; text-align: center; font-size: 1rem; font-weight: 600; }
+    .nav-btn {
+      display: flex; align-items: center; gap: 0.35rem;
+      padding: 0.4rem 0.85rem; border-radius: 99px; border: 1px solid rgba(0,0,0,0.1);
+      background: rgba(0,0,0,0.05); color: var(--text);
+      font-family: inherit; font-size: 0.82rem; font-weight: 600;
+      text-decoration: none; cursor: pointer; transition: background 0.2s; white-space: nowrap;
+    }
+    .nav-btn:hover { background: rgba(0,0,0,0.1); }
+    .nav-btn.legacy { color: var(--muted); font-weight: 400; }
 
-		}
-	</style>
+    main { max-width: 900px; margin: 0 auto; padding: 2.5rem 1rem 3rem; display: flex; flex-direction: column; gap: 1.5rem; }
+
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .card-title { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 1.25rem; }
+
+    .matrix-row { display: flex; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
+    .matrix-group { display: flex; flex-direction: column; gap: 0.4rem; flex: 1; min-width: 180px; }
+    .matrix-label { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+    .matrix-eq { font-size: 1.5rem; font-weight: 300; color: var(--muted); align-self: center; padding: 0 0.25rem; }
+
+    textarea {
+      padding: 0.6rem 0.75rem; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--bg);
+      font-family: 'Courier New', monospace; font-size: 0.88rem; color: var(--text);
+      resize: none; outline: none; transition: border-color 0.2s;
+      width: 100%;
+    }
+    textarea:focus { border-color: var(--accent); }
+    textarea.output { color: var(--accent); background: var(--accent-soft); border-color: transparent; }
+    textarea.small { height: 2.5rem; resize: none; }
+
+    .btn-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+    .op-btn {
+      padding: 0.55rem 1.1rem; border-radius: 10px; border: none;
+      background: var(--accent); color: #fff;
+      font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .op-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+
+    .hint { font-size: 0.78rem; color: var(--muted); margin-bottom: 0.75rem; }
+
+    footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.85rem; }
+  </style>
 </head>
 <body>
-	<!-- Home button & Back button -->
-	<button onclick="location.href='https://PeizhiYan.github.io'">Home</button>
-	<button onclick="location.href='../index.html'">Back</button><br><hr>
+  <nav>
+    <a class="nav-btn" href="https://PeizhiYan.github.io">&#127968; Home</a>
+    <a class="nav-btn" href="../index.html">&#8592; Back</a>
+    <h1>Matrix Calculator</h1>
+    <a class="nav-btn legacy" href="legacy.html">&#128196; Legacy</a>
+  </nav>
 
-	<!-- Matrix Basics -->
-	<table border="0" class="tb">
-		<tr class="matrice">
-			<b>Note: Use comma to separate each element!</b>
-			<td>M1<textarea id="matrix1" rows="6"></textarea></td>
-			<td><p id="sign">( )</p></td>
-			<td>M2<textarea id="matrix2" rows="6"></textarea></td>
-			<td>=</td>
-			<td>M<textarea id="output" rows="6">RESULT</textarea></td>
-		</tr>
-	</table>
-	<button onclick="mul()">Dot Multiplication</button>
-	<button onclick="add()">Addition</button>
-	<button onclick="sub()">Substraction</button>
-	<hr>
+  <main>
+    <!-- Binary Operations -->
+    <div class="card">
+      <div class="card-title">Binary Operations — M1 ○ M2 = M</div>
+      <p class="hint">Use a comma to separate elements; use a new line for each row. Example: <code>1,2,3</code></p>
+      <div class="matrix-row">
+        <div class="matrix-group">
+          <div class="matrix-label">M1</div>
+          <textarea id="matrix1" rows="6" placeholder="1,0&#10;0,1"></textarea>
+        </div>
+        <div class="matrix-eq" id="sign">○</div>
+        <div class="matrix-group">
+          <div class="matrix-label">M2</div>
+          <textarea id="matrix2" rows="6" placeholder="1,0&#10;0,1"></textarea>
+        </div>
+        <div class="matrix-eq">=</div>
+        <div class="matrix-group">
+          <div class="matrix-label">Result M</div>
+          <textarea id="output" rows="6" class="output" readonly placeholder="Result"></textarea>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="op-btn" onclick="mul()">Dot Multiply</button>
+        <button class="op-btn" onclick="add()">Addition</button>
+        <button class="op-btn" onclick="sub()">Subtraction</button>
+      </div>
+    </div>
 
-	<!-- Reshape -->
-	<b>Matrix Reshape</b><br><br>
-	Matrix:<textarea id="matrix" rows="6"></textarea>
-	New row:<textarea id="new_row" cols="5"></textarea>
-	New col:<textarea id="new_col" cols="5"></textarea><br>
-	New matrix:<textarea id="new_matrix" rows="6">RESULT</textarea><br><br>
-	<button onclick="reshape()">reshape</button>
-	<hr>
+    <!-- Reshape -->
+    <div class="card">
+      <div class="card-title">Reshape</div>
+      <div class="matrix-row">
+        <div class="matrix-group">
+          <div class="matrix-label">Matrix</div>
+          <textarea id="matrix" rows="6" placeholder="1,2,3,4&#10;5,6,7,8"></textarea>
+        </div>
+        <div class="matrix-group" style="max-width:120px">
+          <div class="matrix-label">New Rows</div>
+          <textarea id="new_row" class="small" rows="1" placeholder="2"></textarea>
+          <div class="matrix-label" style="margin-top:0.75rem">New Cols</div>
+          <textarea id="new_col" class="small" rows="1" placeholder="4"></textarea>
+        </div>
+        <div class="matrix-eq">=</div>
+        <div class="matrix-group">
+          <div class="matrix-label">Reshaped Matrix</div>
+          <textarea id="new_matrix" rows="6" class="output" readonly placeholder="Result"></textarea>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="op-btn" onclick="reshape()">Reshape</button>
+      </div>
+    </div>
 
-	<!-- Transpose -->
-	<b>Matrix Transpose</b><br><br>
-	Matrix:<textarea id="matrixT" rows="6"></textarea><br>
-	New matrix:<textarea id="new_matrixT" rows="6">RESULT</textarea><br><br>
-	<button onclick="transpose()">transpose</button>
+    <!-- Transpose -->
+    <div class="card">
+      <div class="card-title">Transpose</div>
+      <div class="matrix-row">
+        <div class="matrix-group">
+          <div class="matrix-label">Matrix</div>
+          <textarea id="matrixT" rows="6" placeholder="1,2,3&#10;4,5,6"></textarea>
+        </div>
+        <div class="matrix-eq">→</div>
+        <div class="matrix-group">
+          <div class="matrix-label">Transposed Matrix</div>
+          <textarea id="new_matrixT" rows="6" class="output" readonly placeholder="Result"></textarea>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="op-btn" onclick="transpose()">Transpose</button>
+      </div>
+    </div>
+  </main>
 
-	<!-- Footer -->
-	<hr>
-	<div style="text-align: center; color: grey">Peizhi Yan, All rights reserved. <br>2018</div>
+  <footer>&copy; 2018–2026 Peizhi Yan. All rights reserved.</footer>
 </body>
 </html>

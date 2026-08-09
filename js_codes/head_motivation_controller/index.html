@@ -1,41 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>Machine Learning Head Motion Controller</title>
-	<script src="dist/build.js"></script><hr>
-	<style type="text/css">
-		.title{
-			font-size: 30px;
-		}
-		.button{
-			border: none;
-			padding: 15px 15px;
-			text-align: center;
-			text-decoration: none;
-			display: inline-block;
-			margin: 0px 0px;
-			cursor: pointer;
-		}
-		canvas {
-			border:1px solid #d3d3d3;
-			background-color: #f1f1f1;
-		}
-	</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Head Motion Controller</title>
+  <script src="dist/build.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f1f5f9; --surface: #ffffff; --border: rgba(0,0,0,0.08);
+      --text: #0f172a; --muted: #475569; --accent: #f43f5e;
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(241,245,249,0.88); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.7rem 1.25rem; display: flex; align-items: center; gap: 0.75rem;
+    }
+    nav h1 { flex: 1; text-align: center; font-size: 1rem; font-weight: 600; }
+    .nav-btn {
+      display: flex; align-items: center; gap: 0.35rem;
+      padding: 0.4rem 0.85rem; border-radius: 99px; border: 1px solid rgba(0,0,0,0.1);
+      background: rgba(0,0,0,0.05); color: var(--text);
+      font-family: inherit; font-size: 0.82rem; font-weight: 600;
+      text-decoration: none; cursor: pointer; transition: background 0.2s; white-space: nowrap;
+    }
+    .nav-btn:hover { background: rgba(0,0,0,0.1); }
+    .nav-btn.legacy { color: var(--muted); font-weight: 400; }
+
+    main { max-width: 720px; margin: 0 auto; padding: 2rem 1rem 3rem; display: flex; flex-direction: column; gap: 1.25rem; }
+
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .card-title { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 1rem; }
+
+    .steps { display: flex; flex-direction: column; gap: 0.6rem; }
+    .step { display: flex; gap: 0.75rem; align-items: flex-start; }
+    .step-num {
+      width: 26px; height: 26px; border-radius: 50%; background: var(--accent);
+      color: #fff; font-size: 0.78rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .step-text { font-size: 0.9rem; line-height: 1.5; color: var(--text); padding-top: 3px; }
+    .step-text code {
+      font-family: 'Courier New', monospace; background: var(--bg);
+      padding: 0.1rem 0.4rem; border-radius: 5px; border: 1px solid var(--border);
+      font-size: 0.85rem;
+    }
+
+    .display-wrapper {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      display: flex; justify-content: center;
+    }
+
+    footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.85rem; }
+  </style>
 </head>
 <body>
-	<b>Instructions:</b><br>
-	Step 1: Train the network:<br>
-	-> 1) Press the [UP] button, and look up<br>
-	-> 2) Press the [STOP] button, and not look up<br>
-	repeat Step 1 until the network can do a good job<br>
-	Step 2: Start game<br>
-	<hr>
-	<div id='display' align="center"></div>
-	<hr>
-	
+  <nav>
+    <a class="nav-btn" href="https://PeizhiYan.github.io">&#127968; Home</a>
+    <a class="nav-btn" href="../index.html">&#8592; Back</a>
+    <h1>Head Motion Controller</h1>
+    <a class="nav-btn legacy" href="legacy.html">&#128196; Legacy</a>
+  </nav>
 
+  <main>
+    <div class="card">
+      <div class="card-title">How to Play</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-text">Press <code>[UP]</code> while looking up to collect training samples for the "up" gesture.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-text">Press <code>[STOP]</code> while looking straight ahead to collect "neutral" samples.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-text">Repeat steps 1–2 until the network recognizes your head motion reliably.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-text">Start the game and control it with your head!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="display-wrapper">
+      <div id="display" align="center"></div>
+    </div>
+  </main>
+
+  <footer>&copy; 2018–2026 Peizhi Yan. All rights reserved.</footer>
 </body>
 </html>

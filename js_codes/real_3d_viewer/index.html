@@ -1,38 +1,92 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<title>Flat VR 3D Object Viewer</title>
-	<script type="text/javascript" src="./webgl-utils.js"></script>
-	<script type="text/javascript" src="./m4.js"></script>
-	<style type="text/css">
-		button.btn{
-			width: 59px;
-		}
-		button.btn2{
-			width: 48%;
-		}
-		canvas {
-			width: 80vw;
-			height: 60vh;
-			display: block;
-		}
-	</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Mesh Viewer</title>
+  <script src="./webgl-utils.js"></script>
+  <script src="./m4.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f1f5f9; --surface: #ffffff; --border: rgba(0,0,0,0.08);
+      --text: #0f172a; --muted: #475569; --accent: #a855f7;
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(241,245,249,0.88); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.7rem 1.25rem; display: flex; align-items: center; gap: 0.75rem;
+    }
+    nav h1 { flex: 1; text-align: center; font-size: 1rem; font-weight: 600; }
+    .nav-btn {
+      display: flex; align-items: center; gap: 0.35rem;
+      padding: 0.4rem 0.85rem; border-radius: 99px; border: 1px solid rgba(0,0,0,0.1);
+      background: rgba(0,0,0,0.05); color: var(--text);
+      font-family: inherit; font-size: 0.82rem; font-weight: 600;
+      text-decoration: none; cursor: pointer; transition: background 0.2s; white-space: nowrap;
+    }
+    .nav-btn:hover { background: rgba(0,0,0,0.1); }
+    .nav-btn.legacy { color: var(--muted); font-weight: 400; }
+
+    main { max-width: 900px; margin: 0 auto; padding: 2rem 1rem 3rem; display: flex; flex-direction: column; gap: 1.25rem; }
+
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .card-title { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 0.9rem; }
+
+    .canvas-wrapper {
+      background: #111; border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+    #canvas { display: block; width: 100%; height: 60vh; }
+
+    .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .action-btn {
+      padding: 0.55rem 1.25rem; border-radius: 10px; border: none;
+      font-family: inherit; font-size: 0.88rem; font-weight: 600; cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .action-btn.primary { background: var(--accent); color: #fff; }
+    .action-btn.secondary { background: rgba(0,0,0,0.06); color: var(--text); border: 1px solid var(--border); }
+    .action-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+
+    #obj {
+      width: 100%; padding: 0.75rem 1rem; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--bg);
+      font-family: 'Courier New', monospace; font-size: 0.82rem; color: var(--text);
+      resize: vertical; min-height: 260px; outline: none; transition: border-color 0.2s;
+    }
+    #obj:focus { border-color: var(--accent); }
+
+    footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.85rem; }
+  </style>
 </head>
 <body>
-	<!-- Home button & Back button -->
-	<button onclick="location.href='https://PeizhiYan.github.io'">Home</button>
-	<button onclick="location.href='../index.html'">Back</button><br><hr>
+  <nav>
+    <a class="nav-btn" href="https://PeizhiYan.github.io">&#127968; Home</a>
+    <a class="nav-btn" href="../index.html">&#8592; Back</a>
+    <h1>3D Mesh Viewer</h1>
+    <a class="nav-btn legacy" href="legacy.html">&#128196; Legacy</a>
+  </nav>
 
+  <main>
+    <div class="canvas-wrapper">
+      <canvas id="canvas">Loading WebGL…</canvas>
+    </div>
 
-	<canvas id="canvas">Loading...</canvas><br><hr>
-
-
-	<!-- Clear the .obj file area -->
-	<button onclick="document.getElementById('obj').value = ''">Clear</button>
-	<button onclick="main();">Render</button><br>
-
-	<textarea id="obj" rows="20" cols="50">
-mtllib cube.mtl
+    <div class="card">
+      <div class="card-title">OBJ Input</div>
+      <div class="btn-row" style="margin-bottom:0.9rem;">
+        <button class="action-btn primary" onclick="main();">&#9654; Render</button>
+        <button class="action-btn secondary" onclick="document.getElementById('obj').value = ''">Clear</button>
+      </div>
+      <textarea id="obj">mtllib cube.mtl
 o Cube
 v 1.000000 1.000000 -1.000000
 v 1.000000 -1.000000 -1.000000
@@ -74,15 +128,11 @@ f 4/5/2 3/6/2 7/7/2 8/8/2
 f 8/8/3 7/7/3 5/9/3 6/10/3
 f 6/10/4 2/11/4 4/12/4 8/13/4
 f 2/14/5 1/15/5 3/16/5 4/17/5
-f 6/18/6 5/19/6 1/20/6 2/11/6
-	</textarea>
-	
+f 6/18/6 5/19/6 1/20/6 2/11/6</textarea>
+    </div>
+  </main>
 
-	<!-- Footer -->
-	<hr>
-	<div style="text-align: center; color: grey">Peizhi Yan, All rights reserved. <br>2024</div>
+  <script src="script.js"></script>
+  <footer>&copy; 2024–2026 Peizhi Yan. All rights reserved.</footer>
 </body>
-
-<script type="text/javascript" src="script.js"></script>
-
 </html>

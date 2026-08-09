@@ -1,81 +1,641 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<title>Conv_Gomoku Demo</title>
-	<script type="text/javascript" src="script.js"></script>
-	<style type="text/css">
-		.br { 
-            display: block; 
-            margin-bottom: 0em; 
-        } 
-		.title{
-			font-size: 30px;
-		}
-		/* the button */
-		.button{
-			border: none;
-			background-color: #0096FF;
-		    color: white;
-		    text-align: center;
-		    text-decoration: none;
-		    display: inline-block;
-		    font-size: 24px;
-		    margin: 2px 2px;
-		    cursor: pointer;
-		}
-		/* the stone */
-		.cell{
-			border: none;
-			background-color: grey;
-		    color: white;
-		    padding: 14px;
-		    text-align: center;
-		    text-decoration: none;
-		    display: inline-block;
-		    margin: 2px;
-		    cursor: pointer;
-		}
-		/* value cell */
-		.value{
-			background-color: white;
-		}
-		/* the console */
-		#console{
-			border: none;
-			background-color: black;
-		    color:  #00FF0D;
-		    padding: 2px 2px;
-		    width: 50%;
-		    height: 100px;
-		    text-decoration: none;
-		    display: inline-block;
-		    font-size: 15px;
-		    margin: 2px 2px;
-		    cursor: pointer;
-		}
-	</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gomoku vs AI</title>
+  <script src="script.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f1f5f9; --surface: #ffffff; --border: rgba(0,0,0,0.08);
+      --text: #0f172a; --muted: #475569; --accent: #22c55e;
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    nav {
+      position: sticky; top: 0; z-index: 200;
+      background: rgba(241,245,249,0.88); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.7rem 1.25rem; display: flex; align-items: center; gap: 0.75rem;
+    }
+    nav h1 { flex: 1; text-align: center; font-size: 1rem; font-weight: 600; }
+    .nav-btn {
+      display: flex; align-items: center; gap: 0.35rem;
+      padding: 0.4rem 0.85rem; border-radius: 99px; border: 1px solid rgba(0,0,0,0.1);
+      background: rgba(0,0,0,0.05); color: var(--text);
+      font-family: inherit; font-size: 0.82rem; font-weight: 600;
+      text-decoration: none; cursor: pointer; transition: background 0.2s; white-space: nowrap;
+    }
+    .nav-btn:hover { background: rgba(0,0,0,0.1); }
+    .nav-btn.legacy { color: var(--muted); font-weight: 400; }
+
+    main {
+      max-width: 580px; margin: 0 auto;
+      padding: 2rem 1rem 3rem;
+      display: flex; flex-direction: column; gap: 1rem; align-items: center;
+    }
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.25rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05); width: 100%;
+    }
+
+    #status-bar {
+      display: flex; align-items: center; gap: 0.55rem;
+      font-size: 0.9rem; font-weight: 600; min-height: 1.4rem;
+    }
+    .stone-dot {
+      width: 13px; height: 13px; border-radius: 50%; flex-shrink: 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+    .stone-dot.black { background: radial-gradient(circle at 35% 32%, #777, #111); }
+    .stone-dot.white { background: radial-gradient(circle at 35% 32%, #fff, #ccc); border: 1px solid #bbb; }
+    .stone-dot.none  { background: transparent; box-shadow: none; }
+
+    .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .game-btn {
+      padding: 0.6rem 1.25rem; border-radius: 10px; border: none;
+      background: var(--accent); color: #fff;
+      font-family: inherit; font-size: 0.88rem; font-weight: 600; cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .game-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    .game-btn.secondary {
+      background: rgba(0,0,0,0.06); color: var(--text); border: 1px solid var(--border);
+    }
+    .game-btn.secondary:hover { background: rgba(0,0,0,0.1); }
+    .game-btn.active-insight { background: #f59e0b; color: #fff; border: none; }
+
+    .board-wrapper {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      width: 100%; overflow: hidden;
+    }
+    .board-inner {
+      position: relative; width: 480px; height: 480px;
+      transform-origin: top left;
+    }
+    #game-canvas {
+      display: block; cursor: crosshair;
+      border-radius: 6px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.18);
+    }
+
+    @media (max-width: 520px) {
+      main { padding: 1rem 0.75rem 2rem; }
+      nav h1 { font-size: 0.88rem; }
+      .nav-btn { font-size: 0.75rem; padding: 0.35rem 0.65rem; }
+    }
+    @media (max-width: 360px) { nav h1 { display: none; } }
+
+    #popup-backdrop {
+      display: none; position: fixed; inset: 0;
+      background: rgba(15,23,42,0.55); backdrop-filter: blur(4px);
+      z-index: 500; align-items: center; justify-content: center;
+    }
+    #popup-backdrop.show { display: flex; }
+    #popup-box {
+      background: #fff; border-radius: 24px;
+      padding: 2.5rem 2rem 2rem; max-width: 340px; width: 90%;
+      text-align: center; box-shadow: 0 24px 64px rgba(0,0,0,0.2);
+      animation: popIn 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.7); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    #popup-emoji   { font-size: 4rem; margin-bottom: 0.75rem; display: block; }
+    #popup-title   { font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem; }
+    #popup-subtitle { font-size: 0.95rem; color: var(--muted); margin-bottom: 1.75rem; }
+    .popup-btn {
+      display: inline-block; padding: 0.7rem 2rem; border-radius: 12px; border: none;
+      font-family: inherit; font-size: 0.95rem; font-weight: 700; cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s; margin: 0.25rem;
+    }
+    .popup-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+    .popup-btn.primary { background: var(--accent); color: #fff; }
+    .popup-btn.ghost   { background: rgba(0,0,0,0.06); color: var(--text); }
+
+    #fireworks-canvas {
+      display: none; position: fixed; inset: 0;
+      pointer-events: none; z-index: 499;
+    }
+
+    footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.85rem; }
+  </style>
 </head>
-<body onload="start()">
-	<!-- Home button & Back button -->
-	<button onclick="location.href='https://PeizhiYan.github.io'">Home</button>
-	<button onclick="location.href='../index.html'">Back</button><br><hr>
+<body onload="start(); scaleBoard();">
 
-	<b class="title">Convolution-Based Gomoku AI Demonstration</b><br>
+  <canvas id="fireworks-canvas"></canvas>
 
-	<textarea id="console"></textarea>	
-	<button class="button" id="Re-Start" onclick="start()">Start (开始游戏)</button><hr>
-	<button class="button" id="Insight_btn" onclick="insight_show_hide()">Show AI Insight (AI红点辅助)</button><hr>
-	
-	<div style="position:relative; width:500px;height:500px;">
-		<!-- Game Board -->
-		<div id="board" style="width:480px;height:480px; position:static; background: url('board.gif'); z-index:2"></div>
-		<!-- Insight Visualization-->
-		<div id="value" style="width:480px;height:480px; position:static; opacity: 1; z-index:1; visibility:hidden;"></div>
-	</div>
+  <div id="popup-backdrop">
+    <div id="popup-box">
+      <span id="popup-emoji">&#127881;</span>
+      <div id="popup-title">You Win!</div>
+      <div id="popup-subtitle">Congratulations &#8212; you beat the AI!</div>
+      <div>
+        <button class="popup-btn primary" onclick="closePopup(); start();">&#9654; Play Again</button>
+        <button class="popup-btn ghost"   onclick="closePopup()">Close</button>
+      </div>
+    </div>
+  </div>
 
+  <nav>
+    <a class="nav-btn" href="https://PeizhiYan.github.io">&#127968; Home</a>
+    <a class="nav-btn" href="../index.html">&#8592; Back</a>
+    <h1>Gomoku vs AI</h1>
+    <a class="nav-btn legacy" href="legacy.html">&#128196; Legacy</a>
+  </nav>
 
-	<!-- Footer -->
-	<hr>
-	<div style="text-align: center; color: grey; top:">Peizhi Yan, All rights reserved. <br>2018</div>
+  <main>
+    <div class="card">
+      <div class="btn-row">
+        <button id="start" class="game-btn" onclick="start()">&#9654; New Game</button>
+        <button id="insight-btn" class="game-btn secondary" onclick="toggleInsight()">&#128065; AI Insight</button>
+      </div>
+    </div>
+
+    <div class="card" style="padding: 0.65rem 1.25rem;">
+      <div id="status-bar">
+        <div class="stone-dot none" id="status-dot"></div>
+        <span id="status-text">Press New Game to begin</span>
+      </div>
+    </div>
+
+    <div class="board-wrapper">
+      <div class="board-inner">
+        <canvas id="game-canvas" style="width:480px;height:480px;"></canvas>
+      </div>
+    </div>
+  </main>
+
+  <footer>&copy; 2018&ndash;2026 Peizhi Yan. All rights reserved.</footer>
+
+  <script>
+    /* ── Board geometry ── */
+    var CELL = 30, PAD = 30, S = 480, SR = 13, LINES = 15;
+    var COLS = 'ABCDEFGHJKLMNOP'; /* 15 chars, skip I */
+
+    /* ── Canvas game state ── */
+    var _insightOn = false;
+    var _over      = false;
+    var _lastMove  = null;
+    var _hover     = null;
+
+    /* ════════════════════════════════
+       RENDERING
+    ════════════════════════════════ */
+
+    function render() {
+      var canvas = document.getElementById('game-canvas');
+      var dpr    = window.devicePixelRatio || 1;
+      var ctx    = canvas.getContext('2d');
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      drawBg(ctx);
+      drawGrid(ctx);
+      if (_insightOn) drawInsight(ctx);
+      drawStones(ctx);
+      if (_hover && !_over && current === 1) drawGhost(ctx, _hover[0], _hover[1]);
+    }
+
+    function drawBg(ctx) {
+      /* Warm wood base */
+      var base = ctx.createLinearGradient(0, 0, 0, S);
+      base.addColorStop(0,   '#dba84a');
+      base.addColorStop(0.4, '#c8922e');
+      base.addColorStop(1,   '#b07820');
+      ctx.fillStyle = base;
+      ctx.fillRect(0, 0, S, S);
+
+      /* Diagonal sheen */
+      var sheen = ctx.createLinearGradient(0, 0, S * 0.7, S);
+      sheen.addColorStop(0,   'rgba(255,225,140,0.10)');
+      sheen.addColorStop(0.4, 'rgba(0,0,0,0.04)');
+      sheen.addColorStop(1,   'rgba(255,225,140,0.07)');
+      ctx.fillStyle = sheen;
+      ctx.fillRect(0, 0, S, S);
+
+      /* Top-left light source */
+      var lt = ctx.createRadialGradient(S*0.08, S*0.08, 0, S*0.35, S*0.35, S*0.7);
+      lt.addColorStop(0, 'rgba(255,235,160,0.14)');
+      lt.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = lt;
+      ctx.fillRect(0, 0, S, S);
+
+      /* Edge vignette */
+      var vig = ctx.createRadialGradient(S/2, S/2, S*0.22, S/2, S/2, S*0.78);
+      vig.addColorStop(0, 'rgba(0,0,0,0)');
+      vig.addColorStop(1, 'rgba(0,0,0,0.22)');
+      ctx.fillStyle = vig;
+      ctx.fillRect(0, 0, S, S);
+    }
+
+    function drawGrid(ctx) {
+      var end = PAD + (LINES - 1) * CELL;
+
+      /* Grid lines */
+      ctx.strokeStyle = 'rgba(0,0,0,0.46)';
+      ctx.lineWidth   = 0.75;
+      for (var k = 0; k < LINES; k++) {
+        var p = PAD + k * CELL;
+        ctx.beginPath(); ctx.moveTo(PAD, p); ctx.lineTo(end, p); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(p, PAD); ctx.lineTo(p, end); ctx.stroke();
+      }
+
+      /* Outer border (thicker) */
+      ctx.lineWidth   = 2;
+      ctx.strokeStyle = 'rgba(0,0,0,0.58)';
+      ctx.strokeRect(PAD, PAD, (LINES - 1) * CELL, (LINES - 1) * CELL);
+
+      /* Star points */
+      var stars = [[3,3],[3,11],[7,7],[11,3],[11,11]];
+      ctx.fillStyle = 'rgba(0,0,0,0.60)';
+      for (var s = 0; s < stars.length; s++) {
+        ctx.beginPath();
+        ctx.arc(PAD + stars[s][1]*CELL, PAD + stars[s][0]*CELL, 3.6, 0, Math.PI*2);
+        ctx.fill();
+      }
+
+      /* Coordinate labels */
+      ctx.fillStyle    = 'rgba(0,0,0,0.36)';
+      ctx.font         = '9px Outfit, sans-serif';
+      ctx.textBaseline = 'middle';
+      for (var k = 0; k < LINES; k++) {
+        var p = PAD + k * CELL;
+        ctx.textAlign = 'center';
+        ctx.fillText(COLS[k], p, PAD - 13);
+        ctx.textAlign = 'right';
+        ctx.fillText(15 - k, PAD - 7, p);
+      }
+    }
+
+    function drawInsight(ctx) {
+      if (!value_human) return;
+      var maxV = 0;
+      for (var i = 0; i < LINES; i++)
+        for (var j = 0; j < LINES; j++)
+          if (value_human[i][j] > maxV) maxV = value_human[i][j];
+      if (maxV <= 0) return;
+
+      /* First pass — wide soft aura */
+      for (var i = 0; i < LINES; i++) {
+        for (var j = 0; j < LINES; j++) {
+          if (!board || board[i][j] !== 0) continue;
+          var v = value_human[i][j];
+          if (v <= 0) continue;
+          var t  = v / maxV;
+          var px = PAD + j * CELL, py = PAD + i * CELL;
+          var r, g, b;
+          if (t < 0.5) {
+            var u = t * 2;
+            r = Math.round(60  + 195 * u);
+            g = Math.round(110 + 100 * u);
+            b = Math.round(230 - 230 * u);
+          } else {
+            var u = (t - 0.5) * 2;
+            r = 255; g = Math.round(210 - 180 * u); b = 0;
+          }
+          var auraR = CELL * (0.9 + 0.7 * t);
+          var aura  = ctx.createRadialGradient(px, py, 0, px, py, auraR);
+          aura.addColorStop(0,   'rgba(' + r + ',' + g + ',' + b + ',' + (0.18 + 0.22*t).toFixed(2) + ')');
+          aura.addColorStop(0.5, 'rgba(' + r + ',' + g + ',' + b + ',' + (0.08 + 0.10*t).toFixed(2) + ')');
+          aura.addColorStop(1,   'rgba(' + r + ',' + g + ',' + b + ',0)');
+          ctx.fillStyle = aura;
+          ctx.beginPath();
+          ctx.arc(px, py, auraR, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      /* Second pass — sharp core dot at high-value intersections */
+      for (var i = 0; i < LINES; i++) {
+        for (var j = 0; j < LINES; j++) {
+          if (!board || board[i][j] !== 0) continue;
+          var v = value_human[i][j];
+          if (v <= 0) continue;
+          var t  = v / maxV;
+          if (t < 0.25) continue; /* only show core for meaningful cells */
+          var px = PAD + j * CELL, py = PAD + i * CELL;
+          var r, g, b;
+          if (t < 0.5) {
+            var u = t * 2;
+            r = Math.round(60  + 195 * u);
+            g = Math.round(110 + 100 * u);
+            b = Math.round(230 - 230 * u);
+          } else {
+            var u = (t - 0.5) * 2;
+            r = 255; g = Math.round(210 - 180 * u); b = 0;
+          }
+          var coreR = CELL * 0.22 * t;
+          var core  = ctx.createRadialGradient(px, py, 0, px, py, coreR);
+          core.addColorStop(0, 'rgba(' + r + ',' + g + ',' + b + ',' + (0.85 + 0.15*t).toFixed(2) + ')');
+          core.addColorStop(1, 'rgba(' + r + ',' + g + ',' + b + ',0)');
+          ctx.fillStyle = core;
+          ctx.beginPath();
+          ctx.arc(px, py, coreR, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
+
+    function drawStones(ctx) {
+      if (!board) return;
+      for (var i = 0; i < LINES; i++)
+        for (var j = 0; j < LINES; j++)
+          if (board[i][j] !== 0) {
+            var isLast = _lastMove && _lastMove[0]===i && _lastMove[1]===j;
+            paintStone(ctx, PAD+j*CELL, PAD+i*CELL, SR, board[i][j]===1, isLast);
+          }
+    }
+
+    function drawGhost(ctx, i, j) {
+      ctx.globalAlpha = 0.38;
+      paintStone(ctx, PAD+j*CELL, PAD+i*CELL, SR, true, false);
+      ctx.globalAlpha = 1;
+    }
+
+    function paintStone(ctx, px, py, r, isBlack, isLast) {
+      var hx = px - r * 0.30;
+      var hy = py - r * 0.30;
+
+      /* Drop shadow */
+      ctx.save();
+      ctx.shadowColor    = 'rgba(0,0,0,0.44)';
+      ctx.shadowBlur     = 10;
+      ctx.shadowOffsetX  = 2.5;
+      ctx.shadowOffsetY  = 3.5;
+
+      /* Stone body — radial gradient offset for 3D look */
+      var body = ctx.createRadialGradient(hx, hy, r*0.02, px+r*0.08, py+r*0.12, r*1.08);
+      if (isBlack) {
+        body.addColorStop(0,    '#727272');
+        body.addColorStop(0.38, '#2e2e2e');
+        body.addColorStop(1,    '#000000');
+      } else {
+        body.addColorStop(0,    '#ffffff');
+        body.addColorStop(0.45, '#f0f0f0');
+        body.addColorStop(0.82, '#d8d8d8');
+        body.addColorStop(1,    '#b8b8b8');
+      }
+      ctx.beginPath();
+      ctx.arc(px, py, r, 0, Math.PI*2);
+      ctx.fillStyle = body;
+      ctx.fill();
+      ctx.restore(); /* clear shadow before specular */
+
+      /* Specular highlight */
+      var spec = ctx.createRadialGradient(hx, hy, 0, hx, hy, r*0.72);
+      spec.addColorStop(0, 'rgba(255,255,255,' + (isBlack ? 0.52 : 0.76) + ')');
+      spec.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.beginPath();
+      ctx.arc(px, py, r, 0, Math.PI*2);
+      ctx.fillStyle = spec;
+      ctx.fill();
+
+      /* White stone outline */
+      if (!isBlack) {
+        ctx.beginPath();
+        ctx.arc(px, py, r, 0, Math.PI*2);
+        ctx.strokeStyle = 'rgba(0,0,0,0.14)';
+        ctx.lineWidth   = 0.8;
+        ctx.stroke();
+      }
+
+      /* Last-move red marker */
+      if (isLast) {
+        ctx.beginPath();
+        ctx.arc(px, py, r * 0.21, 0, Math.PI*2);
+        ctx.fillStyle = '#ef4444';
+        ctx.fill();
+      }
+    }
+
+    /* ── Status bar ── */
+    function setStatus(dotClass, msg) {
+      document.getElementById('status-dot').className  = 'stone-dot ' + dotClass;
+      document.getElementById('status-text').textContent = msg;
+    }
+
+    /* ── Board scaling ── */
+    function scaleBoard() {
+      var wrapper = document.querySelector('.board-wrapper');
+      var inner   = document.querySelector('.board-inner');
+      var avail   = wrapper.clientWidth - 32;
+      var s       = Math.min(1, avail / S);
+      inner.style.transform    = 'scale(' + s + ')';
+      inner.style.marginBottom = '-' + Math.round(S * (1 - s)) + 'px';
+      inner.style.marginLeft   = Math.round((avail - S*s) / 2) + 'px';
+    }
+    window.addEventListener('resize', scaleBoard);
+
+    /* ── AI Insight toggle ── */
+    function toggleInsight() {
+      _insightOn = !_insightOn;
+      render();
+      var btn = document.getElementById('insight-btn');
+      if (_insightOn) { btn.classList.remove('secondary'); btn.classList.add('active-insight'); }
+      else            { btn.classList.remove('active-insight'); btn.classList.add('secondary'); }
+    }
+
+    /* ════════════════════════════════
+       GAME LOGIC OVERRIDES
+       (DOMContentLoaded fires before
+       body onload — overrides are
+       in place when start() runs)
+    ════════════════════════════════ */
+    window.addEventListener('DOMContentLoaded', function () {
+
+      /* Override print() */
+      window.print = function (msg) {
+        if (msg === 'You win!')  { setStatus('black', 'You win! '); showPopup(true);  return; }
+        if (msg === 'You lose!') { setStatus('white', 'You lose!');  showPopup(false); return; }
+        setStatus('none', msg);
+      };
+
+      /* Override insight_show_hide() — toggleInsight() handles everything */
+      window.insight_show_hide = function () {};
+
+      /* Set canvas physical resolution for crisp rendering on HiDPI screens */
+      (function () {
+        var canvas = document.getElementById('game-canvas');
+        var dpr    = window.devicePixelRatio || 1;
+        canvas.width  = S * dpr;
+        canvas.height = S * dpr;
+      })();
+
+      /* Override start() */
+      window.start = function () {
+        board = []; board_ai = []; value = []; value_human = [];
+        current   = 1;
+        _over     = false;
+        _lastMove = null;
+        _hover    = null;
+        _insightOn = false;
+        var btn = document.getElementById('insight-btn');
+        btn.classList.remove('active-insight'); btn.classList.add('secondary');
+
+        for (var i = 0; i < LINES; i++) {
+          board[i] = []; board_ai[i] = []; value[i] = []; value_human[i] = [];
+          for (var j = 0; j < LINES; j++)
+            board[i][j] = board_ai[i][j] = value[i][j] = value_human[i][j] = 0;
+        }
+        computeValue();
+        render();
+        setStatus('black', 'Your turn — place a black stone');
+        document.getElementById('start').textContent = 'Re-start';
+      };
+
+      /* Override clk() */
+      window.clk = function (i, j) {
+        if (_over || current !== 1) return;
+        if (board[i][j] !== 0) return;
+
+        board[i][j]    =  1;
+        board_ai[i][j] = -1;
+        current        = -1;
+        _lastMove      = [i, j];
+        render();
+
+        /* Check human win */
+        var fw = count(conv2d(board, filter1a), 5) + count(conv2d(board, filter2a), 5)
+               + count(conv2d(board, filter3a), 5) + count(conv2d(board, filter4a), 5);
+        if (fw > 0) { _over = true; setStatus('black', 'You win!'); showPopup(true); return; }
+
+        setStatus('white', 'AI is thinking…');
+
+        setTimeout(function () {
+          computeValue();
+
+          /* Find highest-value empty cell */
+          var maxVal = -Infinity, ai_i = 7, ai_j = 7;
+          for (var a = 0; a < LINES; a++)
+            for (var b = 0; b < LINES; b++)
+              if (value[a][b] > maxVal) { maxVal = value[a][b]; ai_i = a; ai_j = b; }
+
+          board[ai_i][ai_j]    = -1;
+          board_ai[ai_i][ai_j] =  1;
+          current              =  1;
+          _lastMove            = [ai_i, ai_j];
+
+          /* Check AI win */
+          var fa = count(conv2d(board_ai, filter1a), 5) + count(conv2d(board_ai, filter2a), 5)
+                 + count(conv2d(board_ai, filter3a), 5) + count(conv2d(board_ai, filter4a), 5);
+          if (fa > 0) {
+            _over = true;
+            computeValue(); render();
+            setStatus('white', 'You lose!'); showPopup(false); return;
+          }
+
+          computeValue();
+          render();
+          setStatus('black', 'Your turn — place a black stone');
+        }, 20);
+      };
+
+      /* Canvas click → grid */
+      var canvas = document.getElementById('game-canvas');
+      canvas.addEventListener('click', function (e) {
+        var rect = canvas.getBoundingClientRect();
+        var cx = (e.clientX - rect.left) * (S / rect.width);
+        var cy = (e.clientY - rect.top)  * (S / rect.height);
+        var j  = Math.round((cx - PAD) / CELL);
+        var i  = Math.round((cy - PAD) / CELL);
+        if (i >= 0 && i < LINES && j >= 0 && j < LINES) clk(i, j);
+      });
+
+      /* Hover ghost stone */
+      canvas.addEventListener('mousemove', function (e) {
+        var rect = canvas.getBoundingClientRect();
+        var cx = (e.clientX - rect.left) * (S / rect.width);
+        var cy = (e.clientY - rect.top)  * (S / rect.height);
+        var j  = Math.round((cx - PAD) / CELL);
+        var i  = Math.round((cy - PAD) / CELL);
+        var nh = (i>=0 && i<LINES && j>=0 && j<LINES && board && board[i][j]===0) ? [i,j] : null;
+        var changed = (!_hover && nh) || (_hover && !nh) ||
+                      (_hover && nh && (_hover[0]!==nh[0] || _hover[1]!==nh[1]));
+        _hover = nh;
+        if (changed) render();
+      });
+
+      canvas.addEventListener('mouseleave', function () {
+        if (_hover) { _hover = null; render(); }
+      });
+    });
+
+    /* ════════════════════════════════
+       POPUP
+    ════════════════════════════════ */
+    function showPopup(isWin) {
+      document.getElementById('popup-emoji').textContent    = isWin ? '🎉' : '😔';
+      document.getElementById('popup-title').textContent    = isWin ? 'You Win!'  : 'You Lose!';
+      document.getElementById('popup-subtitle').textContent = isWin
+        ? 'Congratulations — you beat the AI!'
+        : 'The AI wins this round. Try again!';
+      document.getElementById('popup-title').style.color = isWin ? '#22c55e' : '#f43f5e';
+      document.getElementById('popup-backdrop').classList.add('show');
+      if (isWin) startFireworks();
+    }
+
+    function closePopup() {
+      document.getElementById('popup-backdrop').classList.remove('show');
+      stopFireworks();
+    }
+
+    /* ════════════════════════════════
+       FIREWORKS
+    ════════════════════════════════ */
+    var _fwCanvas, _fwCtx, _fwParts, _fwFrame;
+
+    function startFireworks() {
+      _fwCanvas = document.getElementById('fireworks-canvas');
+      _fwCanvas.style.display = 'block';
+      _fwCanvas.width  = window.innerWidth;
+      _fwCanvas.height = window.innerHeight;
+      _fwCtx   = _fwCanvas.getContext('2d');
+      _fwParts = [];
+      for (var b = 0; b < 6; b++)
+        (function (d) { setTimeout(burst, d); })(b * 300);
+      animateFW();
+    }
+
+    function burst() {
+      var cx  = Math.random() * _fwCanvas.width;
+      var cy  = _fwCanvas.height * 0.2 + Math.random() * _fwCanvas.height * 0.4;
+      var col = ['#f43f5e','#f97316','#eab308','#22c55e','#3b82f6','#a855f7','#fff'];
+      for (var i = 0; i < 90; i++) {
+        var ang = Math.PI * 2 * i / 90;
+        var spd = 2 + Math.random() * 5;
+        _fwParts.push({ x:cx, y:cy, vx:Math.cos(ang)*spd, vy:Math.sin(ang)*spd,
+          alpha:1, color:col[Math.floor(Math.random()*col.length)], size:3+Math.random()*4 });
+      }
+    }
+
+    function animateFW() {
+      _fwCtx.clearRect(0, 0, _fwCanvas.width, _fwCanvas.height);
+      _fwParts = _fwParts.filter(function (p) { return p.alpha > 0.02; });
+      _fwParts.forEach(function (p) {
+        p.x += p.vx; p.y += p.vy; p.vy += 0.12; p.vx *= 0.98; p.alpha -= 0.016;
+        _fwCtx.globalAlpha = p.alpha;
+        _fwCtx.fillStyle   = p.color;
+        _fwCtx.beginPath();
+        _fwCtx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+        _fwCtx.fill();
+      });
+      _fwCtx.globalAlpha = 1;
+      _fwFrame = requestAnimationFrame(animateFW);
+    }
+
+    function stopFireworks() {
+      if (_fwFrame)  cancelAnimationFrame(_fwFrame);
+      if (_fwCanvas) _fwCanvas.style.display = 'none';
+      _fwParts = [];
+    }
+  </script>
 </body>
 </html>

@@ -1,130 +1,123 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>JS Playground</title>
-    <script type="text/javascript">
-    	// Run the HTML+Js code
-    	function runCode(oCode, jsCode) {
-    	    var win = window.open('', "_blank", '');
-    	    win.document.open('text/html', 'replace');
-    	    win.opener = null
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS + HTML Playground</title>
+  <script>
+    function runCode(oCode, jsCode) {
+      var win = window.open('', "_blank", '');
+      win.document.open('text/html', 'replace');
+      win.opener = null;
+      var body = oCode.value;
+      var js = jsCode.value;
+      var newPage = "<!DOCTYPE html><html><head><title>Runtime</title>" + js + "<script src='jquery-3.5.1.min.js'>" + "<" + "/script>" + "</head>" + body + "</html>";
+      win.document.write(newPage);
+      win.document.close();
+    }
+    function enableTab(id) {
+      var el = document.getElementById(id);
+      el.onkeydown = function(e) {
+        if (e.keyCode === 9) {
+          var val = this.value, start = this.selectionStart, end = this.selectionEnd;
+          this.value = val.substring(0, start) + '\t' + val.substring(end);
+          this.selectionStart = this.selectionEnd = start + 1;
+          return false;
+        }
+      };
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f1f5f9; --surface: #ffffff; --border: rgba(0,0,0,0.08);
+      --text: #0f172a; --muted: #475569; --accent: #06b6d4;
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(241,245,249,0.88); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.7rem 1.25rem; display: flex; align-items: center; gap: 0.75rem;
+    }
+    nav h1 { flex: 1; text-align: center; font-size: 1rem; font-weight: 600; }
+    .nav-btn {
+      display: flex; align-items: center; gap: 0.35rem;
+      padding: 0.4rem 0.85rem; border-radius: 99px; border: 1px solid rgba(0,0,0,0.1);
+      background: rgba(0,0,0,0.05); color: var(--text);
+      font-family: inherit; font-size: 0.82rem; font-weight: 600;
+      text-decoration: none; cursor: pointer; transition: background 0.2s; white-space: nowrap;
+    }
+    .nav-btn:hover { background: rgba(0,0,0,0.1); }
+    .nav-btn.legacy { color: var(--muted); font-weight: 400; }
 
-    	    var body = oCode.value
-    	    var js = jsCode.value
-    	    var newPage = "<!DOCTYPE html><html><head><title>Runtime</title>"+js+"<script src='jquery-3.5.1.min.js'>"+"<"+"/script>"+"</head>"+body+"</html>"
+    main { flex: 1; display: flex; flex-direction: column; padding: 1.5rem; gap: 1rem; }
 
-    	    win.document.write(newPage);
-    	    //win.focus();
-    	    win.document.close();
-    	}
-    	// Enable the tab character onkeypress (onkeydown) inside textarea...
-		// ... for a textarea that has an `id="my-textarea"`
-    	function enableTab(id) {
-    	var el = document.getElementById(id);
-    		el.onkeydown = function(e) {
-    		    if (e.keyCode === 9) { // tab was pressed
-		
-    		        // get caret position/selection
-    		        var val = this.value,
-    		            start = this.selectionStart,
-    		            end = this.selectionEnd;
-		
-    		        // set textarea value to: text before caret + tab + text after caret
-    		        this.value = val.substring(0, start) + '\t' + val.substring(end);
-		
-    		        // put caret at right position again
-    		        this.selectionStart = this.selectionEnd = start + 1;
-		
-    		        // prevent the focus lose
-    		        return false;
-		
-    		    }
-    		};
-		}
-    </script>
-    <style type="text/css">
-    	.title{
-			font-size: 30px;
-		}
-		/* the button */
-		#run_btn{
-			border: none;
-			background-color: #0096FF;
-		    color: white;
-		    text-align: center;
-		    text-decoration: none;
-		    display: inline-block;
-		    font-size: 24px;
-		    margin: 2px 2px;
-		    cursor: pointer;
-		}
-		#html{
-			border: none;
-			background-color: grey;
-		    color:  white;
-		    padding: 2px 2px;
-		    width: 500px;
-		    height: 600px;
-		    text-decoration: none;
-		    display: inline-block;
-		    font-size: 15px;
-		    margin: 2px 2px;
-		    cursor: pointer;
-		}
-		#js{
-			border: none;
-			background-color: black;
-		    color:  #00FF0D;
-		    padding: 2px 2px;
-		    width: 800px;
-		    height: 600px;
-		    text-decoration: none;
-		    display: inline-block;
-		    font-size: 15px;
-		    margin: 2px 2px;
-		    cursor: pointer;
-		}
-    </style>
+    .toolbar { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+    .toolbar-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+    .run-btn {
+      padding: 0.55rem 1.5rem; border-radius: 10px; border: none;
+      background: var(--accent); color: #fff;
+      font-family: inherit; font-size: 0.9rem; font-weight: 700; cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .run-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+
+    .editors { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; flex: 1; }
+    @media (max-width: 700px) { .editors { grid-template-columns: 1fr; } }
+
+    .editor-pane { display: flex; flex-direction: column; gap: 0.5rem; }
+    .editor-label {
+      font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--muted); padding: 0 0.25rem;
+    }
+    textarea {
+      flex: 1; min-height: 480px; padding: 1rem;
+      border-radius: var(--radius); border: 1px solid var(--border);
+      font-family: 'Courier New', Courier, monospace; font-size: 0.9rem;
+      resize: vertical; outline: none; transition: border-color 0.2s;
+    }
+    #html { background: #fafafa; color: #1e293b; }
+    #html:focus { border-color: #94a3b8; }
+    #js { background: #0f172a; color: #4ade80; }
+    #js:focus { border-color: var(--accent); }
+
+    footer { text-align: center; padding: 1.5rem; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--border); }
+  </style>
 </head>
-<body onload="enableTab('html'),enableTab('js')">
+<body onload="enableTab('html'); enableTab('js')">
+  <nav>
+    <a class="nav-btn" href="https://PeizhiYan.github.io">&#127968; Home</a>
+    <a class="nav-btn" href="../index.html">&#8592; Back</a>
+    <h1>JS + HTML Playground</h1>
+    <a class="nav-btn legacy" href="legacy.html">&#128196; Legacy</a>
+  </nav>
 
-	<!-- Home button & Back button -->
-	<button onclick="location.href='https://PeizhiYan.github.io'">Home</button>
-	<button onclick="location.href='../index.html'">Back</button><br><hr>
+  <main>
+    <div class="toolbar">
+      <span class="toolbar-title">Edit code below, then run</span>
+      <button class="run-btn" onclick="runCode(html, js)">&#9654; Run</button>
+    </div>
+    <div class="editors">
+      <div class="editor-pane">
+        <div class="editor-label">HTML</div>
+        <textarea id="html"><body>
 
-	<b class="title">Javascript Playground</b><br>
+</body></textarea>
+      </div>
+      <div class="editor-pane">
+        <div class="editor-label">JavaScript</div>
+        <textarea id="js"><script type="text/javascript">
 
-	<table>
-		<tr>
-			<td><b>HTML Code</b></td>
-			<td><b>JS Code</b></td>
-		</tr>
-		<tr>
-			<!-- HTML Code Editer -->
-			<td>
-				<textarea id="html">
-<body>
-    
-</body>
-				</textarea>
-			</td>
-			<!-- JS Code Editer -->
-			<td>
-				<textarea id="js">
-<script type="text/javascript">
+</script></textarea>
+      </div>
+    </div>
+  </main>
 
-</script>
-				</textarea>
-			</td>
-		</tr>
-	</table>
-
-	
-
-	<input id="run_btn" type="button" value="Run" onclick="runCode(html,js)">
-	
-	<!-- Footer -->
-	<hr>
-	<div style="text-align: center; color: grey">Peizhi Yan, All rights reserved. <br>2018</div>
+  <footer>&copy; 2018–2026 Peizhi Yan. All rights reserved.</footer>
 </body>
 </html>
