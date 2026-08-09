@@ -54,10 +54,10 @@
     .game-btn:hover { opacity: 0.85; transform: translateY(-1px); }
 
     .canvas-wrapper {
-      background: var(--surface); border: 1px solid var(--border);
+      background: #0f172a; border: 1px solid var(--border);
       border-radius: var(--radius); padding: 1rem;
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-      display: flex; justify-content: center; overflow-x: auto; width: 100%;
+      width: 100%; overflow: hidden;
     }
     canvas { display: block; border-radius: 8px; }
 
@@ -134,5 +134,305 @@
   </main>
 
   <footer>&copy; 2023–2026 Peizhi Yan. All rights reserved.</footer>
+
+  <script>
+  /* ════════════════════════════════════════════════════════
+     HANOI TOWER — 3D Canvas redesign v2
+     Overrides code.js's window.onload + draw()
+  ════════════════════════════════════════════════════════ */
+
+  /* ── Utilities ── */
+  function parseRGB(s) {
+    var m = s.match(/(\d+),\s*(\d+),\s*(\d+)/);
+    return [+m[1], +m[2], +m[3]];
+  }
+  /* Multiplicative scale — proportional shading regardless of hue */
+  function sc(v, f) { return Math.min(255, Math.max(0, Math.round(v * f))); }
+  function C(r, g, b, fr, fg, fb) {
+    return 'rgb(' + sc(r,fr) + ',' + sc(g,fg||fr) + ',' + sc(b,fb||fr) + ')';
+  }
+
+  function rPath(ctx, x, y, w, h, r) {
+    r = Math.min(r, w / 2, h / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y,     x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x,     y + h, r);
+    ctx.arcTo(x,     y + h, x,     y,     r);
+    ctx.arcTo(x,     y,     x + w, y,     r);
+    ctx.closePath();
+  }
+
+  /* ── Background ── */
+  function drawBg(ctx, W, H) {
+    var g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, '#1a2535');
+    g.addColorStop(1, '#090e18');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    /* subtle desk-surface sheen at bottom */
+    var fl = ctx.createLinearGradient(0, H * 0.72, 0, H);
+    fl.addColorStop(0, 'rgba(255,255,255,0)');
+    fl.addColorStop(1, 'rgba(255,255,255,0.05)');
+    ctx.fillStyle = fl; ctx.fillRect(0, H * 0.72, W, H * 0.28);
+    /* vignette */
+    var vig = ctx.createRadialGradient(W/2, H/2, H*0.15, W/2, H/2, W*0.75);
+    vig.addColorStop(0, 'rgba(0,0,0,0)');
+    vig.addColorStop(1, 'rgba(0,0,0,0.38)');
+    ctx.fillStyle = vig; ctx.fillRect(0, 0, W, H);
+  }
+
+  /* ── Base platform ── */
+  function drawBase(ctx, W, H, baseY, baseH) {
+    var bx = W * 0.04, bw = W * 0.92;
+    var bevel = Math.max(8, baseH * 0.42);
+
+    /* top face — lighter warm wood */
+    var tf = ctx.createLinearGradient(bx, 0, bx + bw, 0);
+    tf.addColorStop(0,   '#5e2e10'); tf.addColorStop(0.18, '#9a5226');
+    tf.addColorStop(0.5, '#c06e38'); tf.addColorStop(0.82, '#9a5226');
+    tf.addColorStop(1,   '#5e2e10');
+    ctx.fillStyle = tf;
+    ctx.beginPath();
+    ctx.moveTo(bx,          baseY);
+    ctx.lineTo(bx + bw,     baseY);
+    ctx.lineTo(bx + bw - 8, baseY - bevel);
+    ctx.lineTo(bx + 8,      baseY - bevel);
+    ctx.closePath();
+    ctx.fill();
+    /* top face highlight strip */
+    ctx.fillStyle = 'rgba(255,220,160,0.14)';
+    ctx.fillRect(bx + 10, baseY - bevel, bw - 20, 3);
+
+    /* front face */
+    var ff = ctx.createLinearGradient(bx, 0, bx + bw, 0);
+    ff.addColorStop(0,    '#240e04'); ff.addColorStop(0.12, '#502010');
+    ff.addColorStop(0.5,  '#7c381c'); ff.addColorStop(0.88, '#502010');
+    ff.addColorStop(1,    '#240e04');
+    rPath(ctx, bx, baseY, bw, baseH, 5);
+    ctx.fillStyle = ff; ctx.fill();
+
+    /* vertical shading on front face */
+    var vf = ctx.createLinearGradient(0, baseY, 0, baseY + baseH);
+    vf.addColorStop(0, 'rgba(255,255,255,0.07)');
+    vf.addColorStop(1, 'rgba(0,0,0,0.25)');
+    rPath(ctx, bx, baseY, bw, baseH, 5);
+    ctx.fillStyle = vf; ctx.fill();
+
+    /* ground shadow */
+    var gs = ctx.createLinearGradient(0, baseY + baseH, 0, baseY + baseH + 10);
+    gs.addColorStop(0, 'rgba(0,0,0,0.45)');
+    gs.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = gs;
+    ctx.fillRect(bx + 4, baseY + baseH, bw - 8, 10);
+  }
+
+  /* ── Pole ── */
+  function drawPole(ctx, cx, poleTop, poleH, poleW, isSelected) {
+    var hw = poleW / 2;
+
+    /* body — horizontal gradient for cylinder */
+    var g = ctx.createLinearGradient(cx - hw, 0, cx + hw, 0);
+    if (isSelected) {
+      g.addColorStop(0,    '#003d55'); g.addColorStop(0.18, '#007faa');
+      g.addColorStop(0.50, '#44ccee'); g.addColorStop(0.72, '#007faa');
+      g.addColorStop(1,    '#003d55');
+    } else {
+      g.addColorStop(0,    '#100602'); g.addColorStop(0.18, '#48200c');
+      g.addColorStop(0.50, '#8c4828'); g.addColorStop(0.72, '#48200c');
+      g.addColorStop(1,    '#100602');
+    }
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.72)'; ctx.shadowBlur = 18; ctx.shadowOffsetX = 6;
+    rPath(ctx, cx - hw, poleTop, poleW, poleH, hw);
+    ctx.fillStyle = g; ctx.fill();
+    ctx.restore();
+
+    /* vertical specular strip — bright line running down the pole */
+    var sv = ctx.createLinearGradient(0, poleTop, 0, poleTop + poleH * 0.65);
+    sv.addColorStop(0,   'rgba(255,255,255,0.32)');
+    sv.addColorStop(0.5, 'rgba(255,255,255,0.12)');
+    sv.addColorStop(1,   'rgba(255,255,255,0)');
+    var sw = hw * 0.50;
+    rPath(ctx, cx - sw/2, poleTop + hw, sw, poleH * 0.58, sw/2);
+    ctx.fillStyle = sv; ctx.fill();
+
+    /* top cap */
+    ctx.beginPath();
+    ctx.ellipse(cx, poleTop + hw * 0.45, hw, hw * 0.40, 0, 0, Math.PI * 2);
+    ctx.fillStyle = isSelected ? '#88eeff' : '#d08844';
+    ctx.fill();
+    /* cap specular */
+    ctx.beginPath();
+    ctx.ellipse(cx - hw*0.22, poleTop + hw*0.22, hw*0.32, hw*0.15, 0, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(255,255,255,0.52)'; ctx.fill();
+  }
+
+  /* ── Disk ── */
+  function drawDisk(ctx, cx, diskY, diskW, diskH, colorStr, isSelected) {
+    var c = parseRGB(colorStr);
+    var r = c[0], g = c[1], b = c[2];
+    var hw   = diskW / 2;
+    /* top ellipse height — 42 % of total disk height, capped by half-width */
+    var ellH = Math.min(diskH * 0.42, hw * 0.70);
+    var bodyTop = diskY + ellH;
+    var bodyH   = diskH - ellH;
+    var rad     = Math.min(bodyH * 0.38, hw * 0.35, 11);
+
+    /* ① Ambient-occlusion ellipse at the disk's base */
+    var ao = ctx.createRadialGradient(cx, bodyTop + bodyH, 0, cx, bodyTop + bodyH, hw * 1.05);
+    ao.addColorStop(0, 'rgba(0,0,0,0.48)');
+    ao.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = ao;
+    ctx.beginPath();
+    ctx.ellipse(cx, bodyTop + bodyH, hw, ellH * 0.48, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    /* ② Body — horizontal gradient (cylinder wrap lighting)
+          uses multiplicative scaling so the hue is preserved in shadows */
+    ctx.save();
+    ctx.shadowColor   = 'rgba(0,0,0,0.60)';
+    ctx.shadowBlur    = isSelected ? 22 : 14;
+    ctx.shadowOffsetY = isSelected ? 20 : 6;
+
+    var dg = ctx.createLinearGradient(cx - hw, bodyTop, cx + hw, bodyTop);
+    dg.addColorStop(0,    C(r,g,b, 0.18));          /* deep shadow left  */
+    dg.addColorStop(0.10, C(r,g,b, 0.42));
+    dg.addColorStop(0.32, C(r,g,b, 0.88));
+    dg.addColorStop(0.58, C(r,g,b, 1.40, 1.28, 1.14)); /* warm highlight    */
+    dg.addColorStop(0.80, C(r,g,b, 0.82));
+    dg.addColorStop(1,    C(r,g,b, 0.18));          /* deep shadow right */
+    rPath(ctx, cx - hw, bodyTop, diskW, bodyH, rad);
+    ctx.fillStyle = dg; ctx.fill();
+    ctx.restore();
+
+    /* ③ Vertical shading overlay — top of body lighter, bottom darker */
+    var vg = ctx.createLinearGradient(cx, bodyTop, cx, bodyTop + bodyH);
+    vg.addColorStop(0,   'rgba(255,255,255,0.10)');
+    vg.addColorStop(0.5, 'rgba(0,0,0,0)');
+    vg.addColorStop(1,   'rgba(0,0,0,0.28)');
+    rPath(ctx, cx - hw, bodyTop, diskW, bodyH, rad);
+    ctx.fillStyle = vg; ctx.fill();
+
+    /* ④ Bottom rim — dark ellipse closes the cylinder bottom */
+    ctx.beginPath();
+    ctx.ellipse(cx, bodyTop + bodyH, hw, ellH * 0.52, 0, 0, Math.PI * 2);
+    ctx.fillStyle = C(r,g,b, 0.24);
+    ctx.fill();
+
+    /* ⑤ Top face — radial gradient from very bright off-center to darker rim */
+    var tg = ctx.createRadialGradient(cx - hw*0.20, bodyTop - ellH*0.15, 0, cx, bodyTop, hw * 0.94);
+    tg.addColorStop(0,    C(r,g,b, 1.55, 1.55, 1.45));
+    tg.addColorStop(0.38, C(r,g,b, 1.22, 1.22, 1.18));
+    tg.addColorStop(0.72, C(r,g,b, 0.94));
+    tg.addColorStop(1,    C(r,g,b, 0.62));
+    ctx.beginPath();
+    ctx.ellipse(cx, bodyTop, hw, ellH, 0, 0, Math.PI * 2);
+    ctx.fillStyle = tg; ctx.fill();
+
+    /* ⑥ Thin edge line separating top face from body */
+    ctx.beginPath();
+    ctx.ellipse(cx, bodyTop, hw, ellH, 0, 0, Math.PI * 2);
+    ctx.strokeStyle = C(r,g,b, 0.40);
+    ctx.lineWidth = 0.9; ctx.stroke();
+
+    /* ⑦ Specular shine — small bright oval top-left of top face */
+    var sg = ctx.createRadialGradient(
+      cx - hw*0.28, bodyTop - ellH*0.30, 0,
+      cx - hw*0.18, bodyTop - ellH*0.18, hw * 0.36
+    );
+    sg.addColorStop(0,    'rgba(255,255,255,0.90)');
+    sg.addColorStop(0.42, 'rgba(255,255,255,0.32)');
+    sg.addColorStop(1,    'rgba(255,255,255,0)');
+    ctx.fillStyle = sg;
+    ctx.beginPath();
+    ctx.ellipse(cx - hw*0.24, bodyTop - ellH*0.22, hw*0.28, ellH*0.32, -0.28, 0, Math.PI*2);
+    ctx.fill();
+
+    /* ⑧ Selected glow */
+    if (isSelected) {
+      ctx.save();
+      ctx.shadowColor = 'rgba(80,220,255,1.0)'; ctx.shadowBlur = 36;
+      ctx.beginPath();
+      ctx.ellipse(cx, bodyTop, hw + 1.5, ellH + 1, 0, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(100,235,255,0.90)'; ctx.lineWidth = 2.5; ctx.stroke();
+      ctx.restore();
+    }
+  }
+
+  /* ══ OVERRIDE draw() ══ */
+  function draw() {
+    var dpr = window.devicePixelRatio || 1;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    W = canvas.width  / dpr;
+    H = canvas.height / dpr;
+    ctx.clearRect(0, 0, W, H);
+
+    var nD      = 7;
+    var baseH   = Math.max(18, H * 0.11);
+    var baseY   = H - baseH - 4;
+    var poleTop = H * 0.09;
+    var poleH   = baseY - poleTop;
+    var poleW   = Math.max(10, Math.min(W / 36, 22));
+    var pX      = [W / 6, W / 2, 5 * W / 6];
+    var dMaxW   = W / 3 * 0.80;
+    var dH      = poleH / (nD + 2.0);
+
+    drawBg(ctx, W, H);
+    drawBase(ctx, W, H, baseY, baseH);
+    for (var pi = 0; pi < 3; pi++)
+      drawPole(ctx, pX[pi], poleTop, poleH, poleW, selected === pi);
+    for (var pi = 0; pi < 3; pi++) {
+      var pd = stacks[pi], isSP = (selected === pi);
+      for (var j = 0; j < pd.length; j++) {
+        var disk = pd[j];
+        var dW   = (disk + 1) * dMaxW / nD;
+        var dY   = baseY - dH * (j + 1);
+        var top  = isSP && (j === pd.length - 1);
+        if (top) dY -= dH * 1.4;
+        drawDisk(ctx, pX[pi], dY, dW, dH, color_map[disk], top);
+      }
+    }
+  }
+
+  /* ══ OVERRIDE window.onload ══
+     Replaces code.js's setup — fixes canvas size, DPR, click handler */
+  window.onload = function() {
+    canvas = document.getElementById('my_Canvas');
+    ctx    = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      var dpr     = window.devicePixelRatio || 1;
+      var wrapper = canvas.parentElement;
+      var Wcss    = wrapper.clientWidth - 32;
+      var Hcss    = Math.min(Math.round(Wcss * 0.50), 280);
+      canvas.width  = Math.round(Wcss * dpr);
+      canvas.height = Math.round(Hcss * dpr);
+      canvas.style.width  = Wcss + 'px';
+      canvas.style.height = Hcss + 'px';
+      draw();
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    /* Timer — show plain numbers, not full sentences */
+    setInterval(function() {
+      if (started) {
+        seconds = Math.floor((new Date().getTime() - start_time) / 1000);
+        document.getElementById('timer').textContent   = seconds;
+        document.getElementById('counter').textContent = steps;
+      }
+    }, 100);
+
+    /* Click handler using bounding rect — works even when canvas is centered/scaled */
+    canvas.addEventListener('click', function(e) {
+      var rect = canvas.getBoundingClientRect();
+      var x    = e.clientX - rect.left;
+      var w3   = rect.width / 3;
+      if      (x < w3)     select_or_move(0);
+      else if (x < w3 * 2) select_or_move(1);
+      else                  select_or_move(2);
+    });
+  };
+  </script>
 </body>
 </html>

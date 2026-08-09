@@ -730,7 +730,10 @@ let zoom_busy = false;
 let mid_active = false;
 
 // Touch state
-let td_prev=0, tx_prev=-1, ty_prev=-1, t_mlk=false, t_zlk=false;
+let _t_map  = {};  // touch identifier → {x, y}
+let _t_dist = 0;   // previous inter-finger distance (0 = unset)
+let _t_cx   = 0;   // previous midpoint x (screen px)
+let _t_cy   = 0;   // previous midpoint y (screen px)
 
 const SWATCHES = [
   '#000000','#ffffff','#5b51e8','#e8516a',
@@ -759,8 +762,12 @@ window.onload = function () {
   cvs.addEventListener('mouseleave', on_cvs_leave);
   cvs.addEventListener('wheel',      on_wheel, { passive: false });
   cvs.addEventListener('mousedown',  on_mid_down);
-  cvs.addEventListener('touchmove',  on_touch_move, { passive: false });
-  cvs.addEventListener('touchend',   on_touch_end);
+  // capture:true fires our handlers BEFORE Paper.js's touch→mouse conversion,
+  // so G.drawLock is set before any tool handler runs.
+  cvs.addEventListener('touchstart',  on_touch_start, { capture: true, passive: false });
+  cvs.addEventListener('touchmove',   on_touch_move,  { capture: true, passive: false });
+  cvs.addEventListener('touchend',    on_touch_end,   { capture: true, passive: false });
+  cvs.addEventListener('touchcancel', on_touch_end,   { capture: true, passive: false });
 
   set_tool('pen');
   update_zoom_ui();
@@ -893,7 +900,7 @@ function setup_tools() {
   T.pen.minDistance = 1;
   T.pen.onMouseDown = function (e) {
     if (G.drawLock) return;
-    if (G.dragLock) { G.prevX = e.event.clientX; G.prevY = e.event.clientY; return; }
+    if (G.dragLock) { const c = getClientXY(e.event); if (c) { G.prevX = c.x; G.prevY = c.y; } return; }
     layers[ali].pl.activate();
     cp = new Path();
     cp.strokeColor = mk_clr(G.color, G.opacity);
@@ -903,7 +910,7 @@ function setup_tools() {
   };
   T.pen.onMouseDrag = function (e) {
     if (G.drawLock) return;
-    if (G.dragLock) { pan_screen(e.event.clientX, e.event.clientY); return; }
+    if (G.dragLock) { const c = getClientXY(e.event); if (c) pan_screen(c.x, c.y); return; }
     if (cp) cp.add(e.point);
   };
   T.pen.onMouseUp = function () {
@@ -920,7 +927,7 @@ function setup_tools() {
   T.brush.minDistance = 1;
   T.brush.onMouseDown = function (e) {
     if (G.drawLock) return;
-    if (G.dragLock) { G.prevX = e.event.clientX; G.prevY = e.event.clientY; return; }
+    if (G.dragLock) { const c = getClientXY(e.event); if (c) { G.prevX = c.x; G.prevY = c.y; } return; }
     layers[ali].pl.activate();
     br_paths = [];
     const cnt = Math.max(3, Math.round(G.size / 3));
@@ -937,7 +944,7 @@ function setup_tools() {
   };
   T.brush.onMouseDrag = function (e) {
     if (G.drawLock) return;
-    if (G.dragLock) { pan_screen(e.event.clientX, e.event.clientY); return; }
+    if (G.dragLock) { const c = getClientXY(e.event); if (c) pan_screen(c.x, c.y); return; }
     for (const b of br_paths) b.p.add(new Point(e.point.x + b.off, e.point.y));
   };
   T.brush.onMouseUp = function () {
@@ -1003,7 +1010,7 @@ function setup_tools() {
   T.eraser.minDistance = 1;
   T.eraser.onMouseDown = function (e) {
     if (G.drawLock) return;
-    if (G.dragLock) { G.prevX = e.event.clientX; G.prevY = e.event.clientY; return; }
+    if (G.dragLock) { const c = getClientXY(e.event); if (c) { G.prevX = c.x; G.prevY = c.y; } return; }
     layers[ali].pl.activate();
     cp = new Path();
     cp.strokeColor = G.bg;
@@ -1013,7 +1020,7 @@ function setup_tools() {
   };
   T.eraser.onMouseDrag = function (e) {
     if (G.drawLock) return;
-    if (G.dragLock) { pan_screen(e.event.clientX, e.event.clientY); return; }
+    if (G.dragLock) { const c = getClientXY(e.event); if (c) pan_screen(c.x, c.y); return; }
     if (cp) cp.add(e.point);
   };
   T.eraser.onMouseUp = function () {
@@ -1107,7 +1114,17 @@ function on_flow(v)   { G.flow   = parseInt(v); document.getElementById('sv-flow
 ────────────────────────────────────────────────────── */
 const _cvs_rect = () => document.getElementById('myCanvas').getBoundingClientRect();
 
+// Extract clientX/Y from either a MouseEvent or a TouchEvent.
+function getClientXY(domEvent) {
+  if (domEvent == null) return null;
+  if (domEvent.clientX !== undefined) return { x: domEvent.clientX, y: domEvent.clientY };
+  const touch = (domEvent.changedTouches && domEvent.changedTouches[0])
+             || (domEvent.touches        && domEvent.touches[0]);
+  return touch ? { x: touch.clientX, y: touch.clientY } : null;
+}
+
 function pan_screen(clientX, clientY) {
+  if (!isFinite(clientX) || !isFinite(clientY)) { G.prevX = G.prevY = -1; return; }
   if (G.prevX === -1) { G.prevX = clientX; G.prevY = clientY; return; }
   const rect = _cvs_rect();
   const prev_p = view.viewToProject(new Point(G.prevX - rect.left, G.prevY - rect.top));
@@ -1205,41 +1222,74 @@ function on_zoom_sl(v) {
 }
 
 /* ── TOUCH ─────────────────────────────────────────── */
+function _t_vals() { return Object.values(_t_map); }
+
+function on_touch_start(e) {
+  for (const t of e.changedTouches) _t_map[t.identifier] = { x: t.clientX, y: t.clientY };
+  const pts = _t_vals();
+  if (pts.length >= 2) {
+    // stopImmediatePropagation stops the event from reaching Paper.js's document-level
+    // touchstart handler, so Paper.js never fires onMouseDown for the 2nd finger.
+    // The single-segment path from finger 1's onMouseDown is left for Paper.js's own
+    // onMouseUp to discard cleanly (its `else cp.remove()` branch handles length ≤ 1).
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    G.drawLock = true;
+    _t_dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+    _t_cx = (pts[0].x + pts[1].x) * 0.5;
+    _t_cy = (pts[0].y + pts[1].y) * 0.5;
+  }
+  // single touch: no interception — Paper.js handles drawing and pan tool normally
+}
+
 function on_touch_move(e) {
-  if (e.touches.length < 2) return; // let Paper.js handle single-touch drawing
+  for (const t of e.changedTouches) {
+    if (_t_map[t.identifier]) _t_map[t.identifier] = { x: t.clientX, y: t.clientY };
+  }
+  const pts = _t_vals();
+  if (pts.length < 2) {
+    e.preventDefault(); // prevent page scroll during single-touch drawing
+    return;             // Paper.js's document handler still fires and handles the stroke
+  }
+
   e.preventDefault();
+  e.stopImmediatePropagation(); // block Paper.js's document touchmove for 2-finger gesture
   G.drawLock = true;
-  const a = e.touches[0], b = e.touches[1];
-  const d = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
-  if (td_prev === 0) { td_prev = d; tx_prev = a.clientX; ty_prev = a.clientY; return; }
-  const ratio = d / td_prev;
-  const rect = document.getElementById('myCanvas').getBoundingClientRect();
-  const mx = (a.clientX + b.clientX) / 2; // midpoint x (screen)
-  const my = (a.clientY + b.clientY) / 2; // midpoint y (screen)
-  if (Math.abs(ratio - 1) > 0.12 && !t_mlk) {
-    t_zlk = true;
-    // Zoom toward pinch midpoint
-    const before = view.viewToProject(new Point(mx - rect.left, my - rect.top));
+  const a    = pts[0], b = pts[1];
+  const cx   = (a.x + b.x) * 0.5;
+  const cy   = (a.y + b.y) * 0.5;
+  const dist = Math.hypot(a.x - b.x, a.y - b.y);
+
+  if (_t_dist > 0) {
+    const rect   = document.getElementById('myCanvas').getBoundingClientRect();
+    const ratio  = dist / _t_dist;
+    // Combined zoom + pan: the project point under the previous midpoint (old zoom)
+    // should end up under the current midpoint after zoom is applied.
+    const p_prev = view.viewToProject(new Point(_t_cx - rect.left, _t_cy - rect.top));
     G.zoom = Math.min(50, Math.max(0.01, G.zoom * ratio));
     view.zoom = G.zoom;
-    const after = view.viewToProject(new Point(mx - rect.left, my - rect.top));
-    view.center = view.center.add(before.subtract(after));
+    const aft = view.viewToProject(new Point(cx - rect.left, cy - rect.top));
+    view.center = view.center.add(p_prev.subtract(aft));
     vc = view.center;
-    update_zoom_ui(); td_prev = d;
-  } else if (!t_zlk) {
-    // Pan using viewToProject (screen coords → project delta)
-    const prev_p = view.viewToProject(new Point(tx_prev - rect.left, ty_prev - rect.top));
-    const cur_p  = view.viewToProject(new Point(a.clientX - rect.left, a.clientY - rect.top));
-    view.center = view.center.add(prev_p.subtract(cur_p));
-    vc = view.center;
-    tx_prev = a.clientX; ty_prev = a.clientY;
-    t_mlk = true;
+    update_zoom_ui();
   }
+
+  _t_dist = dist;
+  _t_cx = cx;
+  _t_cy = cy;
 }
-function on_touch_end() {
-  G.drawLock = false;
-  td_prev = 0; tx_prev = ty_prev = -1;
-  t_mlk = t_zlk = false;
+
+function on_touch_end(e) {
+  // No stopImmediatePropagation: Paper.js's onMouseUp must run to discard the
+  // single-segment accidental path created by finger 1's onMouseDown.
+  // No preventDefault: would block toolbar button tap click synthesis.
+  for (const t of e.changedTouches) delete _t_map[t.identifier];
+  const pts = _t_vals();
+  if (pts.length < 2) {
+    _t_dist = 0;
+    if (pts.length === 0) G.drawLock = false;
+    // keep drawLock=true while transitioning 2→1 finger
+  }
 }
 
 /* ── KEYBOARD ──────────────────────────────────────── */

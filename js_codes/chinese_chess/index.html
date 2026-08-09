@@ -160,5 +160,28 @@
     </main>
 
     <footer>&copy; 2018–2026 Peizhi Yan. All rights reserved.</footer>
+
+    <script>
+      // DOMContentLoaded fires after all defer scripts, so it's safe to override.
+      // The original start_click() in main.js has board.restart() commented out,
+      // which means board.result never resets after a game ends and all clicks
+      // are silently rejected by clickSquare(). This replacement fixes that.
+      document.addEventListener('DOMContentLoaded', function () {
+        window.start_click = function () {
+          selMoveList.options.length = 1;
+          selMoveList.selectedIndex = 0;
+          board.computer = 1 - selMoveMode.selectedIndex;
+
+          // Apply piece theme before restart so flushBoard uses the right images
+          board.images = (selTheme.selectedIndex === 1) ? 'images_international/' : 'images/';
+
+          // Reset board state and position — this is the critical missing call
+          board.restart(STARTUP_FEN[0]);
+
+          document.getElementById('game_board').style.display = '';
+          document.getElementById('move_history').style.display = 'block';
+        };
+      });
+    </script>
   </body>
 </html>
