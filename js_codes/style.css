@@ -1,9 +1,9 @@
 :root {
-    --bg-color: #0f172a;
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
-    --card-bg: rgba(30, 41, 59, 0.7);
-    --card-border: rgba(255, 255, 255, 0.1);
+    --bg-color: #f1f5f9;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --card-bg: rgba(255, 255, 255, 0.75);
+    --card-border: rgba(0, 0, 0, 0.08);
     --glass-blur: blur(16px);
     
     --c-red: #f43f5e;
@@ -54,7 +54,7 @@ body {
 .navbar {
     position: sticky;
     top: 0;
-    background: rgba(15, 23, 42, 0.75);
+    background: rgba(241, 245, 249, 0.85);
     backdrop-filter: var(--glass-blur);
     -webkit-backdrop-filter: var(--glass-blur);
     border-bottom: 1px solid var(--card-border);
@@ -88,14 +88,14 @@ body {
     text-decoration: none;
     font-weight: 600;
     padding: 0.5rem 1rem;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 99px;
     transition: all 0.3s ease;
 }
 
 .home-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(0, 0, 0, 0.1);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
@@ -123,7 +123,7 @@ body {
     font-weight: 800;
     margin-bottom: 1.25rem;
     letter-spacing: -0.02em;
-    background: linear-gradient(to right, #ffffff, #94a3b8);
+    background: linear-gradient(to right, #0f172a, #475569);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -166,7 +166,7 @@ body {
     content: "";
     flex: 1;
     height: 1px;
-    background: linear-gradient(to right, rgba(255,255,255,0.1), transparent);
+    background: linear-gradient(to right, rgba(0,0,0,0.15), transparent);
 }
 
 /* Grid & Cards */
@@ -207,9 +207,9 @@ body {
 
 .card:hover {
     transform: translateY(-8px) scale(1.01);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 40px rgba(var(--accent-rgb), 0.1);
-    background: rgba(30, 41, 59, 0.85);
-    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12), 0 0 40px rgba(var(--accent-rgb), 0.12);
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(0, 0, 0, 0.15);
 }
 
 .card:hover::before {
@@ -225,15 +225,15 @@ body {
     justify-content: center;
     width: 54px;
     height: 54px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255,255,255,0.05);
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.06);
     border-radius: 20px;
     transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .card:hover .card-icon {
     transform: scale(1.1) rotate(5deg);
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.07);
     border-color: var(--accent-color);
 }
 
@@ -268,15 +268,73 @@ footer {
     color: var(--text-secondary);
     font-size: 0.95rem;
     margin-top: 4rem;
-    background: rgba(15, 23, 42, 0.5);
+    background: rgba(241, 245, 249, 0.7);
 }
 
 /* Responsive Design */
+@media (max-width: 1024px) {
+    /* Tablet: app icon grid */
+    .grid {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 1rem;
+    }
+
+    .card {
+        padding: 1rem 0.5rem;
+        align-items: center;
+        text-align: center;
+        border-radius: 20px;
+    }
+
+    .card p { display: none; }
+
+    .card-icon {
+        width: 52px;
+        height: 52px;
+        font-size: 1.5rem;
+        margin-bottom: 0.6rem;
+        border-radius: 16px;
+    }
+
+    .card h4 {
+        font-size: 0.8rem;
+        font-weight: 500;
+        line-height: 1.3;
+    }
+}
+
 @media (max-width: 768px) {
     .hero h2 { font-size: 2.5rem; }
     .hero p { font-size: 1.1rem; }
-    .grid { grid-template-columns: 1fr; }
     .container { padding: 3rem 1.5rem; }
     .category-title { font-size: 1.5rem; }
-    .card { padding: 2rem; }
+
+    /* Phone: 4-column app icon grid */
+    .grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.75rem;
+    }
+
+    .card {
+        padding: 0.85rem 0.4rem;
+        align-items: center;
+        text-align: center;
+        border-radius: 18px;
+    }
+
+    .card p { display: none; }
+
+    .card-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 1.35rem;
+        margin-bottom: 0.5rem;
+        border-radius: 14px;
+    }
+
+    .card h4 {
+        font-size: 0.7rem;
+        font-weight: 500;
+        line-height: 1.2;
+    }
 }
