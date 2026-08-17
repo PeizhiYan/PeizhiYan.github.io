@@ -398,22 +398,39 @@ function boardValue(b){
 	return v
 }
 
-function conv2d(signal, filter){
-	/* Output feature map */
-	var o = new Array(15)
-	for (var i = 0; i < o.length; i++) {
-		o[i] = new Array(15)
-		for (var j = 0; j < o.length; j++){
-			o[i][j] = 0 // initialize the output matrix
-		}
-	}
+/* ── conv2d performance caches ──
+   The filter arrays (filter1a, filter2b, ...) are a fixed set of constants
+   reused on every single call, so there's no need to re-expand each one to
+   its nonzero cells or re-pad it on every call -- do it once per filter and
+   keep it.
+   The signal (board) changes far less often than conv2d is called with it:
+   evaluate()/boardValue() each call conv2d 16 times in a row against the
+   SAME board object. A single-slot "last signal padded" cache turns those
+   16 redundant 19x19 zero-padding passes into 1, as long as the board
+   passed in isn't mutated in place between those calls (it never is --
+   evaluate() finishes cloning+editing its board before any conv2d call). */
+var _filterCache  = new Map() // filter array -> [[a,b,weight], ...] nonzero cells only
+var _lastSignal   = null
+var _lastPadded   = null
 
-	/* Pad the signal matrix to 17x17 */
+function sparseFilter(filter){
+	var cached = _filterCache.get(filter)
+	if (cached) return cached
+	var entries = []
+	for (var a = 0; a < filter.length; a++)
+		for (var b = 0; b < filter.length; b++)
+			if (filter[a][b] !== 0) entries.push([a, b, filter[a][b]])
+	_filterCache.set(filter, entries)
+	return entries
+}
+
+function padSignal(signal){
+	if (signal === _lastSignal) return _lastPadded
 	var s = new Array(15+4) // padding = 2
 	for (var i = 0; i < s.length; i++) {
 		s[i] = new Array(15+4)
 		for (var j = 0; j < s.length; j++){
-			s[i][j] = 0 // initialize the signal matrix
+			s[i][j] = 0
 		}
 	}
 	for (var i = 0; i < 15; i++){
@@ -421,38 +438,31 @@ function conv2d(signal, filter){
 			s[i+2][j+2] = signal[i][j]
 		}
 	}
+	_lastSignal = signal
+	_lastPadded = s
+	return s
+}
 
-	/* "Pad" the filter matrix to 5x5 */
-	var f = new Array(5)
-	for (var i = 0; i < 5; i++) {
-		f[i] = new Array(5)
-		for (var j = 0; j < 5; j++){
-			f[i][j] = 0 // initialize the filter matrix
-		}
-	}
-	for (var i = 0; i < filter.length; i++){
-		for (var j = 0; j < filter.length; j++){
-			f[i][j] = filter[i][j]
-		}
-	}
+function conv2d(signal, filter){
+	var s      = padSignal(signal)
+	var sparse = sparseFilter(filter)
+	var n      = sparse.length
 
-	/* 2d Convolution Operation */
-	var x = 0 // the left-top x position of filter
-	var y = 0 // the left-top y position of filter
+	/* Output feature map -- same x=j,y=i indexing as the original dense
+	   version (kept as-is: since only aggregate match counts are ever read
+	   back out via count(), not specific (i,j) positions, this axis quirk
+	   doesn't affect correctness). Only the multiply-by-zero cells are
+	   skipped now, using the filter's precomputed nonzero list. */
+	var o = new Array(15)
 	for (var i = 0; i < 15; i++){
-		x = 0
+		o[i] = new Array(15)
 		for (var j = 0; j < 15; j++) {
-			/* dot-products */
 			var sum = 0
-			for (var a = 0; a < 5; a++){
-				for (var b = 0; b < 5; b++){
-					sum += (s[x+a][y+b] * f[a][b])
-				}
+			for (var k = 0; k < n; k++){
+				sum += s[j + sparse[k][0]][i + sparse[k][1]] * sparse[k][2]
 			}
 			o[i][j] = sum
-			x++
 		}
-		y++
 	}
 
 	return o
