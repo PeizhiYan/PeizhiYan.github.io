@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gomoku vs AI</title>
-  <script src="script.js"></script>
+  <script src="game_logic.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -70,6 +70,7 @@
     }
     .game-btn.secondary:hover { background: rgba(0,0,0,0.1); }
     .game-btn.active-insight { background: #f59e0b; color: #fff; border: none; }
+    .game-btn:disabled { opacity: 0.4; cursor: default; pointer-events: none; }
 
     .board-wrapper {
       background: var(--surface); border: 1px solid var(--border);
@@ -157,6 +158,7 @@
     <div class="card">
       <div class="btn-row">
         <button id="start" class="game-btn" onclick="start()">&#9654; New Game</button>
+        <button id="undo-btn" class="game-btn secondary" onclick="undo()" disabled>&#8630; Undo</button>
         <button id="insight-btn" class="game-btn secondary" onclick="toggleInsight()">&#128065; AI Insight</button>
       </div>
     </div>
@@ -187,6 +189,8 @@
     var _over      = false;
     var _lastMove  = null;
     var _hover     = null;
+    var _history   = []; /* [[i,j], ...] alternating human, AI moves */
+    var _thinking  = false;
 
     /* ════════════════════════════════
        RENDERING
@@ -434,6 +438,11 @@
     }
     window.addEventListener('resize', scaleBoard);
 
+    /* ── Undo button state ── */
+    function updateUndoButton() {
+      document.getElementById('undo-btn').disabled = _thinking || _history.length === 0;
+    }
+
     /* ── AI Insight toggle ── */
     function toggleInsight() {
       _insightOn = !_insightOn;
@@ -476,9 +485,12 @@
         _over     = false;
         _lastMove = null;
         _hover    = null;
+        _history  = [];
+        _thinking = false;
         _insightOn = false;
         var btn = document.getElementById('insight-btn');
         btn.classList.remove('active-insight'); btn.classList.add('secondary');
+        updateUndoButton();
 
         for (var i = 0; i < LINES; i++) {
           board[i] = []; board_ai[i] = []; value[i] = []; value_human[i] = [];
@@ -493,14 +505,16 @@
 
       /* Override clk() */
       window.clk = function (i, j) {
-        if (_over || current !== 1) return;
+        if (_over || current !== 1 || _thinking) return;
         if (board[i][j] !== 0) return;
 
         board[i][j]    =  1;
         board_ai[i][j] = -1;
         current        = -1;
         _lastMove      = [i, j];
+        _history.push([i, j]);
         render();
+        updateUndoButton();
 
         /* Check human win */
         var fw = count(conv2d(board, filter1a), 5) + count(conv2d(board, filter2a), 5)
@@ -508,6 +522,8 @@
         if (fw > 0) { _over = true; setStatus('black', 'You win!'); showPopup(true); return; }
 
         setStatus('white', 'AI is thinking…');
+        _thinking = true;
+        updateUndoButton();
 
         setTimeout(function () {
           computeValue();
@@ -522,6 +538,9 @@
           board_ai[ai_i][ai_j] =  1;
           current              =  1;
           _lastMove            = [ai_i, ai_j];
+          _history.push([ai_i, ai_j]);
+          _thinking            = false;
+          updateUndoButton();
 
           /* Check AI win */
           var fa = count(conv2d(board_ai, filter1a), 5) + count(conv2d(board_ai, filter2a), 5)
@@ -536,6 +555,27 @@
           render();
           setStatus('black', 'Your turn — place a black stone');
         }, 20);
+      };
+
+      /* Undo the last full turn (AI's move + the human move before it) */
+      window.undo = function () {
+        if (_thinking || _history.length === 0) return;
+
+        if (_over) { _over = false; closePopup(); }
+
+        var pairs = _history.length >= 2 ? 2 : 1;
+        for (var p = 0; p < pairs; p++) {
+          var mv = _history.pop();
+          board[mv[0]][mv[1]]    = 0;
+          board_ai[mv[0]][mv[1]] = 0;
+        }
+
+        current   = 1;
+        _lastMove = _history.length ? _history[_history.length - 1] : null;
+        computeValue();
+        render();
+        setStatus('black', 'Your turn — place a black stone');
+        updateUndoButton();
       };
 
       /* Canvas click → grid */
