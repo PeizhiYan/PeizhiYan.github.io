@@ -9,6 +9,12 @@ var _lastMove  = null;
 var _hover     = null;
 var _history   = []; /* [[i,j], ...] alternating human, AI moves */
 var _thinking  = false;
+var _searchDepth = 0; /* 0 = no tree search, else 2/4 plies ahead; see minimax.js */
+
+function setSearchDepth(v) {
+  var n = parseInt(v, 10) || 0;
+  _searchDepth = n === 0 ? 0 : Math.max(2, Math.min(4, n));
+}
 
 /* ════════════════════════════════
    RENDERING
@@ -350,22 +356,21 @@ window.addEventListener('DOMContentLoaded', function () {
     updateInsightStats();
 
     /* Check human win */
-    var fw = count(conv2d(board, filter1a), 5) + count(conv2d(board, filter2a), 5)
-           + count(conv2d(board, filter3a), 5) + count(conv2d(board, filter4a), 5);
-    if (fw > 0) { _over = true; setStatus('black', 'You win!'); showPopup(true); return; }
+    if (hasFive(board)) { _over = true; setStatus('black', 'You win!'); showPopup(true); return; }
 
     setStatus('white', 'AI is thinking…');
     _thinking = true;
     updateUndoButton();
 
     setTimeout(function () {
-      computeValue();
-
-      /* Find highest-value empty cell */
-      var maxVal = -Infinity, ai_i = 7, ai_j = 7;
-      for (var a = 0; a < LINES; a++)
-        for (var b = 0; b < LINES; b++)
-          if (value[a][b] > maxVal) { maxVal = value[a][b]; ai_i = a; ai_j = b; }
+      var mv = chooseAiMove(board, board_ai, _searchDepth);
+      if (!mv) {
+        _thinking = false;
+        updateUndoButton();
+        setStatus('none', "It's a draw — the board is full.");
+        return;
+      }
+      var ai_i = mv[0], ai_j = mv[1];
 
       board[ai_i][ai_j]    = -1;
       board_ai[ai_i][ai_j] =  1;
@@ -376,9 +381,7 @@ window.addEventListener('DOMContentLoaded', function () {
       updateUndoButton();
 
       /* Check AI win */
-      var fa = count(conv2d(board_ai, filter1a), 5) + count(conv2d(board_ai, filter2a), 5)
-             + count(conv2d(board_ai, filter3a), 5) + count(conv2d(board_ai, filter4a), 5);
-      if (fa > 0) {
+      if (hasFive(board_ai)) {
         _over = true;
         computeValue(); render(); updateInsightStats();
         setStatus('white', 'You lose!'); showPopup(false); return;

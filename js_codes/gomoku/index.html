@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gomoku vs AI</title>
   <script src="game_logic.js"></script>
+  <script src="minimax.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -78,6 +79,20 @@
     .game-btn.secondary:hover { background: rgba(0,0,0,0.1); }
     .game-btn.active-insight { background: #f59e0b; color: #fff; border: none; }
     .game-btn:disabled { opacity: 0.4; cursor: default; pointer-events: none; }
+
+    .depth-picker {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.5rem 0.9rem; border-radius: 10px;
+      background: rgba(0,0,0,0.06); border: 1px solid var(--border);
+      font-size: 0.82rem; font-weight: 600; color: var(--text);
+      margin-left: auto;
+    }
+    .depth-picker select {
+      font-family: inherit; font-size: 0.85rem; font-weight: 700;
+      padding: 0.2rem 0.4rem; border-radius: 6px;
+      border: 1px solid rgba(0,0,0,0.15); background: #fff; color: var(--text);
+      cursor: pointer;
+    }
 
     .board-wrapper {
       background: var(--surface); border: 1px solid var(--border);
@@ -167,6 +182,14 @@
         <button id="start" class="game-btn" onclick="start()">&#9654; New Game</button>
         <button id="undo-btn" class="game-btn secondary" onclick="undo()" disabled>&#8630; Undo</button>
         <button id="insight-btn" class="game-btn secondary" onclick="toggleInsight()">&#128065; AI Insight</button>
+        <label class="depth-picker" for="depth-select">
+          Search depth
+          <select id="depth-select" onchange="setSearchDepth(this.value)">
+            <option value="0" selected>0</option>
+            <option value="2">2</option>
+            <option value="4">4</option>
+          </select>
+        </label>
       </div>
     </div>
 
