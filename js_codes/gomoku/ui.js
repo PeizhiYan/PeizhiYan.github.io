@@ -265,9 +265,22 @@ function updateUndoButton() {
 function toggleInsight() {
   _insightOn = !_insightOn;
   render();
+  updateInsightStats();
   var btn = document.getElementById('insight-btn');
   if (_insightOn) { btn.classList.remove('secondary'); btn.classList.add('active-insight'); }
   else            { btn.classList.remove('active-insight'); btn.classList.add('secondary'); }
+}
+
+/* ── Board-value readout (shown while AI Insight is on) ── */
+function updateInsightStats() {
+  var el = document.getElementById('insight-stats');
+  if (!_insightOn || !board_ai) { el.classList.remove('show'); return; }
+  var aiV  = boardValue(board_ai);
+  var youV = boardValue(board);
+  document.getElementById('insight-stats-text').textContent =
+    'Board value: AI: ' + aiV.toLocaleString() +
+    '  |  You: ' + youV.toLocaleString();
+  el.classList.add('show');
 }
 
 /* ════════════════════════════════
@@ -317,6 +330,7 @@ window.addEventListener('DOMContentLoaded', function () {
     }
     computeValue();
     render();
+    updateInsightStats();
     setStatus('black', 'Your turn — place a black stone');
     document.getElementById('start').textContent = 'Re-start';
   };
@@ -333,6 +347,7 @@ window.addEventListener('DOMContentLoaded', function () {
     _history.push([i, j]);
     render();
     updateUndoButton();
+    updateInsightStats();
 
     /* Check human win */
     var fw = count(conv2d(board, filter1a), 5) + count(conv2d(board, filter2a), 5)
@@ -365,12 +380,13 @@ window.addEventListener('DOMContentLoaded', function () {
              + count(conv2d(board_ai, filter3a), 5) + count(conv2d(board_ai, filter4a), 5);
       if (fa > 0) {
         _over = true;
-        computeValue(); render();
+        computeValue(); render(); updateInsightStats();
         setStatus('white', 'You lose!'); showPopup(false); return;
       }
 
       computeValue();
       render();
+      updateInsightStats();
       setStatus('black', 'Your turn — place a black stone');
     }, 20);
   };
@@ -392,6 +408,7 @@ window.addEventListener('DOMContentLoaded', function () {
     _lastMove = _history.length ? _history[_history.length - 1] : null;
     computeValue();
     render();
+    updateInsightStats();
     setStatus('black', 'Your turn — place a black stone');
     updateUndoButton();
   };

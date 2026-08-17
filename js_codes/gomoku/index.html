@@ -57,6 +57,13 @@
     .stone-dot.white { background: radial-gradient(circle at 35% 32%, #fff, #ccc); border: 1px solid #bbb; }
     .stone-dot.none  { background: transparent; box-shadow: none; }
 
+    #insight-stats {
+      display: none; margin-top: 0.45rem; padding-top: 0.45rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.78rem; color: var(--muted); font-variant-numeric: tabular-nums;
+    }
+    #insight-stats.show { display: block; }
+
     .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; }
     .game-btn {
       padding: 0.6rem 1.25rem; border-radius: 10px; border: none;
@@ -168,6 +175,7 @@
         <div class="stone-dot none" id="status-dot"></div>
         <span id="status-text">Press New Game to begin</span>
       </div>
+      <div id="insight-stats"><span id="insight-stats-text"></span></div>
     </div>
 
     <div class="board-wrapper">

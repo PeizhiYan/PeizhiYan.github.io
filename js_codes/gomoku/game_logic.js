@@ -51,35 +51,69 @@ filter4b[1] = [0,0,1,0]
 filter4b[2] = [0,0,1,0]
 filter4b[3] = [0,0,1,0]
 
-filter1c = new Array(3)
-filter1c[0] = [1,0,0]
-filter1c[1] = [0,1,0]
-filter1c[2] = [0,0,1]
-filter2c = new Array(3)
-filter2c[0] = [0,0,1]
-filter2c[1] = [0,1,0]
-filter2c[2] = [1,0,0]
-filter3c = new Array(3)
-filter3c[0] = [0,0,0]
-filter3c[1] = [1,1,1]
-filter3c[2] = [0,0,0]
-filter4c = new Array(3)
-filter4c[0] = [0,1,0]
-filter4c[1] = [0,1,0]
-filter4c[2] = [0,1,0]
+/* Shoulder-aware "three" filters: inner 3 cells weighted 1, the two cells
+   just outside each end ("shoulders") weighted 10 (start) and 1000 (end) —
+   deliberately DIFFERENT weights, not the same one on both sides. If both
+   shoulders used the same weight, a run whose one side is blocked (-1) and
+   other side is an extending own-stone (+1) would sum to the same total as
+   "both shoulders empty" (-1*w + 1*w = 0), wrongly reading a dead-looking
+   run as open. Distinct weights make every (left,right) combination map to
+   a unique, non-colliding total:
+     innerSum=3, both shoulders empty         -> total     3  (open three)
+     innerSum=3, start blocked, end empty     -> total    -7  (half-open)
+     innerSum=3, start empty,   end blocked   -> total  -997  (half-open)
+     innerSum=3, both shoulders blocked       -> total -1007  (dead three) */
+filter1c = new Array(5)
+filter1c[0] = [10,0,0,0,0]
+filter1c[1] = [0,1,0,0,0]
+filter1c[2] = [0,0,1,0,0]
+filter1c[3] = [0,0,0,1,0]
+filter1c[4] = [0,0,0,0,1000]
+filter2c = new Array(5)
+filter2c[0] = [0,0,0,0,1000]
+filter2c[1] = [0,0,0,1,0]
+filter2c[2] = [0,0,1,0,0]
+filter2c[3] = [0,1,0,0,0]
+filter2c[4] = [10,0,0,0,0]
+filter3c = new Array(5)
+filter3c[0] = [0,0,0,0,0]
+filter3c[1] = [0,0,0,0,0]
+filter3c[2] = [10,1,1,1,1000]
+filter3c[3] = [0,0,0,0,0]
+filter3c[4] = [0,0,0,0,0]
+filter4c = new Array(5)
+filter4c[0] = [0,0,10,0,0]
+filter4c[1] = [0,0,1,0,0]
+filter4c[2] = [0,0,1,0,0]
+filter4c[3] = [0,0,1,0,0]
+filter4c[4] = [0,0,1000,0,0]
 
-filter1d = new Array(2)
-filter1d[0] = [1,0]
-filter1d[1] = [0,1]
-filter2d = new Array(2)
-filter2d[0] = [0,1]
-filter2d[1] = [1,0]
-filter3d = new Array(2)
-filter3d[0] = [0,0]
-filter3d[1] = [1,1]
-filter4d = new Array(2)
-filter4d[0] = [0,1]
-filter4d[1] = [0,1]
+/* Shoulder-aware "two" filters: same idea, inner 2 cells weighted 1 each,
+   shoulders weighted 10 (start) / 1000 (end):
+     innerSum=2, both shoulders empty       -> total    2  (open two)
+     innerSum=2, start blocked, end empty   -> total   -8  (half-open)
+     innerSum=2, start empty,   end blocked -> total -998  (half-open)
+     innerSum=2, both shoulders blocked     -> total -1008 (dead two) */
+filter1d = new Array(4)
+filter1d[0] = [10,0,0,0]
+filter1d[1] = [0,1,0,0]
+filter1d[2] = [0,0,1,0]
+filter1d[3] = [0,0,0,1000]
+filter2d = new Array(4)
+filter2d[0] = [0,0,0,1000]
+filter2d[1] = [0,0,1,0]
+filter2d[2] = [0,1,0,0]
+filter2d[3] = [10,0,0,0]
+filter3d = new Array(4)
+filter3d[0] = [0,0,0,0]
+filter3d[1] = [0,0,0,0]
+filter3d[2] = [10,1,1,1000]
+filter3d[3] = [0,0,0,0]
+filter4d = new Array(4)
+filter4d[0] = [0,0,10,0]
+filter4d[1] = [0,0,1,0]
+filter4d[2] = [0,0,1,0]
+filter4d[3] = [0,0,1000,0]
 
 
 /* initiate the game */
@@ -321,14 +355,46 @@ function evaluate(b, x, y){
 	v += 5000*count(conv2d(B, filter2b), 4)
 	v += 5000*count(conv2d(B, filter3b), 4)
 	v += 5000*count(conv2d(B, filter4b), 4)
-	v += 1000*count(conv2d(B, filter1c), 3)
-	v += 1000*count(conv2d(B, filter2c), 3)
-	v += 1000*count(conv2d(B, filter3c), 3)
-	v += 1000*count(conv2d(B, filter4c), 3)
-	v += 10*count(conv2d(B, filter1d), 2)
-	v += 10*count(conv2d(B, filter2d), 2)
-	v += 10*count(conv2d(B, filter3d), 2)
-	v += 10*count(conv2d(B, filter4d), 2)
+	v += threeShoulderScore(B, filter1c) + threeShoulderScore(B, filter2c)
+	   + threeShoulderScore(B, filter3c) + threeShoulderScore(B, filter4c)
+	v += twoShoulderScore(B, filter1d) + twoShoulderScore(B, filter2d)
+	   + twoShoulderScore(B, filter3d) + twoShoulderScore(B, filter4d)
+	return v
+}
+
+/* Score a "three" filter's matches by how open its ends are: a dead three
+   (blocked both ends) can never reach 5, so it scores 0 instead of the
+   full weight a live open three gets. See the filter1c/etc. comment above
+   for how the target values (3 / -7 / -997 / -1007) are derived. */
+function threeShoulderScore(b, filter){
+	var fm = conv2d(b, filter)
+	return 1000*count(fm, 3) + 150*(count(fm, -7) + count(fm, -997))
+	/* + 0 * count(fm, -1007) dead */
+}
+
+/* Same idea for "two" filters. See filter1d/etc. comment for target values. */
+function twoShoulderScore(b, filter){
+	var fm = conv2d(b, filter)
+	return 10*count(fm, 2) + 3*(count(fm, -8) + count(fm, -998))
+	/* + 0 * count(fm, -1008) dead */
+}
+
+/* Value of the board as-is (no hypothetical move) for whichever player's
+   stones are marked as 1 in b. A completed 5-in-a-row dominates the total. */
+function boardValue(b){
+	var v = 0
+	v += 99999*count(conv2d(b, filter1a), 5)
+	v += 99999*count(conv2d(b, filter2a), 5)
+	v += 99999*count(conv2d(b, filter3a), 5)
+	v += 99999*count(conv2d(b, filter4a), 5)
+	v += 5000*count(conv2d(b, filter1b), 4)
+	v += 5000*count(conv2d(b, filter2b), 4)
+	v += 5000*count(conv2d(b, filter3b), 4)
+	v += 5000*count(conv2d(b, filter4b), 4)
+	v += threeShoulderScore(b, filter1c) + threeShoulderScore(b, filter2c)
+	   + threeShoulderScore(b, filter3c) + threeShoulderScore(b, filter4c)
+	v += twoShoulderScore(b, filter1d) + twoShoulderScore(b, filter2d)
+	   + twoShoulderScore(b, filter3d) + twoShoulderScore(b, filter4d)
 	return v
 }
 
