@@ -1,5 +1,42 @@
 # Project Context
 
+## Gomoku PWA
+
+**Added:** 2026-08-20
+
+### Overview
+
+`js_codes/gomoku/index.html` is installable as a standalone PWA on iPhone/iPad/desktop, with a custom glossy 3D-stone app icon, offline caching, and iOS-specific polish (safe-area insets, launch splash screens, no accidental pinch-zoom/callout during play).
+
+### Files
+
+| File | Role |
+|------|------|
+| `js_codes/gomoku/manifest.json` | Web app manifest (name, icons, standalone display, theme colors) |
+| `js_codes/gomoku/sw.js` | Service worker — cache-first with background revalidation for offline play |
+| `js_codes/gomoku/icons/master-icon.svg` | Source SVG for the app icon (rounded-square, for `icon-*.png`) |
+| `js_codes/gomoku/icons/master-icon-maskable.svg` | Source SVG for maskable icons (full-bleed, safe-zone centered content) |
+| `js_codes/gomoku/icons/icon-*.png` | Rasterized icons at all sizes iOS/Android/desktop need (16–1024px) |
+| `js_codes/gomoku/icons/icon-maskable-*.png` | Maskable icons for Android adaptive-icon masking |
+| `js_codes/gomoku/icons/splash/` | Apple launch-screen images per iPhone/iPad model (portrait + landscape) |
+| `js_codes/gomoku/icons/gen_splash.py` | Regenerates `icons/splash/*` from `icon-512.png` (also prints the `<link>` tags to paste into `index.html`) |
+
+### Regenerating icons after a redesign
+
+```bash
+# from js_codes/gomoku/icons/
+rsvg-convert -w 512 -h 512 master-icon.svg -o icon-512.png   # repeat per size, or loop over the sizes in index.html's <link> tags
+rsvg-convert -w 512 -h 512 master-icon-maskable.svg -o icon-maskable-512.png
+python3 gen_splash.py   # rebuilds icons/splash/* from the new icon-512.png
+```
+`rsvg-convert` comes from `brew install librsvg` (not installed by default on macOS).
+
+### Notes
+
+- `manifest.json` and the service worker only take effect over HTTP(S) (GitHub Pages), not `file://`.
+- The service worker caches `index.html`, the game JS files, and the manifest; bump `CACHE_NAME` in `sw.js` when shipping a breaking change so old clients don't serve stale JS.
+- Viewport is locked (`user-scalable=no`) to avoid accidental pinch-zoom mid-game; this is intentional for the app-like feel, not an oversight.
+
 ## Progressive Image Loading (blur-up)
 
 **Added:** 2026-06-27

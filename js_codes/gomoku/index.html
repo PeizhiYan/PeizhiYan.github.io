@@ -2,8 +2,65 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Gomoku vs AI</title>
+  <meta name="description" content="Play Gomoku (Five in a Row) against an AI opponent, right in your browser.">
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#f1f5f9">
+  <meta name="format-detection" content="telephone=no">
+
+  <!-- iOS home screen / standalone app behavior -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Gomoku">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16.png">
+  <link rel="shortcut icon" href="icons/icon-32.png">
+
+  <!-- Apple touch icons -->
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="icons/icon-120.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
+  <link rel="apple-touch-icon" sizes="167x167" href="icons/icon-167.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
+
+  <!-- iOS splash screens (shown while the standalone app launches) -->
+  <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="icons/splash/iphone-375x667-portrait.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 667px) and (device-height: 375px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="icons/splash/iphone-375x667-landscape.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="icons/splash/iphone-414x896-2x-portrait.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 896px) and (device-height: 414px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="icons/splash/iphone-414x896-2x-landscape.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="icons/splash/iphone-375x812-portrait.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 812px) and (device-height: 375px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" href="icons/splash/iphone-375x812-landscape.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="icons/splash/iphone-414x896-3x-portrait.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 896px) and (device-height: 414px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" href="icons/splash/iphone-414x896-3x-landscape.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="icons/splash/iphone-390x844-portrait.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 844px) and (device-height: 390px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" href="icons/splash/iphone-390x844-landscape.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="icons/splash/iphone-393x852-portrait.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 852px) and (device-height: 393px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" href="icons/splash/iphone-393x852-landscape.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="icons/splash/iphone-428x926-portrait.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 926px) and (device-height: 428px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" href="icons/splash/iphone-428x926-landscape.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="icons/splash/iphone-430x932-portrait.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 932px) and (device-height: 430px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" href="icons/splash/iphone-430x932-landscape.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="icons/splash/ipad-768x1024-portrait.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 1024px) and (device-height: 768px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="icons/splash/ipad-768x1024-landscape.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="icons/splash/ipad-810x1080-portrait.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 1080px) and (device-height: 810px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="icons/splash/ipad-810x1080-landscape.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="icons/splash/ipad-834x1112-portrait.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 1112px) and (device-height: 834px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="icons/splash/ipad-834x1112-landscape.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="icons/splash/ipad-834x1194-portrait.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 1194px) and (device-height: 834px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="icons/splash/ipad-834x1194-landscape.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="icons/splash/ipad-1024x1366-portrait.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 1366px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="icons/splash/ipad-1024x1366-landscape.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="icons/splash/ipad-744x1133-portrait.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 1133px) and (device-height: 744px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="icons/splash/ipad-744x1133-landscape.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="icons/splash/ipad-820x1180-portrait.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 1180px) and (device-height: 820px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="icons/splash/ipad-820x1180-landscape.png">
+
   <script src="game_logic.js"></script>
   <script src="minimax.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,14 +72,20 @@
       --text: #0f172a; --muted: #475569; --accent: #22c55e;
       --radius: 16px;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html { overscroll-behavior-y: none; }
+    body {
+      font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh;
+      overscroll-behavior-y: none;
+      padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right);
+    }
 
     nav {
       position: sticky; top: 0; z-index: 200;
       background: rgba(241,245,249,0.88); backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
       padding: 0.7rem 1.25rem; display: flex; align-items: center; gap: 0.75rem;
+      padding-top: calc(0.7rem + env(safe-area-inset-top));
     }
     nav h1 { flex: 1; text-align: center; font-size: 1rem; font-weight: 600; }
     .nav-btn {
@@ -31,6 +94,7 @@
       background: rgba(0,0,0,0.05); color: var(--text);
       font-family: inherit; font-size: 0.82rem; font-weight: 600;
       text-decoration: none; cursor: pointer; transition: background 0.2s; white-space: nowrap;
+      touch-action: manipulation; user-select: none; -webkit-user-select: none;
     }
     .nav-btn:hover { background: rgba(0,0,0,0.1); }
     .nav-btn.legacy { color: var(--muted); font-weight: 400; }
@@ -71,6 +135,7 @@
       background: var(--accent); color: #fff;
       font-family: inherit; font-size: 0.88rem; font-weight: 600; cursor: pointer;
       transition: opacity 0.2s, transform 0.15s;
+      touch-action: manipulation; user-select: none; -webkit-user-select: none;
     }
     .game-btn:hover { opacity: 0.85; transform: translateY(-1px); }
     .game-btn.secondary {
@@ -108,6 +173,7 @@
       display: block; cursor: crosshair;
       border-radius: 6px;
       box-shadow: 0 6px 24px rgba(0,0,0,0.18);
+      touch-action: manipulation; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none;
     }
 
     @media (max-width: 520px) {
@@ -150,12 +216,65 @@
       pointer-events: none; z-index: 499;
     }
 
-    footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.85rem; }
+    footer {
+      text-align: center; padding: 2rem; color: var(--muted); font-size: 0.85rem;
+      padding-bottom: calc(2rem + env(safe-area-inset-bottom));
+    }
+
+    /* Installed as a standalone app (iOS/Android home screen) */
+    @media (display-mode: standalone), (display-mode: fullscreen) {
+      .nav-btn.legacy { display: none; }
+    }
+
+    #ios-install-banner {
+      position: fixed; left: 1rem; right: 1rem;
+      bottom: calc(1rem + env(safe-area-inset-bottom));
+      max-width: 420px; margin: 0 auto; z-index: 600;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 18px; box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+      padding: 0.8rem 0.8rem 0.8rem 0.7rem;
+      display: flex; align-items: center; gap: 0.7rem;
+      transform: translateY(150%); opacity: 0;
+      transition: transform 0.45s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
+      pointer-events: none;
+    }
+    #ios-install-banner.show { transform: translateY(0); opacity: 1; pointer-events: auto; }
+    #ios-install-banner img {
+      width: 44px; height: 44px; border-radius: 11px; flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    #ios-install-banner .ios-install-text { flex: 1; font-size: 0.82rem; line-height: 1.35; color: var(--text); }
+    #ios-install-banner .ios-install-text strong { display: block; font-size: 0.9rem; margin-bottom: 0.1rem; }
+    #ios-install-banner .share-glyph {
+      display: inline-flex; vertical-align: -4px;
+      color: var(--accent); margin: 0 0.1rem;
+    }
+    #ios-install-banner .ios-install-close {
+      flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; border: none;
+      background: rgba(0,0,0,0.06); color: var(--muted);
+      font-size: 1rem; line-height: 1; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      touch-action: manipulation;
+    }
+    #ios-install-banner .ios-install-close:hover { background: rgba(0,0,0,0.12); }
   </style>
 </head>
 <body onload="start(); scaleBoard();">
 
   <canvas id="fireworks-canvas"></canvas>
+
+  <div id="ios-install-banner" role="dialog" aria-label="Install Gomoku">
+    <img src="icons/icon-96.png" alt="">
+    <div class="ios-install-text">
+      <strong>Install Gomoku</strong>
+      Tap
+      <span class="share-glyph">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>
+      </span>
+      then "Add to Home Screen"
+    </div>
+    <button class="ios-install-close" onclick="dismissIOSInstallBanner()" aria-label="Dismiss">&times;</button>
+  </div>
 
   <div id="popup-backdrop">
     <div id="popup-box">
@@ -212,5 +331,52 @@
 
   <script src="ui.js"></script>
   <script src="fireworks.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch((err) => {
+          console.warn('Service worker registration failed:', err);
+        });
+      });
+    }
+  </script>
+
+  <script>
+    (function () {
+      var DISMISS_KEY = 'gomoku-install-banner-dismissed-at';
+      var RESHOW_AFTER_DAYS = 14;
+
+      function isIOS() {
+        var ua = navigator.userAgent || '';
+        if (/iPhone|iPad|iPod/.test(ua)) return true;
+        // iPadOS 13+ reports as "Macintosh" but is touch-capable
+        return navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
+      }
+      function isStandalone() {
+        return window.navigator.standalone === true ||
+          window.matchMedia('(display-mode: standalone)').matches;
+      }
+      function shouldShow() {
+        if (!isIOS() || isStandalone()) return false;
+        var last = localStorage.getItem(DISMISS_KEY);
+        if (!last) return true;
+        var daysSince = (Date.now() - Number(last)) / 86400000;
+        return daysSince > RESHOW_AFTER_DAYS;
+      }
+
+      window.dismissIOSInstallBanner = function () {
+        document.getElementById('ios-install-banner').classList.remove('show');
+        localStorage.setItem(DISMISS_KEY, String(Date.now()));
+      };
+
+      if (shouldShow()) {
+        window.addEventListener('load', function () {
+          setTimeout(function () {
+            document.getElementById('ios-install-banner').classList.add('show');
+          }, 1600);
+        });
+      }
+    })();
+  </script>
 </body>
 </html>

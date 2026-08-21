@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="board" x1="0" y1="0" x2="1024" y2="1024" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f0c583"/>
+      <stop offset="0.55" stop-color="#dba85c"/>
+      <stop offset="1" stop-color="#b9803a"/>
+    </linearGradient>
+
+    <radialGradient id="boardSheen" cx="30%" cy="20%" r="80%">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.35"/>
+      <stop offset="0.4" stop-color="#ffffff" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="blackStone" cx="34%" cy="28%" r="72%">
+      <stop offset="0" stop-color="#6b6b73"/>
+      <stop offset="0.35" stop-color="#37373d"/>
+      <stop offset="0.75" stop-color="#141417"/>
+      <stop offset="1" stop-color="#050506"/>
+    </radialGradient>
+
+    <radialGradient id="whiteStone" cx="34%" cy="26%" r="75%">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.45" stop-color="#f3f0ea"/>
+      <stop offset="0.8" stop-color="#d9d3c7"/>
+      <stop offset="1" stop-color="#bdb5a5"/>
+    </radialGradient>
+
+    <radialGradient id="stoneShadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#3d2308" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#3d2308" stop-opacity="0"/>
+    </radialGradient>
+
+    <clipPath id="roundedSquare">
+      <rect x="0" y="0" width="1024" height="1024" rx="224" ry="224"/>
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#roundedSquare)">
+    <rect x="0" y="0" width="1024" height="1024" fill="url(#board)"/>
+    <rect x="0" y="0" width="1024" height="1024" fill="url(#boardSheen)"/>
+
+    <!-- board grid -->
+    <g stroke="#7a4f22" stroke-width="7" stroke-linecap="round" opacity="0.55">
+      <line x1="180" y1="270" x2="844" y2="270"/>
+      <line x1="180" y1="420" x2="844" y2="420"/>
+      <line x1="180" y1="570" x2="844" y2="570"/>
+      <line x1="180" y1="720" x2="844" y2="720"/>
+      <line x1="270" y1="180" x2="270" y2="844"/>
+      <line x1="420" y1="180" x2="420" y2="844"/>
+      <line x1="570" y1="180" x2="570" y2="844"/>
+      <line x1="720" y1="180" x2="720" y2="844"/>
+    </g>
+    <circle cx="420" cy="420" r="9" fill="#7a4f22" opacity="0.55"/>
+    <circle cx="570" cy="570" r="9" fill="#7a4f22" opacity="0.55"/>
+
+    <!-- soft cast shadows -->
+    <ellipse cx="392" cy="560" rx="185" ry="70" fill="url(#stoneShadow)"/>
+    <ellipse cx="640" cy="640" rx="185" ry="70" fill="url(#stoneShadow)"/>
+
+    <!-- black stone -->
+    <circle cx="392" cy="452" r="182" fill="url(#blackStone)"/>
+    <ellipse cx="330" cy="378" rx="58" ry="38" fill="#ffffff" opacity="0.55"/>
+    <ellipse cx="330" cy="378" rx="26" ry="16" fill="#ffffff" opacity="0.75"/>
+
+    <!-- white stone -->
+    <circle cx="640" cy="572" r="182" fill="url(#whiteStone)"/>
+    <circle cx="640" cy="572" r="182" fill="none" stroke="#a89a82" stroke-width="3" opacity="0.4"/>
+    <ellipse cx="580" cy="500" rx="60" ry="40" fill="#ffffff" opacity="0.95"/>
+    <ellipse cx="580" cy="500" rx="28" ry="17" fill="#ffffff"/>
+  </g>
+
+  <!-- rim highlight for depth -->
+  <rect x="6" y="6" width="1012" height="1012" rx="218" ry="218" fill="none" stroke="#ffffff" stroke-opacity="0.25" stroke-width="6"/>
+</svg>

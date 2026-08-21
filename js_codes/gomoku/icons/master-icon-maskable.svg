@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="board" x1="0" y1="0" x2="1024" y2="1024" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f0c583"/>
+      <stop offset="0.55" stop-color="#dba85c"/>
+      <stop offset="1" stop-color="#b9803a"/>
+    </linearGradient>
+
+    <radialGradient id="boardSheen" cx="30%" cy="20%" r="80%">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.35"/>
+      <stop offset="0.4" stop-color="#ffffff" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="blackStone" cx="34%" cy="28%" r="72%">
+      <stop offset="0" stop-color="#6b6b73"/>
+      <stop offset="0.35" stop-color="#37373d"/>
+      <stop offset="0.75" stop-color="#141417"/>
+      <stop offset="1" stop-color="#050506"/>
+    </radialGradient>
+
+    <radialGradient id="whiteStone" cx="34%" cy="26%" r="75%">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.45" stop-color="#f3f0ea"/>
+      <stop offset="0.8" stop-color="#d9d3c7"/>
+      <stop offset="1" stop-color="#bdb5a5"/>
+    </radialGradient>
+
+    <radialGradient id="stoneShadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#3d2308" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#3d2308" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect x="0" y="0" width="1024" height="1024" fill="url(#board)"/>
+  <rect x="0" y="0" width="1024" height="1024" fill="url(#boardSheen)"/>
+
+  <!-- board grid (kept inside safe zone) -->
+  <g stroke="#7a4f22" stroke-width="7" stroke-linecap="round" opacity="0.5">
+    <line x1="260" y1="360" x2="764" y2="360"/>
+    <line x1="260" y1="500" x2="764" y2="500"/>
+    <line x1="260" y1="640" x2="764" y2="640"/>
+    <line x1="360" y1="260" x2="360" y2="764"/>
+    <line x1="500" y1="260" x2="500" y2="764"/>
+    <line x1="640" y1="260" x2="640" y2="764"/>
+  </g>
+
+  <!-- soft cast shadows -->
+  <ellipse cx="455" cy="590" rx="150" ry="58" fill="url(#stoneShadow)"/>
+  <ellipse cx="655" cy="650" rx="150" ry="58" fill="url(#stoneShadow)"/>
+
+  <!-- black stone -->
+  <circle cx="440" cy="500" r="150" fill="url(#blackStone)"/>
+  <ellipse cx="390" cy="440" rx="48" ry="32" fill="#ffffff" opacity="0.55"/>
+  <ellipse cx="390" cy="440" rx="22" ry="14" fill="#ffffff" opacity="0.75"/>
+
+  <!-- white stone -->
+  <circle cx="640" cy="590" r="150" fill="url(#whiteStone)"/>
+  <circle cx="640" cy="590" r="150" fill="none" stroke="#a89a82" stroke-width="3" opacity="0.4"/>
+  <ellipse cx="590" cy="530" rx="50" ry="33" fill="#ffffff" opacity="0.95"/>
+  <ellipse cx="590" cy="530" rx="24" ry="15" fill="#ffffff"/>
+</svg>
