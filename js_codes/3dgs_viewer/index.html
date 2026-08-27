@@ -1,0 +1,2032 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <title>3D Gaussian Splat Viewer</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="An elegant WebGL-based 3D Gaussian Splat viewer. Drag and drop a .ply or .splat file to visualize it in real-time." />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        /* ── Light theme (default) ─────────────────────────────────── */
+        :root {
+            --bg: #f1f5f9;
+            --bg-panel: rgba(255, 255, 255, 0.85);
+            --bg-topbar: rgba(241, 245, 249, 0.88);
+            --bg-bottombar: rgba(241, 245, 249, 0.75);
+            --bg-overlay: rgba(220, 228, 240, 0.75);
+            --bg-dialog: rgba(255, 255, 255, 0.97);
+            --bg-credit-btn: rgba(255, 255, 255, 0.75);
+            --bg-credit-btn-hover: rgba(240, 244, 255, 0.95);
+            --bg-back-hover: rgba(240, 244, 255, 0.95);
+            --bg-close-btn: rgba(0, 0, 0, 0.04);
+            --bg-close-btn-hover: rgba(0, 0, 0, 0.09);
+            --accent: #6366f1;
+            --accent-2: #8b5cf6;
+            --accent-glow: rgba(99, 102, 241, 0.3);
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --border: rgba(0, 0, 0, 0.1);
+            --border-hover: rgba(99, 102, 241, 0.5);
+            --copyright-color: rgba(100, 116, 139, 0.7);
+            --credit-btn-color: rgba(71, 85, 105, 0.85);
+            --success: #16a34a;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --glass-blur: blur(20px);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --drop-title-from: #1e293b;
+        }
+
+        /* ── Dark theme overrides ──────────────────────────────────── */
+        [data-theme="dark"] {
+            --bg: #080c14;
+            --bg-panel: rgba(10, 15, 25, 0.85);
+            --bg-topbar: rgba(8, 12, 20, 0.88);
+            --bg-bottombar: rgba(8, 12, 20, 0.75);
+            --bg-overlay: rgba(4, 7, 14, 0.75);
+            --bg-dialog: rgba(12, 18, 32, 0.97);
+            --bg-credit-btn: rgba(10, 15, 25, 0.6);
+            --bg-credit-btn-hover: rgba(15, 20, 35, 0.85);
+            --bg-back-hover: rgba(15, 23, 40, 0.9);
+            --bg-close-btn: rgba(255, 255, 255, 0.05);
+            --bg-close-btn-hover: rgba(255, 255, 255, 0.1);
+            --accent-glow: rgba(99, 102, 241, 0.4);
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.08);
+            --copyright-color: rgba(148, 163, 184, 0.55);
+            --credit-btn-color: rgba(148, 163, 184, 0.7);
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --drop-title-from: #e2e8f0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            overflow: hidden;
+            height: 100vh; /* Fallback */
+            height: 100dvh;
+            width: 100vw;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* ── Canvas ────────────────────────────────────────────────── */
+        #canvas {
+            display: block;
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            touch-action: none;
+        }
+
+        /* ── Loading Progress Bar ──────────────────────────────────── */
+        #progress {
+            position: absolute;
+            top: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+            z-index: 200;
+            width: 0%;
+            transition: width 0.15s ease-in-out;
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+
+        /* ── Drop Zone Overlay ─────────────────────────────────────── */
+        #drop-zone {
+            position: absolute;
+            inset: 0;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(ellipse at 50% 50%,
+                rgba(99, 102, 241, 0.08) 0%,
+                var(--bg) 70%);
+            transition: background 0.3s ease, var(--transition);
+        }
+
+        #drop-zone.drag-over {
+            background: radial-gradient(ellipse at 50% 50%,
+                rgba(99, 102, 241, 0.18) 0%,
+                var(--bg) 70%);
+        }
+
+        #drop-zone.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Animated grid lines background */
+        #drop-zone::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(99,102,241,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99,102,241,0.04) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+            animation: gridPulse 8s ease-in-out infinite;
+        }
+
+        @keyframes gridPulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .drop-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            max-width: 480px;
+            padding: 2rem;
+        }
+
+        /* Animated 3D icon */
+        .drop-icon-wrap {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+            position: relative;
+        }
+
+        .drop-icon-wrap svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 20px var(--accent-glow));
+            animation: floatIcon 4s ease-in-out infinite;
+        }
+
+        @keyframes floatIcon {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(3deg); }
+        }
+
+        .drop-title {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.75rem;
+            background: linear-gradient(135deg, var(--drop-title-from) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .drop-subtitle {
+            font-size: 1rem;
+            color: var(--text-muted);
+            font-weight: 400;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .drop-zone-box {
+            border: 2px dashed var(--border-hover);
+            border-radius: var(--radius);
+            padding: 2rem 3rem;
+            background: rgba(99, 102, 241, 0.05);
+            backdrop-filter: var(--glass-blur);
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .drop-zone-box:hover,
+        #drop-zone.drag-over .drop-zone-box {
+            background: rgba(99, 102, 241, 0.12);
+            border-color: var(--accent);
+            box-shadow: 0 0 40px rgba(99, 102, 241, 0.2);
+        }
+
+        .drop-zone-label {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .drop-zone-formats {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .btn-browse {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1.5rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            border-radius: 99px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-browse:hover {
+            box-shadow: 0 4px 20px var(--accent-glow);
+            transform: translateY(-1px);
+        }
+
+        #file-input { display: none; }
+
+        /* ── Examples ──────────────────────────────────────────────── */
+        .example-section {
+            margin-top: 2rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            padding-top: 1.5rem;
+        }
+
+        .example-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+        }
+
+        .example-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+        }
+
+        .btn-example {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 99px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text);
+            cursor: pointer;
+            transition: var(--transition);
+            backdrop-filter: var(--glass-blur);
+        }
+
+        .btn-example:hover {
+            border-color: var(--accent);
+            box-shadow: 0 4px 15px var(--accent-glow);
+            transform: translateY(-1px);
+            background: var(--bg-credit-btn-hover);
+        }
+
+        /* ── Spinner (loading) ─────────────────────────────────────── */
+        #spinner {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 30;
+            pointer-events: none;
+        }
+
+        .spinner-ring {
+            width: 48px;
+            height: 48px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ── Error Message ─────────────────────────────────────────── */
+        #message {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 60;
+            pointer-events: none;
+            padding: 2rem;
+        }
+
+        .message-box {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            border-radius: var(--radius);
+            padding: 1rem 1.5rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #fca5a5;
+            backdrop-filter: var(--glass-blur);
+            text-align: center;
+            max-width: 480px;
+        }
+
+        /* ── Top Bar ───────────────────────────────────────────────── */
+        #topbar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.25rem;
+            background: linear-gradient(to bottom, var(--bg-topbar) 0%, transparent 100%);
+            pointer-events: none;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            pointer-events: all;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 0.4rem 0.75rem;
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 99px;
+            backdrop-filter: var(--glass-blur);
+            transition: var(--transition);
+        }
+
+        .back-btn:hover {
+            color: var(--text);
+            border-color: var(--border-hover);
+            background: var(--bg-back-hover);
+        }
+
+        .app-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text);
+            letter-spacing: -0.01em;
+            opacity: 0.9;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            pointer-events: all;
+        }
+
+        /* ── HUD Panels ────────────────────────────────────────────── */
+        .hud-panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            padding: 0.75rem 1rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* ── Bottom Bar ────────────────────────────────────────────── */
+        #bottombar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            padding: 1rem 1.25rem;
+            background: linear-gradient(to top, var(--bg-bottombar) 0%, transparent 100%);
+            pointer-events: none;
+        }
+
+        /* ── Copyright / Credit ────────────────────────────────────── */
+        #bottom-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.4rem;
+            pointer-events: all;
+        }
+
+        #bottom-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.5rem;
+            pointer-events: all;
+        }
+
+        #copyright {
+            font-size: 0.65rem;
+            color: var(--copyright-color);
+            letter-spacing: 0.03em;
+            user-select: none;
+            text-align: center;
+        }
+
+        #btn-credit {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.3rem 0.75rem;
+            border-radius: 99px;
+            border: 1px solid var(--border);
+            background: var(--bg-credit-btn);
+            backdrop-filter: var(--glass-blur);
+            color: var(--credit-btn-color);
+            font-size: 0.68rem;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+            transition: var(--transition);
+            letter-spacing: 0.02em;
+        }
+
+        #btn-credit:hover {
+            color: var(--text);
+            border-color: rgba(99,102,241,0.4);
+            background: var(--bg-credit-btn-hover);
+        }
+
+        /* ── Credit Modal ──────────────────────────────────────────── */
+        #credit-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-overlay);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        #credit-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        #credit-dialog {
+            background: var(--bg-dialog);
+            border: 1px solid rgba(99,102,241,0.2);
+            border-radius: 20px;
+            padding: 2rem 2.25rem;
+            max-width: 440px;
+            width: calc(100% - 2rem);
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 32px 80px rgba(0,0,0,0.25), 0 0 0 1px rgba(0,0,0,0.04) inset;
+            transform: translateY(20px) scale(0.97);
+            transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), opacity 0.25s ease;
+            opacity: 0;
+            position: relative;
+        }
+
+        #credit-overlay.open #credit-dialog {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        .credit-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: var(--bg-close-btn);
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .credit-close:hover {
+            background: var(--bg-close-btn-hover);
+            color: var(--text);
+        }
+
+        .credit-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .credit-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 16px var(--accent-glow);
+        }
+
+        .credit-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.01em;
+        }
+
+        .credit-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.1rem;
+        }
+
+        .credit-divider {
+            height: 1px;
+            background: linear-gradient(to right, rgba(99,102,241,0.3), transparent);
+            margin: 1rem 0;
+        }
+
+        .credit-row {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .credit-row:last-child { margin-bottom: 0; }
+
+        .credit-label {
+            font-size: 0.68rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--accent);
+        }
+
+        .credit-value {
+            font-size: 0.88rem;
+            color: var(--text);
+            font-weight: 400;
+        }
+
+        .credit-link {
+            color: #818cf8;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .credit-link:hover { color: #a5b4fc; text-decoration: underline; }
+
+        .credit-package {
+            background: rgba(99,102,241,0.05);
+            border: 1px solid rgba(99,102,241,0.15);
+            border-radius: 12px;
+            padding: 1rem 1.1rem;
+            margin-top: 1rem;
+        }
+
+        .credit-pkg-name {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text);
+            font-family: monospace;
+            letter-spacing: -0.01em;
+            margin-bottom: 0.3rem;
+        }
+
+        .credit-pkg-meta {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.6rem;
+        }
+
+        .credit-pkg-desc {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            line-height: 1.55;
+            margin-bottom: 0.75rem;
+        }
+
+        .credit-license-badge {
+            display: inline-block;
+            padding: 0.15rem 0.55rem;
+            border-radius: 99px;
+            background: rgba(99,102,241,0.15);
+            border: 1px solid rgba(99,102,241,0.3);
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: #a5b4fc;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+
+
+        /* ── FPS Counter ───────────────────────────────────────────── */
+        #fps-panel {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            user-select: none;
+            pointer-events: all;
+        }
+
+        #fps-panel:hover {
+            background: var(--bg-credit-btn-hover);
+            color: var(--text);
+        }
+
+        #fps-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 6px var(--success);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        #fps-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            min-width: 55px;
+        }
+
+        /* ── Controls Panel ────────────────────────────────────────── */
+        #controls-panel {
+            pointer-events: all;
+        }
+
+        .controls-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            cursor: pointer;
+            user-select: none;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .controls-toggle:hover { color: var(--text); }
+
+        .controls-content {
+            margin-top: 0.75rem;
+            display: none;
+            pointer-events: none;
+        }
+
+        .controls-content.open { display: block; }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.4rem 1.5rem;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .ctrl-key {
+            display: inline-block;
+            padding: 0.1rem 0.35rem;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-family: monospace;
+            color: var(--text);
+            margin-right: 0.2rem;
+        }
+
+        /* ── Action Buttons ────────────────────────────────────────── */
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.5rem 0.9rem;
+            border-radius: 99px;
+            border: 1px solid var(--border);
+            background: var(--bg-panel);
+            backdrop-filter: var(--glass-blur);
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            font-family: inherit;
+        }
+
+        .action-btn:hover {
+            color: var(--text);
+            border-color: var(--border-hover);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            border-color: transparent;
+            color: white;
+        }
+
+        .action-btn.primary:hover {
+            box-shadow: 0 4px 20px var(--accent-glow);
+            transform: translateY(-1px);
+        }
+
+        .action-btn:disabled,
+        .action-btn[disabled] {
+            opacity: 0.3;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* ── File Info Badge ───────────────────────────────────────── */
+        #file-info {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 99px;
+            backdrop-filter: var(--glass-blur);
+            padding: 0.4rem 0.9rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        #file-info.visible { display: flex; }
+
+        .file-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 6px var(--accent-glow);
+            flex-shrink: 0;
+        }
+
+        /* ── Drag Overlay Indicator ────────────────────────────────── */
+        #drag-indicator {
+            position: absolute;
+            inset: 12px;
+            border: 2px dashed var(--accent);
+            border-radius: var(--radius);
+            z-index: 150;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            box-shadow: inset 0 0 80px rgba(99, 102, 241, 0.08),
+                        0 0 40px rgba(99, 102, 241, 0.1);
+        }
+
+        #drag-indicator.visible { opacity: 1; }
+
+        /* ── Tooltip ───────────────────────────────────────────────── */
+        .tooltip-wrap {
+            position: relative;
+        }
+
+        .tooltip-wrap:hover .tooltip {
+            opacity: 1;
+            transform: translateY(-4px);
+        }
+
+        .tooltip {
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%) translateY(0);
+            white-space: nowrap;
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.3rem 0.6rem;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            opacity: 0;
+            transition: opacity 0.2s, transform 0.2s;
+            pointer-events: none;
+        }
+
+        /* ── Theme toggle button ────────────────────────────────── */
+        #btn-theme {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: var(--bg-panel);
+            backdrop-filter: var(--glass-blur);
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            font-family: inherit;
+            flex-shrink: 0;
+        }
+
+        #btn-theme:hover {
+            color: var(--text);
+            border-color: var(--border-hover);
+            box-shadow: 0 0 16px var(--accent-glow);
+            transform: rotate(15deg);
+        }
+
+        #btn-theme .icon-sun { display: none; }
+        #btn-theme .icon-moon { display: block; }
+        [data-theme="dark"] #btn-theme .icon-sun { display: block; }
+        [data-theme="dark"] #btn-theme .icon-moon { display: none; }
+        /* ── Mobile Optimization ───────────────────────────────────── */
+        @media (max-width: 768px) {
+            .drop-title { font-size: 1.5rem; }
+            .drop-subtitle { font-size: 0.85rem; padding: 0 0.5rem; }
+            .drop-zone-box { padding: 1.5rem; margin-top: 1rem; }
+            
+            #topbar { padding: 0.75rem; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; }
+            #file-info { display: none; } /* Hide file info on small screens */
+            .action-btn { font-size: 0.65rem; padding: 0.4rem 0.5rem; }
+            .topbar-right { gap: 0.4rem; flex-wrap: wrap; justify-content: flex-end; }
+            
+            #bottombar {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.75rem;
+                padding: 1rem 0.75rem;
+            }
+            
+            #bottom-center { order: 3; margin-top: 0.25rem; }
+            #fps-panel { order: 1; margin-bottom: 0.25rem; }
+            #bottom-right { 
+                order: 2; 
+                flex-direction: row;
+                align-items: center; 
+                gap: 0.5rem;
+            }
+            
+            .controls-content { 
+                bottom: calc(100% + 5px); 
+                right: auto;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            .controls-grid { grid-template-columns: 1fr; gap: 0.3rem 0; }
+            
+            #credit-dialog { padding: 1.5rem 1rem; width: 95%; max-height: 90vh; }
+            .credit-pkg-name { font-size: 0.8rem; }
+            .credit-pkg-meta { font-size: 0.65rem; }
+            .credit-pkg-desc { font-size: 0.65rem; }
+            
+            .example-list { flex-direction: column; gap: 0.4rem; align-items: stretch; }
+            .btn-example { font-size: 0.75rem; padding: 0.5rem; width: 100%; text-align: center; justify-content: center; }
+        }
+    </style>
+    <!-- Restore saved theme before first paint to avoid flash -->
+    <script>(function(){var t=localStorage.getItem('3dgs-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');})()</script>
+</head>
+<body>
+
+    <!-- Progress bar -->
+    <div id="progress"></div>
+
+    <!-- Drag-to-replace indicator (when a file is already loaded) -->
+    <div id="drag-indicator"></div>
+
+    <!-- WebGL Canvas -->
+    <canvas id="canvas"></canvas>
+
+    <!-- Drop Zone (shown when no file loaded) -->
+    <div id="drop-zone">
+        <div class="drop-content">
+            <div class="drop-icon-wrap">
+                <!-- 3D Gaussian splat icon (custom SVG) -->
+                <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <radialGradient id="g1" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="#6366f1" stop-opacity="0.9"/>
+                            <stop offset="100%" stop-color="#4338ca" stop-opacity="0.2"/>
+                        </radialGradient>
+                        <radialGradient id="g2" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.8"/>
+                            <stop offset="100%" stop-color="#6d28d9" stop-opacity="0.1"/>
+                        </radialGradient>
+                        <radialGradient id="g3" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="#a78bfa" stop-opacity="0.6"/>
+                            <stop offset="100%" stop-color="#7c3aed" stop-opacity="0.05"/>
+                        </radialGradient>
+                    </defs>
+                    <!-- Outer glow blob -->
+                    <ellipse cx="60" cy="60" rx="50" ry="50" fill="url(#g3)" opacity="0.5"/>
+                    <!-- Mid blob -->
+                    <ellipse cx="60" cy="58" rx="34" ry="30" fill="url(#g2)" opacity="0.7"/>
+                    <!-- Core blob -->
+                    <ellipse cx="60" cy="57" rx="20" ry="18" fill="url(#g1)" opacity="0.9"/>
+                    <!-- Sparks / gaussian points -->
+                    <circle cx="35" cy="42" r="4" fill="#a78bfa" opacity="0.6"/>
+                    <circle cx="85" cy="38" r="3" fill="#818cf8" opacity="0.5"/>
+                    <circle cx="90" cy="72" r="5" fill="#8b5cf6" opacity="0.4"/>
+                    <circle cx="28" cy="78" r="3.5" fill="#6366f1" opacity="0.5"/>
+                    <circle cx="60" cy="22" r="2.5" fill="#c4b5fd" opacity="0.5"/>
+                    <circle cx="48" cy="88" r="2" fill="#818cf8" opacity="0.4"/>
+                    <!-- Wireframe octahedron suggestion -->
+                    <path d="M60 20 L90 55 L60 90 L30 55 Z" stroke="#6366f1" stroke-width="1" stroke-opacity="0.25" fill="none"/>
+                    <path d="M60 20 L60 90" stroke="#6366f1" stroke-width="0.75" stroke-opacity="0.15" fill="none" stroke-dasharray="4 4"/>
+                    <path d="M30 55 L90 55" stroke="#6366f1" stroke-width="0.75" stroke-opacity="0.15" fill="none" stroke-dasharray="4 4"/>
+                </svg>
+            </div>
+
+            <h1 class="drop-title">3D Gaussian Splat Viewer</h1>
+            <p class="drop-subtitle">
+                Drop a <strong>.ply</strong> or <strong>.splat</strong> file below to render it in real-time with WebGL — no upload, everything runs locally in your browser.
+            </p>
+
+            <div class="drop-zone-box" id="drop-zone-box">
+                <p class="drop-zone-label">Drop your file here</p>
+                <p class="drop-zone-formats">Accepts .ply (3DGS) or .splat files</p>
+                <button class="btn-browse" id="btn-browse">Browse files</button>
+            </div>
+
+            <div class="example-section">
+                <p class="example-label">Or try an example:</p>
+                <div class="example-list">
+                    <button class="btn-example" data-url="assets/cactus.splat">🌵 Cactus</button>
+                    <button class="btn-example" data-url="assets/bonsai.splat">🪴 Bonsai</button>
+                    <button class="btn-example" data-url="assets/truck.splat">🚛 Truck</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Spinner (shown while processing) -->
+    <div id="spinner" style="display:none;">
+        <div class="spinner-ring"></div>
+    </div>
+
+    <!-- Error message -->
+    <div id="message" style="display:none;">
+        <div class="message-box" id="message-text"></div>
+    </div>
+
+    <!-- Top Bar -->
+    <div id="topbar">
+        <div class="topbar-left">
+            <a href="../index.html" class="back-btn">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                Back
+            </a>
+            <span class="app-title">3DGS Viewer</span>
+        </div>
+        <div class="topbar-right">
+            <button id="btn-theme" title="Toggle light/dark theme" aria-label="Toggle theme">
+                <!-- Moon icon (shown in light mode → click to go dark) -->
+                <svg class="icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                <!-- Sun icon (shown in dark mode → click to go light) -->
+                <svg class="icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            </button>
+            <div id="file-info">
+                <span class="file-dot"></span>
+                <span id="file-name-label">file.ply</span>
+            </div>
+            <div class="tooltip-wrap">
+                <button class="action-btn" id="btn-render-mode" style="display:none;" title="Toggle between Splat and Ellipsoid">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="10" ry="6"/></svg>
+                    Ellipsoids
+                </button>
+                <span class="tooltip">Toggle between Gaussians and Ellipsoids</span>
+            </div>
+            <div class="tooltip-wrap">
+                <button class="action-btn" id="btn-far-view" style="display:none;" title="Toggle far view">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                    Far View
+                </button>
+                <span class="tooltip">Toggle camera to far view and back</span>
+            </div>
+            <div class="tooltip-wrap">
+                <button class="action-btn" id="btn-load-new" style="display:none;" title="Load another file">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    Load File
+                </button>
+                <span class="tooltip">Load another .ply / .splat file</span>
+            </div>
+            <div class="tooltip-wrap">
+                <button class="action-btn primary" id="btn-download" disabled title="Download converted .splat file">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Download .splat
+                </button>
+                <span class="tooltip">Download the converted .splat binary</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div id="bottombar">
+        <!-- FPS counter (left) -->
+        <div id="fps-panel" class="hud-panel" style="display:none;">
+            <span id="fps-dot"></span>
+            <span id="fps-label">-- fps</span>
+        </div>
+
+        <!-- Copyright (center) -->
+        <div id="bottom-center">
+            <p id="copyright">&copy; 2026 Peizhi Yan</p>
+        </div>
+
+        <!-- Controls + Credits (right) -->
+        <div id="bottom-right">
+            <!-- Controls toggle -->
+            <div id="controls-panel" class="hud-panel" style="display:none;">
+                <div class="controls-toggle" id="controls-toggle">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+                    Controls
+                    <svg id="controls-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+                <div class="controls-content" id="controls-content">
+                    <div class="controls-grid">
+                        <div><span class="ctrl-key">Drag / Ctrl+Drag</span> Orbit</div>
+                        <div><span class="ctrl-key">Shift+Drag / RMB</span> Pan</div>
+                        <div><span class="ctrl-key">Scroll</span> Orbit / Zoom</div>
+                        <div><span class="ctrl-key">Ctrl+Scroll</span> Move fwd/back</div>
+                        <div><span class="ctrl-key">↑ ↓ ← →</span> Move</div>
+                        <div><span class="ctrl-key">W A S D</span> Move (FPS)</div>
+                        <div><span class="ctrl-key">Q E</span> Roll</div>
+                        <div><span class="ctrl-key">I J K L</span> Orbit</div>
+                        <div><span class="ctrl-key">0–9</span> Camera preset</div>
+                        <div><span class="ctrl-key">P</span> Toggle animation</div>
+                        <div><span class="ctrl-key">Space</span> Jump</div>
+                        <div><span class="ctrl-key">V</span> Copy view URL</div>
+                    </div>
+                </div>
+            </div>
+            <!-- Credits button -->
+            <button id="btn-credit">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                Credits
+            </button>
+        </div>
+    </div>
+
+    <!-- Credit Modal -->
+    <div id="credit-overlay">
+        <div id="credit-dialog" role="dialog" aria-modal="true" aria-labelledby="credit-dialog-title">
+            <button class="credit-close" id="credit-close" aria-label="Close">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+
+            <div class="credit-header">
+                <div class="credit-icon">✨</div>
+                <div>
+                    <div class="credit-title" id="credit-dialog-title">Open Source Acknowledgements</div>
+                    <div class="credit-subtitle">This software uses the following open-source components</div>
+                </div>
+            </div>
+
+            <div class="credit-divider"></div>
+
+            <div class="credit-package">
+                <div class="credit-pkg-name">splat</div>
+                <div class="credit-pkg-meta">
+                    <a href="https://github.com/antimatter15/splat" target="_blank" rel="noopener" class="credit-link">github.com/antimatter15/splat</a>
+                    &nbsp;&middot;&nbsp; Kevin Kwok
+                    (<a href="https://twitter.com/antimatter15" target="_blank" rel="noopener" class="credit-link">@antimatter15</a>)
+                </div>
+                <div class="credit-pkg-desc">WebGL-based 3D Gaussian Splat renderer. Handles real-time depth sorting, texture generation, and rasterization of Gaussian splat scenes in the browser.</div>
+                <div class="credit-pkg-license">
+                    <span class="credit-license-badge">MIT License</span>
+                </div>
+            </div>
+
+            <div class="credit-package">
+                <div class="credit-pkg-name">3DGS PLY Sample Data (Cactus)</div>
+                <div class="credit-pkg-meta">
+                    <a href="https://www.steam-studio.jp" target="_blank" rel="noopener" class="credit-link">steam-studio.jp</a>
+                    &nbsp;&middot;&nbsp; steam studio / 3D SCAN STUDIO iris
+                </div>
+                <div class="credit-pkg-desc">High-quality 3D Gaussian Splatting sample data provided by steam studio in Tokyo, Japan.</div>
+                <div class="credit-pkg-license">
+                    <span class="credit-license-badge">CC0 License</span>
+                </div>
+            </div>
+
+            <div class="credit-package">
+                <div class="credit-pkg-name">MultiNeRF / Mip-NeRF 360 (Bonsai, Truck)</div>
+                <div class="credit-pkg-meta">
+                    <a href="https://github.com/google-research/multinerf" target="_blank" rel="noopener" class="credit-link">github.com/google-research/multinerf</a>
+                    &nbsp;&middot;&nbsp; Google Research
+                </div>
+                <div class="credit-pkg-desc">The Bonsai and Truck scenes are from the Mip-NeRF 360 dataset by Jonathan T. Barron et al., used for evaluating novel view synthesis.</div>
+                <div class="credit-pkg-license">
+                    <span class="credit-license-badge">Non-Commercial</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden file input -->
+    <input type="file" id="file-input" accept=".ply,.splat" />
+
+    <script>
+    // ─── Utility: forward declaration of splatBuffer for download ───────────────
+    let convertedSplatBuffer = null; // set when a .ply is processed
+    let loadedFileName = '';
+
+    // ─── DOM refs ───────────────────────────────────────────────────────────────
+    const dropZone      = document.getElementById('drop-zone');
+    const dropZoneBox   = document.getElementById('drop-zone-box');
+    const dragIndicator = document.getElementById('drag-indicator');
+    const progressBar   = document.getElementById('progress');
+    const spinner       = document.getElementById('spinner');
+    const messageDiv    = document.getElementById('message');
+    const messageText   = document.getElementById('message-text');
+    const fileInput     = document.getElementById('file-input');
+    const btnBrowse     = document.getElementById('btn-browse');
+    const btnDownload   = document.getElementById('btn-download');
+    const btnLoadNew    = document.getElementById('btn-load-new');
+    const fpsLabel      = document.getElementById('fps-label');
+    const fpsPanel      = document.getElementById('fps-panel');
+    const controlsPanel = document.getElementById('controls-panel');
+    const controlsToggle= document.getElementById('controls-toggle');
+    const controlsContent=document.getElementById('controls-content');
+    const controlsChevron=document.getElementById('controls-chevron');
+    const fileInfo      = document.getElementById('file-info');
+    const fileNameLabel = document.getElementById('file-name-label');
+    const btnLoadNewTop = document.getElementById('btn-load-new');
+
+    // ─── Controls toggle ────────────────────────────────────────────────────────
+    controlsToggle.addEventListener('click', () => {
+        controlsContent.classList.toggle('open');
+        controlsChevron.style.transform = controlsContent.classList.contains('open')
+            ? 'rotate(180deg)' : '';
+    });
+
+    const btnFarView = document.getElementById('btn-far-view');
+    let isFarView = false;
+    btnFarView.addEventListener('click', () => {
+        if (!window.toggleFarView) return;
+        isFarView = !isFarView;
+        if (isFarView) {
+            btnFarView.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg> Near View`;
+            window.toggleFarView(true);
+        } else {
+            btnFarView.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg> Far View`;
+            window.toggleFarView(false);
+        }
+    });
+
+    const btnRenderMode = document.getElementById('btn-render-mode');
+    let isEllipsoidMode = false;
+    btnRenderMode.addEventListener('click', () => {
+        isEllipsoidMode = !isEllipsoidMode;
+        if (isEllipsoidMode) {
+            btnRenderMode.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg> Gaussians`;
+        } else {
+            btnRenderMode.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="10" ry="6"/></svg> Ellipsoids`;
+        }
+        if (window.setRenderMode) window.setRenderMode(isEllipsoidMode ? 1 : 0);
+    });
+
+    // ─── FPS / Splats toggle ────────────────────────────────────────────────────
+    window.showGaussiansCount = false;
+    fpsPanel.addEventListener('click', () => {
+        window.showGaussiansCount = !window.showGaussiansCount;
+    });
+
+    // ─── Credit modal ────────────────────────────────────────────────────────────
+    const creditOverlay = document.getElementById('credit-overlay');
+    const creditClose   = document.getElementById('credit-close');
+    const btnCredit     = document.getElementById('btn-credit');
+
+    const openCredit  = () => creditOverlay.classList.add('open');
+    const closeCredit = () => creditOverlay.classList.remove('open');
+
+    btnCredit.addEventListener('click', openCredit);
+    creditClose.addEventListener('click', closeCredit);
+    creditOverlay.addEventListener('click', (e) => { if (e.target === creditOverlay) closeCredit(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCredit(); });
+
+    // ─── Theme toggle ────────────────────────────────────────────────────────────
+    const btnTheme = document.getElementById('btn-theme');
+    const applyTheme = (dark) => {
+        if (dark) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('3dgs-theme', 'dark');
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+            localStorage.setItem('3dgs-theme', 'light');
+        }
+    };
+    btnTheme.addEventListener('click', () => {
+        applyTheme(document.documentElement.getAttribute('data-theme') !== 'dark');
+    });
+    // Apply saved preference on load (JS layer, CSS layer already handled above)
+    const savedTheme = localStorage.getItem('3dgs-theme');
+    if (savedTheme === 'dark') applyTheme(true);
+    else if (!savedTheme) applyTheme(false); // default light
+
+    // ─── Download button ────────────────────────────────────────────────────────
+    btnDownload.addEventListener('click', () => {
+        if (!convertedSplatBuffer) return;
+        
+        let bufferToSave = convertedSplatBuffer;
+        if (window.getBakedSplatBuffer) {
+            bufferToSave = window.getBakedSplatBuffer(convertedSplatBuffer);
+        }
+        
+        const blob = new Blob([bufferToSave], { type: 'application/octet-stream' });
+        const a = document.createElement('a');
+        const baseName = loadedFileName.replace(/\.ply$/i, '') || 'model';
+        a.download = baseName + '.splat';
+        a.href = URL.createObjectURL(blob);
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(a.href);
+    });
+
+    // ─── Example Loaders ────────────────────────────────────────────────────────
+    document.querySelectorAll('.btn-example').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const url = btn.getAttribute('data-url');
+            if (!url) return;
+            const filename = url.split('/').pop();
+            
+            // Show spinner early
+            spinner.style.display = 'flex';
+            dropZone.classList.add('hidden');
+            
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Failed to load ${filename}`);
+                const blob = await response.blob();
+                const file = new File([blob], filename, { type: blob.type || 'application/octet-stream' });
+                if (window.selectFile) {
+                    window.selectFile(file);
+                }
+            } catch (err) {
+                spinner.style.display = 'none';
+                dropZone.classList.remove('hidden');
+                showError('Error loading example: ' + err.message);
+            }
+        });
+    });
+
+    // ─── Browse / Load New ──────────────────────────────────────────────────────
+    btnBrowse.addEventListener('click', () => fileInput.click());
+    btnLoadNewTop.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files[0]) selectFile(e.target.files[0]);
+        fileInput.value = '';
+    });
+
+    // ─── Show/hide viewer UI after a file is loaded ──────────────────────────── 
+    function showViewerUI(fileName) {
+        dropZone.classList.add('hidden');
+        fpsPanel.style.display = 'flex';
+        controlsPanel.style.display = 'block';
+        btnRenderMode.style.display = 'flex';
+        btnFarView.style.display = 'flex';
+        btnLoadNew.style.display = 'flex';
+        fileInfo.classList.add('visible');
+        fileNameLabel.textContent = fileName;
+        loadedFileName = fileName;
+    }
+
+    function showError(msg) {
+        messageText.textContent = msg;
+        messageDiv.style.display = 'flex';
+        spinner.style.display = 'none';
+        setTimeout(() => { messageDiv.style.display = 'none'; }, 5000);
+    }
+
+    // ─── Drag-and-drop ──────────────────────────────────────────────────────────
+    let dragDepth = 0;
+    document.addEventListener('dragenter', (e) => {
+        e.preventDefault(); e.stopPropagation();
+        dragDepth++;
+        if (dropZone.classList.contains('hidden')) {
+            dragIndicator.classList.add('visible');
+        } else {
+            dropZone.classList.add('drag-over');
+        }
+    });
+    document.addEventListener('dragleave', (e) => {
+        e.preventDefault(); e.stopPropagation();
+        dragDepth--;
+        if (dragDepth <= 0) {
+            dragDepth = 0;
+            dragIndicator.classList.remove('visible');
+            dropZone.classList.remove('drag-over');
+        }
+    });
+    document.addEventListener('dragover', (e) => { e.preventDefault(); e.stopPropagation(); });
+    document.addEventListener('drop', (e) => {
+        e.preventDefault(); e.stopPropagation();
+        dragDepth = 0;
+        dragIndicator.classList.remove('visible');
+        dropZone.classList.remove('drag-over');
+        const file = e.dataTransfer.files[0];
+        if (file) selectFile(file);
+    });
+    </script>
+
+    <!-- ─── Core viewer (adapted from splat-viewer-html/main.js) ─────────────── -->
+    <script>
+    // ============================================================
+    // Math helpers
+    // ============================================================
+    let cameras = [
+        { id: 0, img_name: "00001", width: 1959, height: 1090,
+          position: [-3.0089893469241797, -0.11086489695181866, -3.7527640949141428],
+          rotation: [[0.876134201218856, 0.06925962026449776, 0.47706599800804744],
+                     [-0.04747421839895102, 0.9972110940209488, -0.057586739349882114],
+                     [-0.4797239414934443, 0.027805376500959853, 0.8769787916452908]],
+          fy: 1164.6601287484507, fx: 1159.5880733038064 },
+    ];
+    let camera = cameras[0];
+
+    function getProjectionMatrix(fx, fy, width, height) {
+        const znear = 0.2, zfar = 2000;
+        return [[(2*fx)/width,0,0,0],[0,-(2*fy)/height,0,0],[0,0,zfar/(zfar-znear),1],[0,0,-(zfar*znear)/(zfar-znear),0]].flat();
+    }
+    function getViewMatrix(cam) {
+        const R = cam.rotation.flat(), t = cam.position;
+        return [[R[0],R[1],R[2],0],[R[3],R[4],R[5],0],[R[6],R[7],R[8],0],
+                [-t[0]*R[0]-t[1]*R[3]-t[2]*R[6],
+                 -t[0]*R[1]-t[1]*R[4]-t[2]*R[7],
+                 -t[0]*R[2]-t[1]*R[5]-t[2]*R[8],1]].flat();
+    }
+    function multiply4(a,b) {
+        return [b[0]*a[0]+b[1]*a[4]+b[2]*a[8]+b[3]*a[12],b[0]*a[1]+b[1]*a[5]+b[2]*a[9]+b[3]*a[13],b[0]*a[2]+b[1]*a[6]+b[2]*a[10]+b[3]*a[14],b[0]*a[3]+b[1]*a[7]+b[2]*a[11]+b[3]*a[15],b[4]*a[0]+b[5]*a[4]+b[6]*a[8]+b[7]*a[12],b[4]*a[1]+b[5]*a[5]+b[6]*a[9]+b[7]*a[13],b[4]*a[2]+b[5]*a[6]+b[6]*a[10]+b[7]*a[14],b[4]*a[3]+b[5]*a[7]+b[6]*a[11]+b[7]*a[15],b[8]*a[0]+b[9]*a[4]+b[10]*a[8]+b[11]*a[12],b[8]*a[1]+b[9]*a[5]+b[10]*a[9]+b[11]*a[13],b[8]*a[2]+b[9]*a[6]+b[10]*a[10]+b[11]*a[14],b[8]*a[3]+b[9]*a[7]+b[10]*a[11]+b[11]*a[15],b[12]*a[0]+b[13]*a[4]+b[14]*a[8]+b[15]*a[12],b[12]*a[1]+b[13]*a[5]+b[14]*a[9]+b[15]*a[13],b[12]*a[2]+b[13]*a[6]+b[14]*a[10]+b[15]*a[14],b[12]*a[3]+b[13]*a[7]+b[14]*a[11]+b[15]*a[15]];
+    }
+    function invert4(a) {
+        let b00=a[0]*a[5]-a[1]*a[4],b01=a[0]*a[6]-a[2]*a[4],b02=a[0]*a[7]-a[3]*a[4],b03=a[1]*a[6]-a[2]*a[5],b04=a[1]*a[7]-a[3]*a[5],b05=a[2]*a[7]-a[3]*a[6],b06=a[8]*a[13]-a[9]*a[12],b07=a[8]*a[14]-a[10]*a[12],b08=a[8]*a[15]-a[11]*a[12],b09=a[9]*a[14]-a[10]*a[13],b10=a[9]*a[15]-a[11]*a[13],b11=a[10]*a[15]-a[11]*a[14];
+        let det=b00*b11-b01*b10+b02*b09+b03*b08-b04*b07+b05*b06;
+        if(!det) return null;
+        return [(a[5]*b11-a[6]*b10+a[7]*b09)/det,(a[2]*b10-a[1]*b11-a[3]*b09)/det,(a[13]*b05-a[14]*b04+a[15]*b03)/det,(a[10]*b04-a[9]*b05-a[11]*b03)/det,(a[6]*b08-a[4]*b11-a[7]*b07)/det,(a[0]*b11-a[2]*b08+a[3]*b07)/det,(a[14]*b02-a[12]*b05-a[15]*b01)/det,(a[8]*b05-a[10]*b02+a[11]*b01)/det,(a[4]*b10-a[5]*b08+a[7]*b06)/det,(a[1]*b08-a[0]*b10-a[3]*b06)/det,(a[12]*b04-a[13]*b02+a[15]*b00)/det,(a[9]*b02-a[8]*b04-a[11]*b00)/det,(a[5]*b07-a[4]*b09-a[6]*b06)/det,(a[0]*b09-a[1]*b07+a[2]*b06)/det,(a[13]*b01-a[12]*b03-a[14]*b00)/det,(a[8]*b03-a[9]*b01+a[10]*b00)/det];
+    }
+    function rotate4(a,rad,x,y,z) {
+        let len=Math.hypot(x,y,z); x/=len; y/=len; z/=len;
+        let s=Math.sin(rad),c=Math.cos(rad),t=1-c;
+        let b00=x*x*t+c,b01=y*x*t+z*s,b02=z*x*t-y*s,b10=x*y*t-z*s,b11=y*y*t+c,b12=z*y*t+x*s,b20=x*z*t+y*s,b21=y*z*t-x*s,b22=z*z*t+c;
+        return [a[0]*b00+a[4]*b01+a[8]*b02,a[1]*b00+a[5]*b01+a[9]*b02,a[2]*b00+a[6]*b01+a[10]*b02,a[3]*b00+a[7]*b01+a[11]*b02,a[0]*b10+a[4]*b11+a[8]*b12,a[1]*b10+a[5]*b11+a[9]*b12,a[2]*b10+a[6]*b11+a[10]*b12,a[3]*b10+a[7]*b11+a[11]*b12,a[0]*b20+a[4]*b21+a[8]*b22,a[1]*b20+a[5]*b21+a[9]*b22,a[2]*b20+a[6]*b21+a[10]*b22,a[3]*b20+a[7]*b21+a[11]*b22,...a.slice(12,16)];
+    }
+    function translate4(a,x,y,z) {
+        return [...a.slice(0,12),a[0]*x+a[4]*y+a[8]*z+a[12],a[1]*x+a[5]*y+a[9]*z+a[13],a[2]*x+a[6]*y+a[10]*z+a[14],a[3]*x+a[7]*y+a[11]*z+a[15]];
+    }
+    function mat4ToQuat(m) {
+        let tr = m[0] + m[5] + m[10];
+        let w, x, y, z;
+        if (tr > 0) {
+            let S = Math.sqrt(tr + 1.0) * 2; 
+            w = 0.25 * S; x = (m[6] - m[9]) / S; y = (m[8] - m[2]) / S; z = (m[1] - m[4]) / S; 
+        } else if ((m[0] > m[5]) && (m[0] > m[10])) {
+            let S = Math.sqrt(1.0 + m[0] - m[5] - m[10]) * 2; 
+            w = (m[6] - m[9]) / S; x = 0.25 * S; y = (m[1] + m[4]) / S; z = (m[8] + m[2]) / S;
+        } else if (m[5] > m[10]) {
+            let S = Math.sqrt(1.0 + m[5] - m[0] - m[10]) * 2; 
+            w = (m[8] - m[2]) / S; x = (m[1] + m[4]) / S; y = 0.25 * S; z = (m[6] + m[9]) / S;
+        } else {
+            let S = Math.sqrt(1.0 + m[10] - m[0] - m[5]) * 2; 
+            w = (m[1] - m[4]) / S; x = (m[8] + m[2]) / S; y = (m[6] + m[9]) / S; z = 0.25 * S;
+        }
+        let len = Math.hypot(w, x, y, z);
+        return [w/len, x/len, y/len, z/len];
+    }
+    function quatMult(q1, q2) {
+        let w1 = q1[0], x1 = q1[1], y1 = q1[2], z1 = q1[3];
+        let w2 = q2[0], x2 = q2[1], y2 = q2[2], z2 = q2[3];
+        return [
+            w1*w2 - x1*x2 - y1*y2 - z1*z2,
+            w1*x2 + x1*w2 + y1*z2 - z1*y2,
+            w1*y2 - x1*z2 + y1*w2 + z1*x2,
+            w1*z2 + x1*y2 - y1*x2 + z1*w2
+        ];
+    }
+    function quatSlerp(qa, qb, t) {
+        let cosHalfTheta = qa[0]*qb[0] + qa[1]*qb[1] + qa[2]*qb[2] + qa[3]*qb[3];
+        let qm = [qb[0], qb[1], qb[2], qb[3]];
+        if (cosHalfTheta < 0) {
+            qm = [-qb[0], -qb[1], -qb[2], -qb[3]];
+            cosHalfTheta = -cosHalfTheta;
+        }
+        if (Math.abs(cosHalfTheta) >= 1.0) return [qa[0], qa[1], qa[2], qa[3]];
+        let halfTheta = Math.acos(cosHalfTheta);
+        let sinHalfTheta = Math.sqrt(1.0 - cosHalfTheta * cosHalfTheta);
+        if (Math.abs(sinHalfTheta) < 0.001) {
+            return [qa[0]*0.5 + qm[0]*0.5, qa[1]*0.5 + qm[1]*0.5, qa[2]*0.5 + qm[2]*0.5, qa[3]*0.5 + qm[3]*0.5];
+        }
+        let ratioA = Math.sin((1 - t) * halfTheta) / sinHalfTheta;
+        let ratioB = Math.sin(t * halfTheta) / sinHalfTheta;
+        return [qa[0]*ratioA + qm[0]*ratioB, qa[1]*ratioA + qm[1]*ratioB, qa[2]*ratioA + qm[2]*ratioB, qa[3]*ratioA + qm[3]*ratioB];
+    }
+    function buildPoseMatrix(q, p) {
+        let w = q[0], x = q[1], y = q[2], z = q[3];
+        let x2 = x + x, y2 = y + y, z2 = z + z;
+        let xx = x * x2, xy = x * y2, xz = x * z2;
+        let yy = y * y2, yz = y * z2, zz = z * z2;
+        let wx = w * x2, wy = w * y2, wz = w * z2;
+        return [
+            1 - (yy + zz), xy + wz, xz - wy, 0,
+            xy - wz, 1 - (xx + zz), yz + wx, 0,
+            xz + wy, yz - wx, 1 - (xx + yy), 0,
+            p[0], p[1], p[2], 1
+        ];
+    }
+    function transformPos(m, x, y, z) {
+        return [
+            m[0]*x + m[4]*y + m[8]*z + m[12],
+            m[1]*x + m[5]*y + m[9]*z + m[13],
+            m[2]*x + m[6]*y + m[10]*z + m[14]
+        ];
+    }
+
+    // ============================================================
+    // Web Worker (sort + texture generation)
+    // ============================================================
+    function createWorker(self) {
+        let buffer, vertexCount=0, viewProj;
+        const rowLength = 3*4 + 3*4 + 4 + 4;
+        let lastProj=[], depthIndex=new Uint32Array(), lastVertexCount=0;
+        var _fv=new Float32Array(1), _iv=new Int32Array(_fv.buffer);
+        function floatToHalf(f){_fv[0]=f;var n=_iv[0],sign=(n>>31)&1,exp=(n>>23)&0xff,frac=n&0x7fffff,ne;if(exp==0)ne=0;else if(exp<113){ne=0;frac|=0x800000;frac=frac>>(113-exp);if(frac&0x1000000){ne=1;frac=0;}}else if(exp<142)ne=exp-112;else{ne=31;frac=0;}return(sign<<15)|(ne<<10)|(frac>>13);}
+        function packHalf2x16(x,y){return(floatToHalf(x)|(floatToHalf(y)<<16))>>>0;}
+        function generateTexture(){
+            if(!buffer)return;
+            const fb=new Float32Array(buffer),ub=new Uint8Array(buffer);
+            var tw=1024*2,th=Math.ceil((2*vertexCount)/tw);
+            var td=new Uint32Array(tw*th*4),tdc=new Uint8Array(td.buffer),tdf=new Float32Array(td.buffer);
+            for(let i=0;i<vertexCount;i++){
+                tdf[8*i+0]=fb[8*i+0];tdf[8*i+1]=fb[8*i+1];tdf[8*i+2]=fb[8*i+2];
+                tdc[4*(8*i+7)+0]=ub[32*i+24+0];tdc[4*(8*i+7)+1]=ub[32*i+24+1];tdc[4*(8*i+7)+2]=ub[32*i+24+2];tdc[4*(8*i+7)+3]=ub[32*i+24+3];
+                let scale=[fb[8*i+3],fb[8*i+4],fb[8*i+5]];
+                let rot=[(ub[32*i+28]-128)/128,(ub[32*i+29]-128)/128,(ub[32*i+30]-128)/128,(ub[32*i+31]-128)/128];
+                const M=[1-2*(rot[2]*rot[2]+rot[3]*rot[3]),2*(rot[1]*rot[2]+rot[0]*rot[3]),2*(rot[1]*rot[3]-rot[0]*rot[2]),2*(rot[1]*rot[2]-rot[0]*rot[3]),1-2*(rot[1]*rot[1]+rot[3]*rot[3]),2*(rot[2]*rot[3]+rot[0]*rot[1]),2*(rot[1]*rot[3]+rot[0]*rot[2]),2*(rot[2]*rot[3]-rot[0]*rot[1]),1-2*(rot[1]*rot[1]+rot[2]*rot[2])].map((k,idx)=>k*scale[Math.floor(idx/3)]);
+                const sigma=[M[0]*M[0]+M[3]*M[3]+M[6]*M[6],M[0]*M[1]+M[3]*M[4]+M[6]*M[7],M[0]*M[2]+M[3]*M[5]+M[6]*M[8],M[1]*M[1]+M[4]*M[4]+M[7]*M[7],M[1]*M[2]+M[4]*M[5]+M[7]*M[8],M[2]*M[2]+M[5]*M[5]+M[8]*M[8]];
+                td[8*i+4]=packHalf2x16(4*sigma[0],4*sigma[1]);td[8*i+5]=packHalf2x16(4*sigma[2],4*sigma[3]);td[8*i+6]=packHalf2x16(4*sigma[4],4*sigma[5]);
+            }
+            self.postMessage({texdata:td,texwidth:tw,texheight:th},[td.buffer]);
+        }
+        function runSort(vp){
+            if(!buffer)return;
+            const fb=new Float32Array(buffer);
+            if(lastVertexCount==vertexCount){let dot=lastProj[2]*vp[2]+lastProj[6]*vp[6]+lastProj[10]*vp[10];if(Math.abs(dot-1)<0.01)return;}
+            else{generateTexture();lastVertexCount=vertexCount;}
+            let mx=-Infinity,mn=Infinity,sl=new Int32Array(vertexCount);
+            for(let i=0;i<vertexCount;i++){let d=((vp[2]*fb[8*i]+vp[6]*fb[8*i+1]+vp[10]*fb[8*i+2])*4096)|0;sl[i]=d;if(d>mx)mx=d;if(d<mn)mn=d;}
+            let di=(256*256-1)/(mx-mn),c0=new Uint32Array(256*256),s0=new Uint32Array(256*256);
+            for(let i=0;i<vertexCount;i++){sl[i]=((sl[i]-mn)*di)|0;c0[sl[i]]++;}
+            for(let i=1;i<256*256;i++)s0[i]=s0[i-1]+c0[i-1];
+            depthIndex=new Uint32Array(vertexCount);
+            for(let i=0;i<vertexCount;i++)depthIndex[s0[sl[i]]++]=i;
+            lastProj=vp;
+            self.postMessage({depthIndex,viewProj:vp,vertexCount},[depthIndex.buffer]);
+        }
+        function processPlyBuffer(inputBuffer){
+            const ubuf=new Uint8Array(inputBuffer);
+            const header=new TextDecoder().decode(ubuf.slice(0,1024*10));
+            const hend='end_header\n',hei=header.indexOf(hend);
+            if(hei<0)throw new Error('Unable to read .ply file header');
+            const vc=parseInt(/element vertex (\d+)\n/.exec(header)[1]);
+            let ro=0,offsets={},types={};
+            const TM={double:'getFloat64',int:'getInt32',uint:'getUint32',float:'getFloat32',short:'getInt16',ushort:'getUint16',uchar:'getUint8'};
+            for(let prop of header.slice(0,hei).split('\n').filter(k=>k.startsWith('property '))){const[p,type,name]=prop.split(' ');const at=TM[type]||'getInt8';types[name]=at;offsets[name]=ro;ro+=parseInt(at.replace(/[^\d]/g,''))/8;}
+            let dv=new DataView(inputBuffer,hei+hend.length),row=0;
+            const attrs=new Proxy({},{get(t,prop){if(!types[prop])throw new Error(prop+' not found');return dv[types[prop]](row*ro+offsets[prop],true);}});
+            let szl=new Float32Array(vc),szi=new Uint32Array(vc);
+            for(row=0;row<vc;row++){szi[row]=row;if(!types['scale_0'])continue;const sz=Math.exp(attrs.scale_0)*Math.exp(attrs.scale_1)*Math.exp(attrs.scale_2),op=1/(1+Math.exp(-attrs.opacity));szl[row]=sz*op;}
+            szi.sort((b,a)=>szl[a]-szl[b]);
+            const rl=3*4+3*4+4+4,buf=new ArrayBuffer(rl*vc);
+            for(let j=0;j<vc;j++){
+                row=szi[j];
+                const pos=new Float32Array(buf,j*rl,3),sca=new Float32Array(buf,j*rl+12,3),rgba=new Uint8ClampedArray(buf,j*rl+24,4),rot=new Uint8ClampedArray(buf,j*rl+28,4);
+                if(types['scale_0']){const ql=Math.sqrt(attrs.rot_0**2+attrs.rot_1**2+attrs.rot_2**2+attrs.rot_3**2);rot[0]=(attrs.rot_0/ql)*128+128;rot[1]=(attrs.rot_1/ql)*128+128;rot[2]=(attrs.rot_2/ql)*128+128;rot[3]=(attrs.rot_3/ql)*128+128;sca[0]=Math.exp(attrs.scale_0);sca[1]=Math.exp(attrs.scale_1);sca[2]=Math.exp(attrs.scale_2);}else{sca[0]=sca[1]=sca[2]=0.01;rot[0]=255;rot[1]=rot[2]=rot[3]=0;}
+                pos[0]=attrs.x;pos[1]=attrs.y;pos[2]=attrs.z;
+                if(types['f_dc_0']){const SH=0.28209479177387814;rgba[0]=(0.5+SH*attrs.f_dc_0)*255;rgba[1]=(0.5+SH*attrs.f_dc_1)*255;rgba[2]=(0.5+SH*attrs.f_dc_2)*255;}else{rgba[0]=attrs.red;rgba[1]=attrs.green;rgba[2]=attrs.blue;}
+                rgba[3]=types['opacity']?(1/(1+Math.exp(-attrs.opacity)))*255:255;
+            }
+            return buf;
+        }
+        const throttledSort=()=>{if(!sortRunning){sortRunning=true;let lv=viewProj;runSort(lv);setTimeout(()=>{sortRunning=false;if(lv!==viewProj)throttledSort();},0);}};
+        let sortRunning;
+        self.onmessage=(e)=>{
+            if(e.data.ply){vertexCount=0;runSort(viewProj);buffer=processPlyBuffer(e.data.ply);vertexCount=Math.floor(buffer.byteLength/rowLength);postMessage({buffer,vertexCount});}
+            else if(e.data.buffer){buffer=e.data.buffer;vertexCount=e.data.vertexCount;}
+            else if(e.data.vertexCount){vertexCount=e.data.vertexCount;}
+            else if(e.data.view){viewProj=e.data.view;throttledSort();}
+        };
+    }
+
+    // ============================================================
+    // GLSL Shaders (unchanged from original)
+    // ============================================================
+    const vertexShaderSource = `
+#version 300 es
+precision highp float;
+precision highp int;
+uniform highp usampler2D u_texture;
+uniform mat4 projection, view;
+uniform vec2 focal;
+uniform vec2 viewport;
+in vec2 position;
+in int index;
+out vec4 vColor;
+out vec2 vPosition;
+void main () {
+    uvec4 cen = texelFetch(u_texture, ivec2((uint(index) & 0x3ffu) << 1, uint(index) >> 10), 0);
+    vec4 cam = view * vec4(uintBitsToFloat(cen.xyz), 1);
+    vec4 pos2d = projection * cam;
+    float clip = 1.2 * pos2d.w;
+    if (pos2d.z < -clip || pos2d.x < -clip || pos2d.x > clip || pos2d.y < -clip || pos2d.y > clip) {
+        gl_Position = vec4(0.0, 0.0, 2.0, 1.0); return;
+    }
+    uvec4 cov = texelFetch(u_texture, ivec2(((uint(index) & 0x3ffu) << 1) | 1u, uint(index) >> 10), 0);
+    vec2 u1 = unpackHalf2x16(cov.x), u2 = unpackHalf2x16(cov.y), u3 = unpackHalf2x16(cov.z);
+    mat3 Vrk = mat3(u1.x, u1.y, u2.x, u1.y, u2.y, u3.x, u2.x, u3.x, u3.y);
+    mat3 J = mat3(focal.x/cam.z, 0., -(focal.x*cam.x)/(cam.z*cam.z), 0., -focal.y/cam.z, (focal.y*cam.y)/(cam.z*cam.z), 0., 0., 0.);
+    mat3 T = transpose(mat3(view)) * J;
+    mat3 cov2d = transpose(T) * Vrk * T;
+    float mid = (cov2d[0][0] + cov2d[1][1]) / 2.0;
+    float radius = length(vec2((cov2d[0][0] - cov2d[1][1]) / 2.0, cov2d[0][1]));
+    float lambda1 = mid + radius, lambda2 = mid - radius;
+    if(lambda2 < 0.0) return;
+    vec2 diagonalVector = normalize(vec2(cov2d[0][1], lambda1 - cov2d[0][0]));
+    vec2 majorAxis = min(sqrt(2.0 * lambda1), 1024.0) * diagonalVector;
+    vec2 minorAxis = min(sqrt(2.0 * lambda2), 1024.0) * vec2(diagonalVector.y, -diagonalVector.x);
+    vColor = clamp(pos2d.z/pos2d.w+1.0, 0.0, 1.0) * vec4((cov.w) & 0xffu, (cov.w >> 8) & 0xffu, (cov.w >> 16) & 0xffu, (cov.w >> 24) & 0xffu) / 255.0;
+    vPosition = position;
+    vec2 vCenter = vec2(pos2d) / pos2d.w;
+    gl_Position = vec4(vCenter + position.x * majorAxis / viewport + position.y * minorAxis / viewport, 0.0, 1.0);
+}`.trim();
+
+    const fragmentShaderSource = `
+#version 300 es
+precision highp float;
+uniform int u_renderMode;
+in vec4 vColor;
+in vec2 vPosition;
+out vec4 fragColor;
+void main () {
+    float A = -dot(vPosition, vPosition);
+    if (A < -4.0) discard;
+    
+    if (u_renderMode == 1) {
+        if (A < -1.0) discard;
+        float z = sqrt(1.0 + A);
+        float diffuse = 0.3 + 0.7 * z;
+        fragColor = vec4(vColor.rgb * diffuse * vColor.a, vColor.a);
+    } else {
+        float B = exp(A) * vColor.a;
+        fragColor = vec4(B * vColor.rgb, B);
+    }
+}`.trim();
+
+    // ============================================================
+    // Main renderer
+    // ============================================================
+    let defaultViewMatrix = [0.47,0.04,0.88,0,-0.11,0.99,0.02,0,-0.88,-0.11,0.47,0,0.07,0.03,6.55,1];
+    let viewMatrix = defaultViewMatrix;
+
+    window.getBakedSplatBuffer = (origBuffer) => {
+        const bufferCopy = origBuffer.slice(0);
+        const fb = new Float32Array(bufferCopy);
+        const ub = new Uint8Array(bufferCopy);
+        
+        const M_def_inv = invert4(defaultViewMatrix);
+        const M_cur = viewMatrix;
+        const T = multiply4(M_def_inv, M_cur);
+        const q_T = mat4ToQuat(T);
+        
+        const numSplats = bufferCopy.byteLength / 32;
+        for (let i = 0; i < numSplats; i++) {
+            // Position
+            const px = fb[8*i + 0];
+            const py = fb[8*i + 1];
+            const pz = fb[8*i + 2];
+            const newPos = transformPos(T, px, py, pz);
+            fb[8*i + 0] = newPos[0];
+            fb[8*i + 1] = newPos[1];
+            fb[8*i + 2] = newPos[2];
+            
+            // Rotation
+            const rw = (ub[32*i + 28] - 128) / 128;
+            const rx = (ub[32*i + 29] - 128) / 128;
+            const ry = (ub[32*i + 30] - 128) / 128;
+            const rz = (ub[32*i + 31] - 128) / 128;
+            
+            let newQ = quatMult(q_T, [rw, rx, ry, rz]);
+            const len = Math.hypot(newQ[0], newQ[1], newQ[2], newQ[3]);
+            if (len > 0) {
+                newQ[0] /= len; newQ[1] /= len; newQ[2] /= len; newQ[3] /= len;
+            }
+            
+            ub[32*i + 28] = Math.max(0, Math.min(255, Math.round(newQ[0] * 128 + 128)));
+            ub[32*i + 29] = Math.max(0, Math.min(255, Math.round(newQ[1] * 128 + 128)));
+            ub[32*i + 30] = Math.max(0, Math.min(255, Math.round(newQ[2] * 128 + 128)));
+            ub[32*i + 31] = Math.max(0, Math.min(255, Math.round(newQ[3] * 128 + 128)));
+        }
+        return bufferCopy;
+    };
+
+    window.toggleFarView = (far) => {
+        if (far) {
+            window.savedViewMatrixForFar = viewMatrix.slice(0);
+            let inv = invert4(viewMatrix);
+            
+            // Calculate current distance from origin as a proxy for scene scale
+            const distFromOrigin = Math.hypot(inv[12], inv[13], inv[14]);
+            // Move backward (local -Z axis, since +Z is forward in this viewer)
+            // Move back by 1.5x the current distance from origin, minimum 2 units
+            const moveBackDist = -Math.max(2.0, distFromOrigin * 1.5);
+            
+            inv = translate4(inv, 0, 0, moveBackDist);
+            viewMatrix = invert4(inv);
+        } else {
+            if (window.savedViewMatrixForFar) {
+                viewMatrix = window.savedViewMatrixForFar.slice(0);
+            }
+        }
+    };
+
+    async function initViewer() {
+        const rowLength = 3*4 + 3*4 + 4 + 4;
+        let splatData = new Uint8Array(0);
+
+        // Try restore view from hash
+        try { viewMatrix = JSON.parse(decodeURIComponent(location.hash.slice(1))); } catch(e) {}
+
+        // WebGL setup
+        const canvas = document.getElementById('canvas');
+        const gl = canvas.getContext('webgl2', { antialias: false });
+        if (!gl) { showError('WebGL2 is not supported in this browser.'); return; }
+
+        const compileShader = (src, type) => {
+            const s = gl.createShader(type);
+            gl.shaderSource(s, src); gl.compileShader(s);
+            if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(s));
+            return s;
+        };
+        const program = gl.createProgram();
+        gl.attachShader(program, compileShader(vertexShaderSource, gl.VERTEX_SHADER));
+        gl.attachShader(program, compileShader(fragmentShaderSource, gl.FRAGMENT_SHADER));
+        gl.linkProgram(program);
+        gl.useProgram(program);
+        if (!gl.getProgramParameter(program, gl.LINK_STATUS)) console.error(gl.getProgramInfoLog(program));
+
+        gl.disable(gl.DEPTH_TEST);
+        gl.enable(gl.BLEND);
+        gl.blendFuncSeparate(gl.ONE_MINUS_DST_ALPHA, gl.ONE, gl.ONE_MINUS_DST_ALPHA, gl.ONE);
+        gl.blendEquationSeparate(gl.FUNC_ADD, gl.FUNC_ADD);
+
+        const u_projection = gl.getUniformLocation(program, 'projection');
+        const u_viewport    = gl.getUniformLocation(program, 'viewport');
+        const u_focal       = gl.getUniformLocation(program, 'focal');
+        const u_view        = gl.getUniformLocation(program, 'view');
+        const u_renderModeLoc = gl.getUniformLocation(program, 'u_renderMode');
+
+        let currentRenderMode = 0;
+        window.setRenderMode = (mode) => {
+            currentRenderMode = mode;
+        };
+
+        const triangleVertices = new Float32Array([-2,-2,2,-2,2,2,-2,2]);
+        const vertexBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, triangleVertices, gl.STATIC_DRAW);
+        const a_position = gl.getAttribLocation(program, 'position');
+        gl.enableVertexAttribArray(a_position);
+        gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+        gl.vertexAttribPointer(a_position, 2, gl.FLOAT, false, 0, 0);
+
+        const texture = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.uniform1i(gl.getUniformLocation(program, 'u_texture'), 0);
+
+        const indexBuffer = gl.createBuffer();
+        const a_index = gl.getAttribLocation(program, 'index');
+        gl.enableVertexAttribArray(a_index);
+        gl.bindBuffer(gl.ARRAY_BUFFER, indexBuffer);
+        gl.vertexAttribIPointer(a_index, 1, gl.INT, false, 0, 0);
+        gl.vertexAttribDivisor(a_index, 1);
+
+        let projectionMatrix;
+        let downsample = 1;
+
+        const resize = () => {
+            gl.uniform2fv(u_focal, new Float32Array([camera.fx, camera.fy]));
+            projectionMatrix = getProjectionMatrix(camera.fx, camera.fy, innerWidth, innerHeight);
+            gl.uniform2fv(u_viewport, new Float32Array([innerWidth, innerHeight]));
+            gl.canvas.width  = Math.round(innerWidth  / downsample);
+            gl.canvas.height = Math.round(innerHeight / downsample);
+            gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+            gl.uniformMatrix4fv(u_projection, false, projectionMatrix);
+        };
+        window.addEventListener('resize', resize);
+        resize();
+
+        // Worker
+        const worker = new Worker(URL.createObjectURL(new Blob(['(', createWorker.toString(), ')(self)'], { type: 'application/javascript' })));
+
+        worker.onmessage = (e) => {
+            if (e.data.buffer) {
+                // A .ply was processed into a .splat buffer
+                splatData = new Uint8Array(e.data.buffer);
+                convertedSplatBuffer = e.data.buffer;
+                btnDownload.disabled = false;
+                // Send back to worker as .splat format
+                const vc = Math.floor(splatData.length / rowLength);
+                worker.postMessage({ buffer: splatData.buffer, vertexCount: vc });
+                spinner.style.display = 'none';
+            } else if (e.data.texdata) {
+                const { texdata, texwidth, texheight } = e.data;
+                gl.bindTexture(gl.TEXTURE_2D, texture);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32UI, texwidth, texheight, 0, gl.RGBA_INTEGER, gl.UNSIGNED_INT, texdata);
+                gl.activeTexture(gl.TEXTURE0);
+                gl.bindTexture(gl.TEXTURE_2D, texture);
+            } else if (e.data.depthIndex) {
+                gl.bindBuffer(gl.ARRAY_BUFFER, indexBuffer);
+                gl.bufferData(gl.ARRAY_BUFFER, e.data.depthIndex, gl.DYNAMIC_DRAW);
+                vertexCount = e.data.vertexCount;
+            }
+        };
+
+        // Input state
+        let activeKeys = [], vertexCount = 0;
+        let carousel = false, currentCameraIndex = 0;
+        let presets = new Array(10).fill(null);
+        let activePresetIndex = -1;
+
+        window.addEventListener('keydown', (e) => {
+            if (!activeKeys.includes(e.code)) activeKeys.push(e.code);
+            if (/\d/.test(e.key)) {
+                const slot = parseInt(e.key);
+                if (slot !== activePresetIndex) {
+                    activePresetIndex = slot;
+                    if (presets[slot]) {
+                        // Load saved preset view
+                        viewMatrix = presets[slot].slice(0);
+                    } else {
+                        // Initialize empty preset slot with current view
+                        presets[slot] = viewMatrix.slice(0);
+                    }
+                }
+            }
+            if (e.code === 'KeyV') { location.hash = '#' + JSON.stringify(viewMatrix.map(k => Math.round(k*100)/100)); }
+            if (e.code === 'KeyP') { carousel = !carousel; }
+        });
+        window.addEventListener('keyup', (e) => { activeKeys = activeKeys.filter(k => k !== e.code); });
+        window.addEventListener('blur', () => { activeKeys = []; });
+        window.addEventListener('hashchange', () => { try { viewMatrix = JSON.parse(decodeURIComponent(location.hash.slice(1))); carousel = false; } catch(e) {} });
+
+        window.addEventListener('wheel', (e) => {
+            if (e.target.closest('#credit-dialog')) return;
+            e.preventDefault();
+            const scale = e.deltaMode == 1 ? 10 : e.deltaMode == 2 ? innerHeight : 1;
+            let inv = invert4(viewMatrix);
+            if (e.shiftKey) { inv = translate4(inv, (e.deltaX*scale)/innerWidth, (e.deltaY*scale)/innerHeight, 0); }
+            else if (e.ctrlKey || e.metaKey) { inv = translate4(inv, 0, 0, (-10*(e.deltaY*scale))/innerHeight); }
+            else { let d=4; inv=translate4(inv,0,0,d); inv=rotate4(inv,-(e.deltaX*scale)/innerWidth,0,1,0); inv=rotate4(inv,(e.deltaY*scale)/innerHeight,1,0,0); inv=translate4(inv,0,0,-d); }
+            viewMatrix = invert4(inv);
+        }, { passive: false });
+
+        let startX, startY, down;
+        canvas.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            startX = e.clientX; startY = e.clientY;
+            down = e.button === 2 ? 2 : 1; // 2 = right-click = pan
+        });
+        canvas.addEventListener('contextmenu', (e) => { e.preventDefault(); startX=e.clientX; startY=e.clientY; down=2; });
+        canvas.addEventListener('mousemove', (e) => {
+            e.preventDefault();
+            if (!down) return;
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            let inv = invert4(viewMatrix);
+            if (down === 2 || e.shiftKey) {
+                // Pan: right-click drag or Shift+drag
+                inv = translate4(inv, (-10 * dx) / innerWidth, (-10 * dy) / innerHeight, 0);
+            } else {
+                // Orbit: plain drag or Ctrl+drag
+                const dxN = (5 * dx) / innerWidth;
+                const dyN = (5 * dy) / innerHeight;
+                const d = 4;
+                inv = translate4(inv, 0, 0, d);
+                inv = rotate4(inv, dxN, 0, 1, 0);
+                inv = rotate4(inv, -dyN, 1, 0, 0);
+                inv = translate4(inv, 0, 0, -d);
+            }
+            viewMatrix = invert4(inv);
+            startX = e.clientX; startY = e.clientY;
+        });
+        canvas.addEventListener('mouseup', (e) => { e.preventDefault(); down=false; startX=0; startY=0; });
+
+        let altX=0, altY=0;
+        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); if(e.touches.length===1){startX=e.touches[0].clientX;startY=e.touches[0].clientY;down=1;}else if(e.touches.length===2){startX=e.touches[0].clientX;altX=e.touches[1].clientX;startY=e.touches[0].clientY;altY=e.touches[1].clientY;down=1;} }, { passive: false });
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if(e.touches.length===1&&down){let inv=invert4(viewMatrix),dx=(4*(e.touches[0].clientX-startX))/innerWidth,dy=(4*(e.touches[0].clientY-startY))/innerHeight,d=4;inv=translate4(inv,0,0,d);inv=rotate4(inv,dx,0,1,0);inv=rotate4(inv,-dy,1,0,0);inv=translate4(inv,0,0,-d);viewMatrix=invert4(inv);startX=e.touches[0].clientX;startY=e.touches[0].clientY;}
+            else if(e.touches.length===2){const dt=Math.atan2(startY-altY,startX-altX)-Math.atan2(e.touches[0].clientY-e.touches[1].clientY,e.touches[0].clientX-e.touches[1].clientX),ds=Math.hypot(startX-altX,startY-altY)/Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY),dx=(e.touches[0].clientX+e.touches[1].clientX-(startX+altX))/2,dy=(e.touches[0].clientY+e.touches[1].clientY-(startY+altY))/2;let inv=invert4(viewMatrix);inv=rotate4(inv,dt,0,0,1);inv=translate4(inv,-dx/innerWidth,-dy/innerHeight,0);inv=translate4(inv,0,0,3*(1-ds));viewMatrix=invert4(inv);startX=e.touches[0].clientX;altX=e.touches[1].clientX;startY=e.touches[0].clientY;altY=e.touches[1].clientY;}
+        }, { passive: false });
+        canvas.addEventListener('touchend', (e) => { e.preventDefault(); down=false; startX=0; startY=0; }, { passive: false });
+
+        // Render loop
+        let jumpDelta=0, lastFrame=0, avgFps=0, start=Date.now();
+
+        const frame = (now) => {
+            let inv = invert4(viewMatrix);
+            const shift = activeKeys.includes('ShiftLeft') || activeKeys.includes('ShiftRight') || activeKeys.includes('Shift');
+            if (activeKeys.includes('ArrowUp'))    inv = shift ? translate4(inv,0,-0.03,0) : translate4(inv,0,0,0.1);
+            if (activeKeys.includes('ArrowDown'))  inv = shift ? translate4(inv,0,0.03,0)  : translate4(inv,0,0,-0.1);
+            if (activeKeys.includes('ArrowLeft'))  inv = translate4(inv,-0.03,0,0);
+            if (activeKeys.includes('ArrowRight')) inv = translate4(inv,0.03,0,0);
+            if (activeKeys.includes('KeyW')) inv = translate4(inv, 0, 0,  0.1);
+            if (activeKeys.includes('KeyS')) inv = translate4(inv, 0, 0, -0.1);
+            if (activeKeys.includes('KeyA')) inv = translate4(inv,-0.06, 0, 0);
+            if (activeKeys.includes('KeyD')) inv = translate4(inv, 0.06, 0, 0);
+            if (activeKeys.includes('KeyQ')) inv = rotate4(inv, 0.01, 0, 0, 1);
+            if (activeKeys.includes('KeyE')) inv = rotate4(inv,-0.01, 0, 0, 1);
+            if (['KeyJ','KeyK','KeyL','KeyI'].some(k=>activeKeys.includes(k))) {
+                let d=4; inv=translate4(inv,0,0,d);
+                inv=rotate4(inv,activeKeys.includes('KeyJ')?-0.05:activeKeys.includes('KeyL')?0.05:0,0,1,0);
+                inv=rotate4(inv,activeKeys.includes('KeyI')?0.05:activeKeys.includes('KeyK')?-0.05:0,1,0,0);
+                inv=translate4(inv,0,0,-d);
+            }
+            viewMatrix = invert4(inv);
+
+            if (carousel) {
+                const validPresets = presets.filter(p => p !== null).map(p => invert4(p));
+                if (validPresets.length >= 2) {
+                    const cycleTime = 5000;
+                    const progress = (Date.now() - start) / cycleTime;
+                    const idxA = Math.floor(progress) % validPresets.length;
+                    const idxB = (idxA + 1) % validPresets.length;
+                    const t = progress - Math.floor(progress);
+                    
+                    const easeT = (1 - Math.cos(t * Math.PI)) / 2;
+                    
+                    const poseA = validPresets[idxA];
+                    const poseB = validPresets[idxB];
+                    
+                    const qA = mat4ToQuat(poseA);
+                    const qB = mat4ToQuat(poseB);
+                    const pA = [poseA[12], poseA[13], poseA[14]];
+                    const pB = [poseB[12], poseB[13], poseB[14]];
+                    
+                    const qInterp = quatSlerp(qA, qB, easeT);
+                    const pInterp = [
+                        pA[0] + (pB[0] - pA[0]) * easeT,
+                        pA[1] + (pB[1] - pA[1]) * easeT,
+                        pA[2] + (pB[2] - pA[2]) * easeT
+                    ];
+                    
+                    let ci = buildPoseMatrix(qInterp, pInterp);
+                    viewMatrix = invert4(ci);
+                } else {
+                    let ci = invert4(defaultViewMatrix);
+                    const t = Math.sin((Date.now()-start)/5000);
+                    ci = translate4(ci,2.5*t,0,6*(1-Math.cos(t)));
+                    ci = rotate4(ci,-0.6*t,0,1,0);
+                    viewMatrix = invert4(ci);
+                }
+            }
+
+            const isJumping = activeKeys.includes('Space');
+            jumpDelta = isJumping ? Math.min(1, jumpDelta+0.05) : Math.max(0, jumpDelta-0.05);
+            let inv2 = invert4(viewMatrix);
+            inv2 = translate4(inv2,0,-jumpDelta,0);
+            inv2 = rotate4(inv2,-0.1*jumpDelta,1,0,0);
+            const actualViewMatrix = invert4(inv2);
+
+            const viewProj = multiply4(projectionMatrix, actualViewMatrix);
+            worker.postMessage({ view: viewProj });
+
+            const curFps = 1000 / (now - lastFrame) || 0;
+            avgFps = avgFps * 0.9 + curFps * 0.1;
+
+            if (vertexCount > 0) {
+                spinner.style.display = 'none';
+                gl.uniformMatrix4fv(u_view, false, actualViewMatrix);
+                gl.uniform1i(u_renderModeLoc, currentRenderMode);
+                gl.clear(gl.COLOR_BUFFER_BIT);
+                gl.drawArraysInstanced(gl.TRIANGLE_FAN, 0, 4, vertexCount);
+            } else {
+                gl.clear(gl.COLOR_BUFFER_BIT);
+            }
+
+            // Progress
+            const totalExpected = splatData.length / rowLength;
+            const progress = totalExpected > 0 ? Math.min(100, (100 * vertexCount) / totalExpected) : 0;
+            if (progress < 100 && progress > 0) {
+                progressBar.style.width = progress + '%';
+                progressBar.style.display = 'block';
+            } else {
+                progressBar.style.display = 'none';
+            }
+
+            if (window.showGaussiansCount) {
+                const kCount = (vertexCount / 1000).toFixed(1);
+                fpsLabel.textContent = `${kCount}k splats`;
+            } else {
+                fpsLabel.textContent = Math.round(avgFps) + ' fps';
+            }
+            // Automatically sync the active preset slot with any camera movements
+            if (activePresetIndex !== -1 && !carousel) {
+                presets[activePresetIndex] = viewMatrix.slice(0);
+            }
+            
+            lastFrame = now;
+            requestAnimationFrame(frame);
+        };
+
+        resize();
+        requestAnimationFrame(frame);
+
+        // ── File loading ─────────────────────────────────────────────────────────
+        const isPly = (data) => data[0]===112 && data[1]===108 && data[2]===121 && data[3]===10;
+
+        window.selectFile = (file) => {
+            const ext = file.name.split('.').pop().toLowerCase();
+            if (ext !== 'ply' && ext !== 'splat') {
+                showError('Unsupported file type. Please drop a .ply or .splat file.');
+                return;
+            }
+
+            showViewerUI(file.name);
+            spinner.style.display = 'flex';
+            convertedSplatBuffer = null;
+            btnDownload.disabled = true;
+            vertexCount = 0;
+            splatData = new Uint8Array(0);
+
+            // Adjust resolution
+            const reader = new FileReader();
+            reader.onload = () => {
+                splatData = new Uint8Array(reader.result);
+                downsample = splatData.length / rowLength > 500000 ? 1 : 1 / devicePixelRatio;
+                resize();
+                if (isPly(splatData)) {
+                    // Process PLY → .splat (no auto-download, we do it manually)
+                    worker.postMessage({ ply: splatData.buffer });
+                } else {
+                    // Already a .splat
+                    const vc = Math.floor(splatData.length / rowLength);
+                    worker.postMessage({ buffer: splatData.buffer, vertexCount: vc });
+                    spinner.style.display = 'none';
+                    // Allow downloading the loaded .splat file
+                    convertedSplatBuffer = splatData.buffer;
+                    btnDownload.disabled = false;
+                }
+            };
+            reader.onerror = () => showError('Failed to read file.');
+            reader.readAsArrayBuffer(file);
+        };
+    }
+
+    initViewer().catch(err => showError(err.toString()));
+    </script>
+</body>
+</html>
