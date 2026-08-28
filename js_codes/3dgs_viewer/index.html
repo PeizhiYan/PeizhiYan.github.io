@@ -1591,13 +1591,17 @@ uniform highp usampler2D u_texture;
 uniform mat4 projection, view;
 uniform vec2 focal;
 uniform vec2 viewport;
+uniform float u_animProgress;   // 0.0 = start, 1.0 = fully revealed
+uniform vec3 u_sceneCentroid;   // world-space centroid
+uniform float u_animMaxDist;    // max distance from centroid (for normalization)
 in vec2 position;
 in int index;
 out vec4 vColor;
 out vec2 vPosition;
 void main () {
     uvec4 cen = texelFetch(u_texture, ivec2((uint(index) & 0x3ffu) << 1, uint(index) >> 10), 0);
-    vec4 cam = view * vec4(uintBitsToFloat(cen.xyz), 1);
+    vec3 worldPos = uintBitsToFloat(cen.xyz);
+    vec4 cam = view * vec4(worldPos, 1);
     vec4 pos2d = projection * cam;
     float clip = 1.2 * pos2d.w;
     if (pos2d.z < -clip || pos2d.x < -clip || pos2d.x > clip || pos2d.y < -clip || pos2d.y > clip) {
@@ -1617,6 +1621,23 @@ void main () {
     vec2 majorAxis = min(sqrt(2.0 * lambda1), 1024.0) * diagonalVector;
     vec2 minorAxis = min(sqrt(2.0 * lambda2), 1024.0) * vec2(diagonalVector.y, -diagonalVector.x);
     vColor = clamp(pos2d.z/pos2d.w+1.0, 0.0, 1.0) * vec4((cov.w) & 0xffu, (cov.w >> 8) & 0xffu, (cov.w >> 16) & 0xffu, (cov.w >> 24) & 0xffu) / 255.0;
+
+    // ── Grow-from-center animation ──────────────────────────────────
+    if (u_animProgress < 1.0) {
+        float dist = length(worldPos - u_sceneCentroid);
+        float normDist = (u_animMaxDist > 0.0) ? dist / u_animMaxDist : 0.0;
+        // Each splat starts revealing when the wavefront reaches it,
+        // with a soft fade zone of 15% of the total radius
+        float fadeZone = 0.15;
+        float localT = clamp((u_animProgress - normDist * (1.0 - fadeZone)) / fadeZone, 0.0, 1.0);
+        // Smooth ease-in curve so splats pop in naturally
+        float scale = localT * localT * (3.0 - 2.0 * localT);
+        majorAxis *= scale;
+        minorAxis *= scale;
+        vColor.a *= scale;
+    }
+    // ────────────────────────────────────────────────────────────────
+
     vPosition = position;
     vec2 vCenter = vec2(pos2d) / pos2d.w;
     gl_Position = vec4(vCenter + position.x * majorAxis / viewport + position.y * minorAxis / viewport, 0.0, 1.0);
@@ -1746,6 +1767,19 @@ void main () {
         const u_focal       = gl.getUniformLocation(program, 'focal');
         const u_view        = gl.getUniformLocation(program, 'view');
         const u_renderModeLoc = gl.getUniformLocation(program, 'u_renderMode');
+        const u_animProgressLoc  = gl.getUniformLocation(program, 'u_animProgress');
+        const u_sceneCentroidLoc = gl.getUniformLocation(program, 'u_sceneCentroid');
+        const u_animMaxDistLoc   = gl.getUniformLocation(program, 'u_animMaxDist');
+
+        // Animation state — reset each time a new file is loaded
+        let animProgress = 1.0;   // 1.0 = no animation running
+        let animStartTime = 0;
+        const ANIM_DURATION = 1800; // ms
+
+        // Set default "no animation" state on first load
+        gl.uniform1f(u_animProgressLoc, 1.0);
+        gl.uniform3fv(u_sceneCentroidLoc, new Float32Array([0, 0, 0]));
+        gl.uniform1f(u_animMaxDistLoc, 1.0);
 
         let currentRenderMode = 0;
         window.setRenderMode = (mode) => {
@@ -1821,6 +1855,7 @@ void main () {
         // ─── Scene centroid orbit pivot ──────────────────────────────────────────────
         // scenePivot: world-space centroid of the loaded scene [x, y, z]
         let scenePivot = [0, 0, 0];
+        let animMaxDist = 1.0;
 
         function computeScenePivot() {
             if (!splatData || splatData.length < rowLength) return;
@@ -1838,6 +1873,25 @@ void main () {
                 count++;
             }
             scenePivot = [sx / count, sy / count, sz / count];
+
+            // Compute max distance from centroid for animation normalization
+            let maxDist = 0;
+            for (let i = 0; i < numSplats; i += stride) {
+                const dx = fb[i * floatsPerSplat + 0] - scenePivot[0];
+                const dy = fb[i * floatsPerSplat + 1] - scenePivot[1];
+                const dz = fb[i * floatsPerSplat + 2] - scenePivot[2];
+                const d = Math.sqrt(dx*dx + dy*dy + dz*dz);
+                if (d > maxDist) maxDist = d;
+            }
+            animMaxDist = maxDist > 0 ? maxDist : 1;
+
+            // Push centroid and max-dist to shader
+            gl.uniform3fv(u_sceneCentroidLoc, new Float32Array(scenePivot));
+            gl.uniform1f(u_animMaxDistLoc, animMaxDist);
+
+            // Kick off the reveal animation
+            animProgress = 0.0;
+            animStartTime = performance.now();
         }
 
         // Returns the camera-local Z depth of the scene centroid, which is the
@@ -2012,6 +2066,13 @@ void main () {
                 spinner.style.display = 'none';
                 gl.uniformMatrix4fv(u_view, false, actualViewMatrix);
                 gl.uniform1i(u_renderModeLoc, currentRenderMode);
+
+                // Drive the reveal animation
+                if (animProgress < 1.0) {
+                    animProgress = Math.min(1.0, (performance.now() - animStartTime) / ANIM_DURATION);
+                }
+                gl.uniform1f(u_animProgressLoc, animProgress);
+
                 gl.clear(gl.COLOR_BUFFER_BIT);
                 gl.drawArraysInstanced(gl.TRIANGLE_FAN, 0, 4, vertexCount);
             } else {
