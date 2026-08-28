@@ -110,7 +110,9 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            overflow-y: auto;
+            /* No justify-content: center — it prevents scroll. Use padding instead. */
+            padding: 3rem 1rem;
             background: radial-gradient(ellipse at 50% 50%,
                 rgba(99, 102, 241, 0.08) 0%,
                 var(--bg) 70%);
@@ -131,8 +133,9 @@
         /* Animated grid lines background */
         #drop-zone::before {
             content: '';
-            position: absolute;
+            position: fixed;
             inset: 0;
+            pointer-events: none;
             background-image:
                 linear-gradient(rgba(99,102,241,0.04) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(99,102,241,0.04) 1px, transparent 1px);
@@ -151,7 +154,12 @@
             z-index: 1;
             text-align: center;
             max-width: 480px;
-            padding: 2rem;
+            width: 100%;
+            padding: 1rem;
+            /* margin: auto centers it vertically when there's extra space in the
+               flex column AND the content is shorter than the container. When the
+               content is taller, margin collapses to 0 and overflow-y scrolls. */
+            margin: auto;
         }
 
         /* Animated 3D icon */
@@ -448,6 +456,12 @@
             letter-spacing: 0.03em;
             user-select: none;
             text-align: center;
+        }
+        
+        @media (max-height: 500px) {
+            #bottom-center {
+                display: none;
+            }
         }
 
         #btn-credit {
@@ -1012,7 +1026,7 @@
     <!-- Top Bar -->
     <div id="topbar">
         <div class="topbar-left">
-            <a href="../index.html" class="back-btn">
+            <a href="../index.html" class="back-btn" id="back-btn">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
                 Back
             </a>
@@ -1192,6 +1206,15 @@
     const fileInfo      = document.getElementById('file-info');
     const fileNameLabel = document.getElementById('file-name-label');
     const btnLoadNewTop = document.getElementById('btn-load-new');
+    const backBtn       = document.getElementById('back-btn');
+
+    // ─── Back Button Behavior ───────────────────────────────────────────────────
+    backBtn.addEventListener('click', (e) => {
+        if (dropZone.classList.contains('hidden')) {
+            e.preventDefault();
+            window.location.reload();
+        }
+    });
 
     // ─── Controls toggle ────────────────────────────────────────────────────────
     controlsToggle.addEventListener('click', () => {
@@ -1824,6 +1847,8 @@ void main () {
 
         window.addEventListener('wheel', (e) => {
             if (e.target.closest('#credit-dialog')) return;
+            // Don't intercept scroll when on the landing page — let #drop-zone scroll naturally
+            if (!dropZone.classList.contains('hidden')) return;
             e.preventDefault();
             const scale = e.deltaMode == 1 ? 10 : e.deltaMode == 2 ? innerHeight : 1;
             let inv = invert4(viewMatrix);
