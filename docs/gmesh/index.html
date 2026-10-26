@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- Meta tags for social media banners -->
+  <meta name="description" content="GMesh: a lightweight, PyTorch-native differentiable renderer for scenes that mix triangle meshes and 3D Gaussian splats.">
+  <meta property="og:title" content="GMesh: Differentiable Hybrid Renderer for 3D Gaussians and Meshes"/>
+  <meta property="og:description" content="Render and train triangle meshes and 3D Gaussians together, in one differentiable renderer."/>
+  <meta property="og:url" content="https://yan.auroratns.com/docs/gmesh/"/>
+  <meta property="og:image" content="GMesh-logo.png" />
+
+
+  <meta name="twitter:title" content="GMesh: Differentiable Hybrid Renderer for 3D Gaussians and Meshes">
+  <meta name="twitter:description" content="Render and train triangle meshes and 3D Gaussians together, in one differentiable renderer.">
+  <meta name="twitter:image" content="GMesh-logo.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <!-- Keywords for your paper to be indexed by-->
+  <meta name="keywords" content="differentiable rendering, 3D Gaussian splatting, mesh rasterization, hybrid rendering, PyTorch, CUDA">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <title>GMesh</title>
+  <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+  rel="stylesheet">
+
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+  <link rel="stylesheet" href="../../assets/css/site-header.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script src="static/js/bulma-carousel.min.js"></script>
+  <script src="static/js/bulma-slider.min.js"></script>
+  <script src="static/js/index.js"></script>
+</head>
+<body data-header="project" data-base="../../">
+  <div id="site-header"></div>
+
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <img src="./GMesh-logo.png" alt="GMesh Logo" style="height:110px; margin-bottom:10px;">
+            <h2 class="title is-4 publication-title">A Lightweight and Differentiable Renderer for Joint Mesh and 3D Gaussian Splat Scenes</h2>
+            <b>Open-source software, v1.1 (October 2026)</b>
+            <div class="is-size-5 publication-authors">
+              <!-- Authors -->
+              <span class="author-block">
+                <a href="https://peizhiyan.github.io/" target="_blank">Peizhi Yan</a>
+              </span>
+            </div>
+
+                  <div class="column has-text-centered">
+                    <div class="publication-links">
+
+                    <!-- Github link -->
+                    <span class="link-block">
+                      <a href="https://github.com/PeizhiYan/gmesh" target="_blank"
+                      class="external-link button is-normal is-rounded is-dark">
+                      <span class="icon">
+                        <i class="fab fa-github"></i>
+                      </span>
+                      <span>Code</span>
+                    </a>
+                    </span>
+
+                    <!-- Examples link -->
+                    <span class="link-block">
+                      <a href="https://github.com/PeizhiYan/gmesh/tree/main/examples" target="_blank"
+                      class="external-link button is-normal is-rounded is-dark">
+                      <span class="icon">
+                        <i class="fas fa-book"></i>
+                      </span>
+                      <span>Examples</span>
+                    </a>
+                    </span>
+
+                    <!-- Demo video link -->
+                    <span class="link-block">
+                      <a href="https://youtu.be/LhAtS1K2f9s" target="_blank"
+                      class="external-link button is-normal is-rounded is-dark">
+                      <span class="icon">
+                        <i class="fab fa-youtube"></i>
+                      </span>
+                      <span>Demo Video</span>
+                    </a>
+                    </span>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Teaser video-->
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <video poster="" id="teaser" autoplay controls muted loop playsinline width="100%">
+        <source src="static/videos/demo1_sphere_to_hybrid.mp4"
+        type="video/mp4">
+      </video>
+      <h3 class="subtitle">
+        Learning a 3D object from 24 pictures with GMesh. A sphere is reshaped and painted to match the pictures
+        (a textured triangle mesh), then 3D Gaussians (orange) are added and trained together with the mesh.
+        Both are rendered in one image and learned by gradient descent through the same differentiable renderer.
+        Right: the mesh in white and the Gaussians in orange. Example 6 in the code.
+      </h3>
+    </div>
+  </div>
+</section>
+<!-- End teaser video -->
+
+
+<!-- Overview -->
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <h2 class="title is-3 has-text-centered">Overview</h2>
+      <h3 class="subtitle">
+        Triangle meshes and 3D Gaussian splats are good at different things: meshes give clean, compact surfaces
+        that are easy to edit and texture, while Gaussians capture fine, fuzzy or irregular details that are hard to
+        model with triangles. GMesh renders both in the same scene, with correct occlusion between them at every
+        pixel, and is differentiable with respect to both, so a scene can be optimized from images as a mesh,
+        as Gaussians, or as a combination of the two. GMesh is PyTorch-native and self-contained: a single CUDA
+        extension with its own differentiable mesh rasterizer, the hybrid compositing, and 3DGS projection kernels
+        adapted from <a href="https://github.com/nerfstudio-project/gsplat" target="_blank">gsplat</a>.
+      </h3>
+    </div>
+  </div>
+</section>
+
+
+<!-- Highlights -->
+<section class="section">
+  <div class="container is-max-desktop content">
+    <h2 class="title is-3 has-text-centered">Highlights</h2>
+    <ul>
+      <li><b>True hybrid compositing.</b> Every Gaussian is depth-tested against the mesh surface at every pixel, with a
+        soft split that follows the surface, instead of blending two separately rendered images.</li>
+      <li><b>Own differentiable mesh rasterizer.</b> Tile-based CUDA rasterization with perspective-correct
+        interpolation and analytic edge antialiasing, which gives gradients at silhouettes.</li>
+      <li><b>Textures and lighting.</b> Meshes are colored by vertex colors or by a texture map (trilinear
+        mipmapping), and lit per pixel by a point light (Phong shading). The texture and the light can be learned.</li>
+      <li><b>Differentiable end to end.</b> Gradients reach the Gaussians (means, rotations, scales, opacities, colors)
+        and the mesh (vertex positions, colors, texture), also through the depth test between them.</li>
+      <li><b>Fast where the mesh hides Gaussians.</b> Gaussians that are certainly hidden behind the mesh are culled per
+        tile before compositing, without changing the result.</li>
+    </ul>
+  </div>
+</section>
+
+
+<!-- Pipeline -->
+<section class="hero ">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <h2 class="title is-3 has-text-centered">
+        Pipeline
+      </h2>
+      <img src="./pipeline-v1.0.png" alt="GMesh pipeline">
+    </div>
+  </div>
+</section>
+
+
+<!-- Hybrid rendering -->
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <h2 class="title is-3 has-text-centered">Hybrid Rendering</h2>
+      <div class="has-text-centered">
+        <img src="./two_layer_gaussian_mesh_blending.png" alt="Two-layer blending of Gaussians and a mesh" style="max-width:650px; width:100%;">
+      </div>
+      <h3 class="subtitle">
+        At every pixel, each Gaussian is split at the mesh surface into the part in front of it and the part behind
+        it, using the Gaussian's own depth at that pixel, so a Gaussian crossing the surface is cut smoothly along
+        the surface. The front and back parts are composited into two layers and combined with the opaque mesh:
+      </h3>
+      <div class="content has-text-centered">
+        <pre><code>C = C_front + T_front * (a_m * c_m + (1 - a_m) * (C_back + T_back * bg))</code></pre>
+      </div>
+      <h3 class="subtitle">
+        where <i>a<sub>m</sub></i> and <i>c<sub>m</sub></i> are the coverage and color of the mesh. With antialiased
+        mesh edges, the coverage is fractional at silhouettes, so Gaussians behind the mesh fade out smoothly at its
+        outline instead of being cut along it.
+      </h3>
+    </div>
+  </div>
+</section>
+
+
+<!-- Training demo -->
+<section class="hero is-small is-light">
+  <div class="hero-body">
+    <div class="container">
+      <h2 class="title is-3" style="text-align: center;">Training Demo: Gaussians &rarr; Mesh &rarr; Mesh + Fewer Gaussians</h2>
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <video autoplay controls muted loop playsinline width="100%">
+            <source src="static/videos/demo2_gaussians_to_hybrid.mp4" type="video/mp4">
+          </video>
+          <p>
+            20000 Gaussians are trained from random positions (step 1); a mesh is extracted from them by fusing their
+            depth maps (step 2) and refined (step 3); then 5000 Gaussians are added and trained together with the mesh
+            (step 4). Example 7 in the code.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Results -->
+<section class="section">
+  <div class="container is-max-desktop content">
+    <h2 class="title is-3 has-text-centered">A Mesh Plus a Few Gaussians</h2>
+    <p>
+      In the second demo, the final model (the mesh plus 5000 Gaussians) matches new views more closely than the
+      20000 Gaussians it started from, even when those are trained for as many more iterations, with about a third
+      of the parameters. Test PSNR on 6 held-out views (higher is better):
+    </p>
+    <table class="table is-striped is-fullwidth">
+      <thead>
+        <tr><th>Model</th><th>Test PSNR (dB)</th><th>Parameters</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>20000 Gaussians (step 1)</td><td>30.58</td><td>280,000</td></tr>
+        <tr><td>20000 Gaussians, trained 3500 more iterations</td><td>32.34</td><td>280,000</td></tr>
+        <tr><td>5000 Gaussians alone</td><td>29.06</td><td>70,000</td></tr>
+        <tr><td>Mesh (step 3)</td><td>31.25</td><td>32,376</td></tr>
+        <tr><td><b>Mesh + 5000 Gaussians (step 4)</b></td><td><b>33.25</b></td><td><b>102,376</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+
+<!-- Youtube video -->
+<section class="hero is-small is-light">
+  <div class="hero-body">
+    <div class="container">
+      <h2 class="title is-3" style="text-align: center;">Interactive Demo</h2>
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-three-fifths">
+          <div class="publication-video">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/LhAtS1K2f9s" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End youtube video -->
+
+
+<!--BibTex citation -->
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <h4>Please consider citing this work if you find it useful:</h4>
+    <pre><code>@software{Yan_GMesh_Differentiable_Hybrid_2025,
+    author  = {Yan, Peizhi},
+    month   = jul,
+    title   = {{GMesh: Differentiable Hybrid Renderer for 3D Gaussians and Meshes}},
+    url     = {https://github.com/PeizhiYan/gmesh},
+    version = {1.1},
+    year    = {2025}
+}</code></pre>
+  </div>
+</section>
+<!--End BibTex citation -->
+
+
+  <footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+
+          <p>
+            This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a> which was adopted from the <a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
+          </p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="width:1px; height:1px; visibility:hidden;"><script type="text/javascript" id="clstr_globe" src="//clustrmaps.com/globe.js?d=kUw6tC0LdMzykxAwjbiBHEgQi17vgYoxnKT7OTEnBmw"></script></div>
+
+</footer>
+
+
+
+  <script src="../../assets/js/site.js"></script>
+</body>
+</html>
