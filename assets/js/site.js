@@ -29,7 +29,6 @@
     <header class="site-header">
       <div class="header-inner">
         <a class="brand" href="${homeHref}">
-          <img src="${basePath}images/me-small.jpg" alt="Peizhi Yan" />
           <div>
             <span class="brand-name">Peizhi Yan</span>
             <span class="brand-sub">Ph.D. Computer Engineering</span>

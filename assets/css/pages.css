@@ -1,9 +1,7 @@
 .item {
   background: #fff;
-  border-radius: 16px;
-  border: 1px solid var(--border, #e1e6ef);
+  border: 1px solid var(--border, #e4e7eb);
   overflow: hidden;
-  box-shadow: var(--shadow-sm, 0 12px 24px rgba(13, 23, 41, 0.1));
 }
 
 .item img {
@@ -20,8 +18,10 @@
 
 .item h3 {
   margin: 0;
-  font-family: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--sans, "Helvetica Neue", Arial, sans-serif);
   font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1.45;
   color: var(--muted, #5a6676);
 }
 
@@ -51,7 +51,7 @@
   align-items: center;
   gap: 0.4rem;
   padding: 0.25rem 0.7rem;
-  border-radius: 999px;
+  border-radius: 3px;
   background: #f2f4f8;
   color: var(--muted, #5a6676);
   font-size: 0.8rem;

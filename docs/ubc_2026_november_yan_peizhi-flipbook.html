@@ -131,6 +131,7 @@ body{
   white-space:nowrap;display:inline-flex;align-items:center;gap:4px;
 }
 .btn-icon:hover{background:var(--act-bg);}
+a.btn-icon{text-decoration:none;}
 .btn-icon.active{background:var(--act-bg);border-color:var(--act-border);color:var(--accent);}
 #pageInfo{
   color:var(--muted);font-size:0.83rem;min-width:80px;text-align:center;
@@ -263,6 +264,7 @@ body{
   <button class="btn-icon" id="btnTheme" title="Cycle theme (T)">&#9790; Theme</button>
   <button class="btn-icon active" id="btnAnim" title="Toggle flip animation (A)">&#10022; Flip</button>
   <button class="btn-icon" id="btnFs" title="Fullscreen (F)">&#x26F6;</button>
+  <a class="btn-icon" id="btnPdf" href="ubc_2026_november_yan_peizhi.pdf" download title="Download PDF (~50 MB)">&#x2913; PDF (~50 MB)</a>
 </div>
 
 <div id="backdrop"></div>

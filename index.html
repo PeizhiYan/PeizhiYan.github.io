@@ -15,6 +15,8 @@
   <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
   <link rel="apple-touch-icon" href="images/icons/icon-180.png">
   <link rel="manifest" href="manifest.json">
+  <link rel="alternate" hreflang="en" href="https://yan.auroratns.com/index.html" />
+  <link rel="alternate" hreflang="zh" href="https://yan.auroratns.com/index_cn.html" />
   <meta name="theme-color" content="#1b4b9a">
   <link rel="icon" sizes="any" mask="" href="./favicon.ico">
   <meta charset="utf-8" />
@@ -28,258 +30,191 @@
   <div id="site-header"></div>
 
   <main id="main-content">
-    <section class="section section-hero">
+    <section id="about" class="section profile" data-nav-label="About">
+      <picture>
+        <source media="(min-width: 641px)" srcset="images/me-profile-portrait.jpeg" width="560" height="772" />
+        <img class="profile-photo" src="images/me-profile.jpg" alt="Peizhi Yan" width="360" height="360" />
+      </picture>
       <div>
-        <!-- <span class="tag">Peizhi Yan (Matthew)</span> -->
-        <h1>Yan, Peizhi</h1>
-        <p><strong>The 80th-Generation Direct Descendant of <a href="https://en.wikipedia.org/wiki/Yan_Hui">Yanzi</a></strong> (circa 521–481 BC, philosopher)
-        <p>🎓 Ph.D., University of British Columbia </p>
-        <p>🏅 Recipient of <a href="https://www.gg.ca/en/honours/recipients/116-108211">THE GOVERNOR-GENERAL’S GOLD MEDAL</a>, Canada.</p>
-        <p><a href="https://vectorinstitute.ai/2018/12/13/vector-awards-inaugural-scholarships-second-round-of-applications-to-open-in-2019/">Vector Scholarship Recipient</a>, Vector Institute 2018~2019.</p>
-        <!-- <a href="https://baike.baidu.com/item/%E9%A2%9C%E5%AD%90%E4%B8%96%E7%B3%BB/7808246?fr=aladdin">Family Tree (in Chinese)</a></p> -->
-      </div>
-      <!-- <div style="text-align: center; display: flex; flex-direction: column; align-items: center;">
-        <a class="pdf-preview" href="docs/Table-of-Direct-Descent-Yan-Family-compressed.pdf#page=29" 
-        style="text-align: center; display: flex; flex-direction: column; align-items: center;" target="_blank">
-          <img src="docs/Table-Thumbnail.jpg" style="max-width: 180px;" alt="Record of Direct Descent of Yan Family" />
-          <div class="inline-note">Record of Direct Descent <br> of Yan Family (in Chinese)</div>
-        </a>
-        <br>
-        <a href="historical_photos.html">Historical Photos</a>
-      </div> -->
-      <div class="hero-actions">
-        <a class="button" href="docs/CV_Peizhi.pdf">Curriculum Vitae</a>
-        <span style="margin: 0 8px"></span>
-        <a class="button secondary" href="docs/ubc_2026_november_yan_peizhi-flipbook.html">PhD Thesis</a>
+        <h1>Peizhi (Matthew) Yan</h1>
+        <p class="profile-role">Ph.D. in Computer Engineering, The University of British Columbia</p>
+        <p>My research is in 3D computer vision and graphics, with a focus on 3D face and head modeling, neural rendering, and 3D Gaussian splatting head avatars.</p>
+        <p>I am a recipient of the <a href="https://www.gg.ca/en/honours/recipients/116-108211">Governor General’s Gold Medal</a> (Canada) and a <a href="https://vectorinstitute.ai/2018/12/13/vector-awards-inaugural-scholarships-second-round-of-applications-to-open-in-2019/">Vector Scholarship in Artificial Intelligence</a> from the Vector Institute.</p>
+        <p class="inline-note">80th-generation direct descendant of <a href="https://en.wikipedia.org/wiki/Yan_Hui">Yanzi</a> (c. 521–481 BC), philosopher.</p>
+        <ul class="profile-links">
+          <li><a href="docs/CV_Peizhi.pdf"><i class="fa fa-file-text-o"></i> CV</a></li>
+          <li><a href="docs/ubc_2026_november_yan_peizhi-flipbook.html"><i class="fa fa-book"></i> Ph.D. Thesis</a></li>
+          <li><a href="https://scholar.google.ca/citations?user=bpHvFHgAAAAJ&hl=en"><i class="ai ai-google-scholar"></i> Google Scholar</a></li>
+          <li><a href="https://github.com/PeizhiYan"><i class="fa fa-github"></i> GitHub</a></li>
+          <li><a href="https://www.linkedin.com/in/peizhi-yan/"><i class="fa fa-linkedin"></i> LinkedIn</a></li>
+          <li><a href="mailto:yan@auroratns.com"><i class="fa fa-envelope"></i> Email</a></li>
+        </ul>
       </div>
     </section>
 
-    <section id="projects" class="section">
-      <h2>Research and Projects</h2>
-      <p><a class="button secondary" href="https://scholar.google.ca/citations?user=bpHvFHgAAAAJ&hl=en">🎓 Google Scholar Homepage</a></p>
-      <br>
-
-      <div class="project-list">
-        <article class="project-card">
-          <div class="image-hover-container" data-default="images/gmesh.gif" data-hover="images/the-matrix-characters/The-Matrix-Pills.jpg">
-            <img src="images/gmesh.gif" alt="GMesh" />
-          </div>
+    <section id="publications" class="section" data-nav-label="Publications">
+      <h2>Selected Publications</h2>
+      <p class="inline-note" style="margin:-0.6rem 0 1.5rem;">See <a href="https://scholar.google.ca/citations?user=bpHvFHgAAAAJ&hl=en">Google Scholar</a> for a full list.</p>
+      <div class="pub-list">
+        <article class="pub">
+          <img class="pub-thumb" src="images/architect.gif" alt="ArchitectHead" loading="lazy" decoding="async" />
           <div>
-            <h3>GMesh</h3>
-            <div class="project-meta">
-              <span class="tag" style="background:#2f9e6e;color:#fff;">Open-Source Software</span>
-            </div>
-            <p>A lightweight differentiable renderer for scenes that mix triangle meshes and 3D Gaussian splats.</p>
-            <p><strong>Peizhi Yan</strong></p>
-            <div class="project-actions">
-              <a class="button secondary" href="docs/gmesh/index.html"><i class="fa fa-globe"></i> Homepage</a>
-              <a class="button secondary" href="https://github.com/PeizhiYan/gmesh"><i class="fa fa-github"></i> Code</a>
-            </div>
+            <p class="pub-title">ArchitectHead</p>
+            <p class="pub-authors"><strong>Peizhi Yan</strong>, Rabab Ward, Qiang Tang, Shan Du</p>
+            <p class="pub-venue">IEEE/CVF Winter Conference on Applications of Computer Vision (WACV), 2026</p>
+            <p class="pub-desc">Continuous level-of-detail (LOD) control for 3DGS head avatars.</p>
+            <p class="pub-links">
+              <a href="docs/architect/index.html">Project Page</a>
+              <a href="https://openaccess.thecvf.com/content/WACV2026/papers/Yan_ArchitectHead_Continuous_Level_of_Detail_Control_for_3D_Gaussian_Head_WACV_2026_paper.pdf">Paper</a>
+              <a href="https://github.com/PeizhiYan/ArchitectHead">Code</a>
+            </p>
           </div>
         </article>
 
-        <article class="project-card">
-          <div class="image-hover-container" data-default="images/architect.gif" data-hover="images/the-matrix-characters/TheArchitect.jpg">
-            <img src="images/architect.gif" alt="ArchitectHead" loading="lazy" decoding="async" />
-          </div>
+        <article class="pub">
+          <img class="pub-thumb" src="images/morphing-small.gif" alt="Neural 3D Face Stylization" loading="lazy" decoding="async" />
           <div>
-            <h3>ArchitectHead</h3>
-            <div class="project-meta">
-              <span class="tag" style="background:#1f7aa6;color:#fff;">WACV 2026</span>
-            </div>
-            <p>Continuous level-of-details (LOD) control for 3DGS head avatars.</p>
-            <p><strong>Peizhi Yan</strong>, Rabab Ward, Qiang Tang, Shan Du</p>
-            <div class="project-actions">
-              <a class="button secondary" href="docs/architect/index.html"><i class="fa fa-globe"></i> Homepage</a>
-              <a class="button secondary" href="https://openaccess.thecvf.com/content/WACV2026/papers/Yan_ArchitectHead_Continuous_Level_of_Detail_Control_for_3D_Gaussian_Head_WACV_2026_paper.pdf"><i class="fa fa-file"></i> Paper</a>
-              <a class="button secondary" href="https://github.com/PeizhiYan/ArchitectHead"><i class="fa fa-github"></i> Code</a>
-              <a class="button secondary" href="https://github.com/PeizhiYan/flame-head-tracker"><i class="fa fa-github"></i> Flame Head Tracker</a>
-            </div>
+            <p class="pub-title">Neural 3D Face Stylization</p>
+            <p class="pub-authors"><strong>Peizhi Yan</strong>, Rabab Ward, Qiang Tang, Shan Du</p>
+            <p class="pub-venue">IEEE Transactions on Visualization and Computer Graphics (TVCG), 2025</p>
+            <p class="pub-desc">A neural network-based mesh deformation transfer method for learning 3D face stylization in a weakly supervised manner.</p>
+            <p class="pub-links">
+              <a href="docs/style/index.html">Project Page</a>
+              <a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=11015267">Paper</a>
+            </p>
           </div>
         </article>
 
-        <article class="project-card">
-          <div class="image-hover-container" data-default="images/morphing-small.gif" data-hover="images/the-matrix-characters/The-Matrix-Trinity.jpg">
-            <img src="images/morphing-small.gif" alt="Neural 3D Face Stylization" loading="lazy" decoding="async" />
-          </div>
+        <article class="pub">
+          <img class="pub-thumb" src="images/dejavu.png" alt="Gaussian Deja-vu" loading="lazy" decoding="async" />
           <div>
-            <h3>Neural 3D Face Stylization</h3>
-            <div class="project-meta">
-              <span class="tag" style="background:#e59a2f;color:#fff;">2025 TVCG</span>
-            </div>
-            <p>A neural network-based mesh deformation transfer method for learning 3D face stylization in a weakly supervised manner.</p>
-            <p><strong>Peizhi Yan</strong>, Rabab Ward, Qiang Tang, Shan Du</p>
-            <div class="project-actions">
-              <a class="button secondary" href="docs/style/index.html"><i class="fa fa-globe"></i> Homepage</a>
-              <a class="button secondary" href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=11015267"><i class="fa fa-file"></i> Paper</a>
-            </div>
+            <p class="pub-title">Gaussian Deja-vu</p>
+            <p class="pub-authors"><strong>Peizhi Yan</strong>, Rabab Ward, Qiang Tang, Shan Du</p>
+            <p class="pub-venue">IEEE/CVF Winter Conference on Applications of Computer Vision (WACV), 2025 <span class="highlight">Oral</span></p>
+            <p class="pub-desc">A 3DGS-based head avatar creation method that accelerates training for personalized avatars and enhances their photorealistic quality.</p>
+            <p class="pub-links">
+              <a href="docs/dejavu/index.html">Project Page</a>
+              <a href="https://openaccess.thecvf.com/content/WACV2025/papers/Yan_Gaussian_Deja-vu_Creating_Controllable_3D_Gaussian_Head-Avatars_with_Enhanced_Generalization_WACV_2025_paper.pdf">Paper</a>
+              <a href="https://github.com/PeizhiYan/gaussian-dejavu">Code</a>
+            </p>
           </div>
         </article>
 
-        <article class="project-card">
-          <div class="image-hover-container" data-default="images/dejavu.png" data-hover="images/the-matrix-characters/The-Matrix-DejaVu-2.jpg">
-            <img src="images/dejavu.png" alt="Gaussian Deja-vu" loading="lazy" decoding="async" />
-          </div>
+        <article class="pub">
+          <img class="pub-thumb" src="images/morpheus.png" alt="StyleMorpheus" loading="lazy" decoding="async" />
           <div>
-            <h3>Gaussian Deja-vu</h3>
-            <div class="project-meta">
-              <span class="tag" style="background:#1f7aa6;color:#fff;">WACV 2025 Oral</span>
-            </div>
-            <p>A novel 3DGS-based head avatar creation method that accelerates training for personalized avatars and enhances their photorealistic quality.</p>
-            <p><strong>Peizhi Yan</strong>, Rabab Ward, Qiang Tang, Shan Du</p>
-            <div class="project-actions">
-              <a class="button secondary" href="docs/dejavu/index.html"><i class="fa fa-globe"></i> Homepage</a>
-              <!-- <a class="button" href="https://arxiv.org/pdf/2409.16147"><i class="ai ai-arxiv"></i> ArXiv</a> -->
-              <a class="button secondary" href="https://openaccess.thecvf.com/content/WACV2025/papers/Yan_Gaussian_Deja-vu_Creating_Controllable_3D_Gaussian_Head-Avatars_with_Enhanced_Generalization_WACV_2025_paper.pdf"><i class="fa fa-file"></i> Paper</a>
-              <a class="button secondary" href="https://github.com/PeizhiYan/gaussian-dejavu"><i class="fa fa-github"></i> Code</a>
-              <a class="button secondary" href="https://github.com/PeizhiYan/flame-head-tracker"><i class="fa fa-github"></i> Flame Head Tracker</a>
-            </div>
+            <p class="pub-title">StyleMorpheus</p>
+            <p class="pub-authors"><strong>Peizhi Yan</strong>, Rabab Ward, Dan Wang, Qiang Tang, Shan Du</p>
+            <p class="pub-venue">Neurocomputing, 2025</p>
+            <p class="pub-desc">A style-based neural morphable face model trained on in-the-wild images, enabling photorealistic 3D face synthesis and editing.</p>
+            <p class="pub-links">
+              <a href="docs/morpheus/index.html">Project Page</a>
+              <a href="https://doi.org/10.1016/j.neucom.2025.131329">Paper</a>
+            </p>
           </div>
         </article>
 
-        <article class="project-card">
-          <div class="image-hover-container" data-default="images/morpheus.png" data-hover="images/the-matrix-characters/The-Matrix-Morpheus.jpg">
-            <img src="images/morpheus.png" alt="StyleMorpheus" loading="lazy" decoding="async" />
-          </div>
+        <article class="pub">
+          <img class="pub-thumb" src="images/headnerf+.png" alt="HeadNeRF+" loading="lazy" decoding="async" />
           <div>
-            <h3>StyleMorpheus</h3>
-            <div class="project-meta">
-              <span class="tag" style="background:#e59a2f;color:#fff;">2025 Neurocomputing</span>
-            </div>
-            <p>A style-based neural morphable face model trained on in-the-wild images, enabling photorealistic 3D face synthesis and editing.</p>
-            <p><strong>Peizhi Yan</strong>, Rabab Ward, Dan Wang, Qiang Tang, Shan Du</p>
-            <div class="project-actions">
-              <a class="button secondary" href="docs/morpheus/index.html"><i class="fa fa-globe"></i> Homepage</a>
-              <a class="button secondary" href="https://doi.org/10.1016/j.neucom.2025.131329"><i class="fa fa-file"></i> Paper</a>
-            </div>
+            <p class="pub-title">HeadNeRF+</p>
+            <p class="pub-authors"><strong>Peizhi Yan</strong>, Rabab Ward, Dan Wang, Qiang Tang, Shan Du</p>
+            <p class="pub-venue">IEEE International Conference on Image Processing (ICIP), 2023</p>
+            <p class="pub-desc">A 3D-aware face reconstruction learning framework tailored for HeadNeRF.</p>
+            <p class="pub-links">
+              <a href="docs/headnerf+/index.html">Project Page</a>
+              <a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10222432">Paper</a>
+            </p>
           </div>
         </article>
 
-        <article class="project-card">
-          <div class="image-hover-container" data-default="images/headnerf+.png" data-hover="images/the-matrix-characters/The-Matrix-Agent-Smith.jpg">
-            <img src="images/headnerf+.png" alt="HeadNeRF+" loading="lazy" decoding="async" />
-          </div>
+        <article class="pub">
+          <img class="pub-thumb" src="images/neo3df.png" alt="NEO-3DF" loading="lazy" decoding="async" />
           <div>
-            <h3>HeadNeRF+</h3>
-            <div class="project-meta">
-              <span class="tag" style="background:#1f7aa6;color:#fff;">ICIP 2023</span>
-            </div>
-            <p>A 3D-aware face reconstruction learning framework tailored for HeadNeRF.</p>
-            <p><strong>Peizhi Yan</strong>, Rabab Ward, Dan Wang, Qiang Tang, Shan Du</p>
-            <div class="project-actions">
-              <a class="button secondary" href="docs/headnerf+/index.html"><i class="fa fa-globe"></i> Homepage</a>
-              <a class="button secondary" href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10222432"><i class="fa fa-file"></i> Paper</a>
-            </div>
+            <p class="pub-title">NEO-3DF: Novel Editing-Oriented 3D Face Creation and Reconstruction</p>
+            <p class="pub-authors"><strong>Peizhi Yan</strong>, James Gregson, Qiang Tang, Rabab Ward, Zhan Xu, Shan Du</p>
+            <p class="pub-venue">Asian Conference on Computer Vision (ACCV), 2022</p>
+            <p class="pub-links">
+              <a href="docs/neo3df/index.html">Project Page</a>
+              <a href="https://openaccess.thecvf.com/content/ACCV2022/papers/Yan_NEO-3DF_Novel_Editing-Oriented_3D_Face_Creation_and_Reconstruction_ACCV_2022_paper.pdf">Paper</a>
+              <a href="https://github.com/ubc-3d-vision-lab/NEO-3DF">Code</a>
+            </p>
           </div>
         </article>
-
-        <article class="project-card">
-          <div class="image-hover-container" data-default="images/neo3df.png" data-hover="images/the-matrix-characters/The-Matrix-Neo.jpg">
-            <img src="images/neo3df.png" alt="NEO-3DF" loading="lazy" decoding="async" />
-          </div>
-          <div>
-            <h3>NEO-3DF</h3>
-            <div class="project-meta">
-              <span class="tag" style="background:#1f7aa6;color:#fff;">ACCV 2022</span>
-            </div>
-            <p>Novel-Editing-Oriented 3D Face Reconstruction from Single-Image</p>
-            <p><strong>Peizhi Yan</strong>, James Gregson, Qiang Tang, Rabab Ward, Zhan Xu, Shan Du</p>
-            <div class="project-actions">
-              <a class="button secondary" href="docs/neo3df/index.html"><i class="fa fa-globe"></i> Homepage</a>
-              <a class="button secondary" href="https://openaccess.thecvf.com/content/ACCV2022/papers/Yan_NEO-3DF_Novel_Editing-Oriented_3D_Face_Creation_and_Reconstruction_ACCV_2022_paper.pdf"><i class="fa fa-file"></i> Paper</a>
-              <a class="button secondary" href="https://github.com/ubc-3d-vision-lab/NEO-3DF"><i class="fa fa-github"></i> Code</a>
-            </div>
-          </div>
-        </article>
-      </div>
-
-      <div id="hiddenContent" class="hidden-div">
-        <div style="margin: 3.5rem 0;"></div>
-        <div class="project-list project-list-compact">
-          <article class="project-card">
-            <div>
-              <h3>Light-Field Refocusing GUI Demo</h3>
-              <div class="project-meta">
-                <span class="tag">2021</span>
-              </div>
-              <div class="project-actions">
-                <a class="button secondary" href="https://www.youtube.com/watch?v=pRxXQcuVQSs"><i class="fa fa-globe"></i> Video</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="project-card">
-            <div>
-              <h3>ZenFlow</h3>
-              <div class="project-meta">
-                <span class="tag">2021</span>
-              </div>
-              <p>Numpy-based demo of feed-forward networks and backpropagation. Implemented for education purpose.</p>
-              <div class="project-actions">
-                <a class="button secondary" href="https://github.com/PeizhiYan/zenflow"><i class="fa fa-github"></i> Github Repo</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="project-card">
-            <div>
-              <h3>Algorithm Zoo</h3>
-              <div class="project-meta">
-                <span class="tag">Ongoing since 2020</span>
-              </div>
-              <p>🐻 🐭 🐮 🐰 🐱 🐯 🐰 🐶 🐼 🐘</p>
-              <div class="project-actions">
-                <a class="button secondary" href="https://github.com/PeizhiYan/Algorithm-Zoo"><i class="fa fa-globe"></i> Github Repo</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="project-card">
-            <div>
-              <h3>Whiteboard</h3>
-              <div class="project-meta">
-                <span class="tag">2020</span>
-              </div>
-              <p>Based on HTML, CSS, Javascript, and Paper.js, a static website of a whiteboard.</p>
-              <div class="project-actions">
-                <a class="button secondary" href="www/draw.html"><i class="fa fa-github"></i> Web-App</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="project-card">
-            <div>
-              <h3>Video 4X Super-Resolution</h3>
-              <div class="project-meta">
-                <span class="tag">2019</span>
-              </div>
-              <p>Deep learning-based method to upscale a low-res video to 4X.</p>
-              <div class="project-actions">
-                <a class="button secondary" href="archived_pages/super_resolution.html"><i class="fa fa-globe"></i> Homepage</a>
-              </div>
-            </div>
-          </article>
-
-        </div>
-      </div>
-
-      <div class="hero-actions" style="margin-top:1.5rem;">
-        <button id="toggleDivBtn" class="button secondary" onclick="toggleDiv()">Show More Projects</button>
-        <a class="button" href="js_codes/index.html">Take Me 💊</a>
       </div>
     </section>
 
-    <section class="section">
-      <h2>Contact</h2>
-      <p><a href="https://www.linkedin.com/in/peizhi-yan/"><i class="fa fa-linkedin"></i>&nbsp;LinkedIn</a></p>
-      <p><a href="mailto:yan@auroratns.com"><i class="fa fa-envelope"></i>&nbsp;Email</a></p>
+    <section id="software" class="section">
+      <h2>Open-Source Software</h2>
+      <div class="pub-list">
+        <article class="pub">
+          <img class="pub-thumb" src="images/gmesh.gif" alt="GMesh" loading="lazy" decoding="async" />
+          <div>
+            <p class="pub-title">GMesh</p>
+            <p class="pub-desc">A lightweight differentiable renderer for scenes that mix triangle meshes and 3D Gaussian splats.</p>
+            <p class="pub-links">
+              <a href="docs/gmesh/index.html">Project Page</a>
+              <a href="https://github.com/PeizhiYan/gmesh">Code</a>
+            </p>
+          </div>
+        </article>
+
+        <article class="pub">
+          <img class="pub-thumb" src="images/flame-tracker.gif" alt="FLAME Head Tracker" loading="lazy" decoding="async" />
+          <div>
+            <p class="pub-title">FLAME Head Tracker</p>
+            <p class="pub-desc">FLAME head tracking from images and videos, used in ArchitectHead and Gaussian Deja-vu.</p>
+            <p class="pub-links">
+              <a href="https://github.com/PeizhiYan/flame-head-tracker">Code</a>
+            </p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="honors" class="section">
+      <h2>Honors</h2>
+      <ul class="plain-list">
+        <li>Governor General’s Gold Medal, Canada <span class="year">· 2020</span></li>
+        <li>Vector Scholarship in Artificial Intelligence, Vector Institute <span class="year">· 2018</span></li>
+      </ul>
+      <p class="inline-note" style="margin-top:0.75rem;"><a href="awards.html">Certificates and photos →</a></p>
+    </section>
+
+    <section id="service" class="section">
+      <h2>Academic Service</h2>
+      <dl class="service-list">
+        <dt>Organizing</dt>
+        <dd>Program Committee: AAAI 2027, GI 2025 · Session Chair: ICIP 2025 · Volunteer: CCECE 2025</dd>
+        <dt>Journal Reviewer</dt>
+        <dd>TPAMI, TVCG, TIP, TMM, TCSVT, TCYB, TOMM, CJECE, Neurocomputing, NCA</dd>
+        <dt>Conference Reviewer</dt>
+        <dd>CVPR 2026, NeurIPS 2026, AAAI 2027, ACCV 2022, ICIP 2021–2023 &amp; 2025, GI 2025, UIC 2020</dd>
+      </dl>
+    </section>
+
+    <section id="talks" class="section">
+      <h2>Talks</h2>
+      <ul class="plain-list">
+        <li>Presenter, UBC ECE Research Day <span class="year">· 2025</span></li>
+        <li>Speaker, BC Cancer Summit: <em>Skin Lesion Image Synthesis with Controllable Skin Tone</em> <span class="year">· 2024</span></li>
+        <li>Guest Speaker, Consortium for Advancement of MRI Education and Research in Africa <span class="year">· 2023</span></li>
+        <li>Invited Talk, UBC Okanagan COSC Seminar: <em>Machine Learning in 3D Face Modeling</em> <span class="year">· 2023</span></li>
+      </ul>
+    </section>
+
+    <section id="other-projects" class="section">
+      <h2>Other Projects</h2>
+      <ul class="plain-list">
+        <li><a href="js_codes/index.html">Interactive web demos</a></li>
+      </ul>
     </section>
   </main>
 
   <div id="site-footer"></div>
 
   <script src="assets/js/site.js"></script>
-  <script src="assets/js/project.js"></script>
+  <script src="assets/js/section-nav.js"></script>
   <script type="text/javascript" id="clstr_globe" src="//clustrmaps.com/globe.js?d=ijpPmLSQCpd_Qvahkot5oGSKTe5TjeBF6-qFWekfiBA" defer async></script>
   <style>
     .clstrm_outer {

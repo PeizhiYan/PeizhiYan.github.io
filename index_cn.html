@@ -6,6 +6,8 @@
   <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
   <link rel="apple-touch-icon" href="images/icons/icon-180.png">
   <link rel="manifest" href="manifest.json">
+  <link rel="alternate" hreflang="en" href="https://yan.auroratns.com/index.html" />
+  <link rel="alternate" hreflang="zh" href="https://yan.auroratns.com/index_cn.html" />
   <meta name="theme-color" content="#1b4b9a">
   <link rel="icon" sizes="any" mask="" href="./favicon.ico">
   <meta charset="utf-8" />
@@ -17,67 +19,201 @@
   <div id="site-header"></div>
 
   <main id="main-content">
-    <section class="section section-hero">
+    <section id="about" class="section profile" data-nav-label="简介">
+      <picture>
+        <source media="(min-width: 641px)" srcset="images/me-profile-portrait.jpeg" width="560" height="772" />
+        <img class="profile-photo" src="images/me-profile.jpg" alt="颜培郅" width="360" height="360" />
+      </picture>
       <div>
         <!-- <span class="tag">颜培郅 (Matthew Yan)</span> -->
         <h1 style="display:inline-flex;align-items:center;gap:8px;">
           颜培郅
           <img src="images/stamp.png" alt="印章" style="width:30px; height:auto; margin-left: 5px; padding-top: 3px;">
         </h1>
-        <p>🎓 UBC 英属哥伦比亚大学 博士 </p>
-        <p>🏅<a href="https://www.gg.ca/en/honours/recipients/116-108211">加拿大总督学术金牌</a>获得者。</p>
+        <p>UBC 英属哥伦比亚大学 博士 </p>
+        <p><a href="https://www.gg.ca/en/honours/recipients/116-108211">加拿大总督学术金牌</a>获得者。</p>
         <p><a href="https://vectorinstitute.ai/2018/12/13/vector-awards-inaugural-scholarships-second-round-of-applications-to-open-in-2019/">向量奖学金</a>获得者，多伦多向量学院。</p>
-        <p><strong><a href="https://baike.baidu.com/item/%E9%A2%9C%E5%9B%9E/188357?fromtitle=%E9%A2%9C%E5%AD%90&fromid=5346933&fr=aladdin">颜子</a>第80代嫡系长孙。</strong>
+        <p><strong><a href="https://baike.baidu.com/item/%E9%A2%9C%E5%9B%9E/188357?fromtitle=%E9%A2%9C%E5%AD%90&fromid=5346933&fr=aladdin">颜子</a>第80代嫡系长孙。</strong></p>
         <!-- <a href="https://baike.baidu.com/item/%E9%A2%9C%E5%AD%90%E4%B8%96%E7%B3%BB/7808246?fr=aladdin">点击查看 颜氏宗子世表</a></p> -->
+        <ul class="profile-links">
+          <li><a href="docs/CV_Peizhi.pdf"><i class="fa fa-file-text-o"></i> 简历（英文版）</a></li>
+          <li><a href="docs/ubc_2026_november_yan_peizhi-flipbook.html"><i class="fa fa-book"></i> 博士论文</a></li>
+          <li><a href="https://scholar.google.ca/citations?user=bpHvFHgAAAAJ&hl=zh"><i class="ai ai-google-scholar"></i> 谷歌学术</a></li>
+          <li><a href="https://github.com/PeizhiYan"><i class="fa fa-github"></i> GitHub</a></li>
+          <li><a href="https://www.linkedin.com/in/peizhi-yan/"><i class="fa fa-linkedin"></i> LinkedIn</a></li>
+          <li><a href="mailto:yan@auroratns.com"><i class="fa fa-envelope"></i> 邮箱</a></li>
+        </ul>
       </div>
       <!-- <div style="text-align: center; display: flex; flex-direction: column; align-items: center;">
         <a class="pdf-preview" href="docs/Table-of-Direct-Descent-Yan-Family-compressed.pdf#page=28" target="_blank">
           <img src="docs/Table-Thumbnail.jpg" style="max-width: 230px;" alt="颜子世家谱" />
         </a>
       </div> -->
-      <div class="hero-actions">
-        <a class="button" href="docs/CV_Peizhi.pdf">简历（英文版）</a>
-        <span style="margin: 0 8px"></span>
-        <a class="button secondary" href="docs/ubc_2026_november_yan_peizhi-flipbook.html">博士论文</a>
+
+    </section>
+
+    <section id="publications" class="section" data-nav-label="论文">
+      <h2>代表性论文</h2>
+      <p class="inline-note" style="margin:-0.6rem 0 1.5rem;">完整论文列表请见<a href="https://scholar.google.ca/citations?user=bpHvFHgAAAAJ&hl=zh">谷歌学术</a>。</p>
+      <div class="pub-list">
+        <article class="pub">
+          <img class="pub-thumb" src="images/architect.gif" alt="ArchitectHead" loading="lazy" decoding="async" />
+          <div>
+            <p class="pub-title">ArchitectHead</p>
+            <p class="pub-authors"><strong>Peizhi Yan</strong>, Rabab Ward, Qiang Tang, Shan Du</p>
+            <p class="pub-venue">IEEE/CVF Winter Conference on Applications of Computer Vision (WACV), 2026</p>
+            <p class="pub-desc">面向 3DGS 头部数字人的连续细节层次（LOD）控制。</p>
+            <p class="pub-links">
+              <a href="docs/architect/index.html">项目主页</a>
+              <a href="https://openaccess.thecvf.com/content/WACV2026/papers/Yan_ArchitectHead_Continuous_Level_of_Detail_Control_for_3D_Gaussian_Head_WACV_2026_paper.pdf">论文</a>
+              <a href="https://github.com/PeizhiYan/ArchitectHead">代码</a>
+            </p>
+          </div>
+        </article>
+
+        <article class="pub">
+          <img class="pub-thumb" src="images/morphing-small.gif" alt="Neural 3D Face Stylization" loading="lazy" decoding="async" />
+          <div>
+            <p class="pub-title">Neural 3D Face Stylization</p>
+            <p class="pub-authors"><strong>Peizhi Yan</strong>, Rabab Ward, Qiang Tang, Shan Du</p>
+            <p class="pub-venue">IEEE Transactions on Visualization and Computer Graphics (TVCG), 2025</p>
+            <p class="pub-desc">一种基于神经网络的网格形变迁移方法，以弱监督方式学习三维人脸风格化。</p>
+            <p class="pub-links">
+              <a href="docs/style/index.html">项目主页</a>
+              <a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=11015267">论文</a>
+            </p>
+          </div>
+        </article>
+
+        <article class="pub">
+          <img class="pub-thumb" src="images/dejavu.png" alt="Gaussian Deja-vu" loading="lazy" decoding="async" />
+          <div>
+            <p class="pub-title">Gaussian Deja-vu</p>
+            <p class="pub-authors"><strong>Peizhi Yan</strong>, Rabab Ward, Qiang Tang, Shan Du</p>
+            <p class="pub-venue">IEEE/CVF Winter Conference on Applications of Computer Vision (WACV), 2025 <span class="highlight">Oral</span></p>
+            <p class="pub-desc">一种基于 3DGS 的头部数字人创建方法，可加快个性化数字人的训练，并提升其照片级真实感。</p>
+            <p class="pub-links">
+              <a href="docs/dejavu/index.html">项目主页</a>
+              <a href="https://openaccess.thecvf.com/content/WACV2025/papers/Yan_Gaussian_Deja-vu_Creating_Controllable_3D_Gaussian_Head-Avatars_with_Enhanced_Generalization_WACV_2025_paper.pdf">论文</a>
+              <a href="https://github.com/PeizhiYan/gaussian-dejavu">代码</a>
+            </p>
+          </div>
+        </article>
+
+        <article class="pub">
+          <img class="pub-thumb" src="images/morpheus.png" alt="StyleMorpheus" loading="lazy" decoding="async" />
+          <div>
+            <p class="pub-title">StyleMorpheus</p>
+            <p class="pub-authors"><strong>Peizhi Yan</strong>, Rabab Ward, Dan Wang, Qiang Tang, Shan Du</p>
+            <p class="pub-venue">Neurocomputing, 2025</p>
+            <p class="pub-desc">一种在真实场景图像上训练的基于风格的神经可变形人脸模型，可实现照片级真实的三维人脸合成与编辑。</p>
+            <p class="pub-links">
+              <a href="docs/morpheus/index.html">项目主页</a>
+              <a href="https://doi.org/10.1016/j.neucom.2025.131329">论文</a>
+            </p>
+          </div>
+        </article>
+
+        <article class="pub">
+          <img class="pub-thumb" src="images/headnerf+.png" alt="HeadNeRF+" loading="lazy" decoding="async" />
+          <div>
+            <p class="pub-title">HeadNeRF+</p>
+            <p class="pub-authors"><strong>Peizhi Yan</strong>, Rabab Ward, Dan Wang, Qiang Tang, Shan Du</p>
+            <p class="pub-venue">IEEE International Conference on Image Processing (ICIP), 2023</p>
+            <p class="pub-desc">一个为 HeadNeRF 量身定制的三维感知人脸重建学习框架。</p>
+            <p class="pub-links">
+              <a href="docs/headnerf+/index.html">项目主页</a>
+              <a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10222432">论文</a>
+            </p>
+          </div>
+        </article>
+
+        <article class="pub">
+          <img class="pub-thumb" src="images/neo3df.png" alt="NEO-3DF" loading="lazy" decoding="async" />
+          <div>
+            <p class="pub-title">NEO-3DF: Novel Editing-Oriented 3D Face Creation and Reconstruction</p>
+            <p class="pub-authors"><strong>Peizhi Yan</strong>, James Gregson, Qiang Tang, Rabab Ward, Zhan Xu, Shan Du</p>
+            <p class="pub-venue">Asian Conference on Computer Vision (ACCV), 2022</p>
+            <p class="pub-links">
+              <a href="docs/neo3df/index.html">项目主页</a>
+              <a href="https://openaccess.thecvf.com/content/ACCV2022/papers/Yan_NEO-3DF_Novel_Editing-Oriented_3D_Face_Creation_and_Reconstruction_ACCV_2022_paper.pdf">论文</a>
+              <a href="https://github.com/ubc-3d-vision-lab/NEO-3DF">代码</a>
+            </p>
+          </div>
+        </article>
       </div>
     </section>
 
-    <section class="section">
-      <h2>导航</h2>
-      <div class="link-list">
-        <div class="link-card">
-          <span>📕 相簿</span>
-          <a href="album.html">打开</a>
-        </div>
-        <div class="link-card">
-          <span>🎨 艺术</span>
-          <a href="gallery.html">打开</a>
-        </div>
-        <div class="link-card">
-          <span>🛫 参加活动照片</span>
-          <a href="events.html">打开</a>
-        </div>
-        <div class="link-card">
-          <span>🏆 奖项及荣誉</span>
-          <a href="awards.html">打开</a>
-        </div>
+    <section id="software" class="section">
+      <h2>开源软件</h2>
+      <div class="pub-list">
+        <article class="pub">
+          <img class="pub-thumb" src="images/gmesh.gif" alt="GMesh" loading="lazy" decoding="async" />
+          <div>
+            <p class="pub-title">GMesh</p>
+            <p class="pub-desc">一个轻量级可微渲染器，适用于三角网格与三维高斯点混合的场景。</p>
+            <p class="pub-links">
+              <a href="docs/gmesh/index.html">项目主页</a>
+              <a href="https://github.com/PeizhiYan/gmesh">代码</a>
+            </p>
+          </div>
+        </article>
+
+        <article class="pub">
+          <img class="pub-thumb" src="images/flame-tracker.gif" alt="FLAME Head Tracker" loading="lazy" decoding="async" />
+          <div>
+            <p class="pub-title">FLAME Head Tracker</p>
+            <p class="pub-desc">基于 FLAME 模型的图像与视频头部追踪工具，用于 ArchitectHead 和 Gaussian Deja-vu。</p>
+            <p class="pub-links">
+              <a href="https://github.com/PeizhiYan/flame-head-tracker">代码</a>
+            </p>
+          </div>
+        </article>
       </div>
     </section>
 
-    <section class="section">
-      <h2>学术主页</h2>
-      <p><a href="https://scholar.google.ca/citations?user=bpHvFHgAAAAJ&hl=zh">🎓 谷歌学术主页</a></p>
+    <section id="honors" class="section">
+      <h2>荣誉</h2>
+      <ul class="plain-list">
+        <li>加拿大总督学术金牌 <span class="year">· 2020</span></li>
+        <li>多伦多向量学院人工智能奖学金 <span class="year">· 2018</span></li>
+      </ul>
+      <p class="inline-note" style="margin-top:0.75rem;"><a href="awards.html">证书与照片 →</a></p>
     </section>
 
-    <section class="section">
-      <h2>联系方式</h2>
-      <p><a href="https://www.linkedin.com/in/peizhi-yan/">LinkedIn</a></p>
-      <p><a href="mailto:yanpeizhi2008@gmail.com">Email</a></p>
+    <section id="service" class="section">
+      <h2>学术服务</h2>
+      <dl class="service-list">
+        <dt>组织工作</dt>
+        <dd>程序委员会委员：AAAI 2027、GI 2025 · 分会场主席：ICIP 2025 · 志愿者：CCECE 2025</dd>
+        <dt>期刊审稿</dt>
+        <dd>TPAMI, TVCG, TIP, TMM, TCSVT, TCYB, TOMM, CJECE, Neurocomputing, NCA</dd>
+        <dt>会议审稿</dt>
+        <dd>CVPR 2026, NeurIPS 2026, AAAI 2027, ACCV 2022, ICIP 2021–2023 &amp; 2025, GI 2025, UIC 2020</dd>
+      </dl>
+    </section>
+
+    <section id="talks" class="section">
+      <h2>学术报告</h2>
+      <ul class="plain-list">
+        <li>UBC 电子与计算机工程系研究日，报告人 <span class="year">· 2025</span></li>
+        <li>BC Cancer Summit 演讲：<em>Skin Lesion Image Synthesis with Controllable Skin Tone</em> <span class="year">· 2024</span></li>
+        <li>特邀演讲，Consortium for Advancement of MRI Education and Research in Africa <span class="year">· 2023</span></li>
+        <li>特邀报告，UBC 奥卡纳根校区计算机科学研讨会：<em>Machine Learning in 3D Face Modeling</em> <span class="year">· 2023</span></li>
+      </ul>
+    </section>
+
+    <section id="other-projects" class="section">
+      <h2>其他项目</h2>
+      <ul class="plain-list">
+        <li><a href="js_codes/index.html">交互式网页演示</a></li>
+      </ul>
     </section>
   </main>
 
   <div id="site-footer"></div>
 
   <script src="assets/js/site.js"></script>
+  <script src="assets/js/section-nav.js"></script>
 </body>
 </html>
