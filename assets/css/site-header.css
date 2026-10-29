@@ -73,15 +73,15 @@ body[data-header="project"].fixed-width {
 
 @media (max-width: 640px) {
   body[data-header="project"] {
-    padding-top: 45px;
+    padding-top: 53px;
   }
 
   .site-header .header-inner {
-    height: 44px;
+    height: 52px;
     padding: 0 1rem;
   }
 
   .site-header .brand-name {
-    font-size: 1.1rem;
+    font-size: 1.3rem;
   }
 }

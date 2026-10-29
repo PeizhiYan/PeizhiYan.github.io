@@ -551,7 +551,7 @@ main {
 /* Narrower screens: the same rail as a floating pill of dots at the bottom */
 @media (max-width: 1179px) {
   body.has-section-rail {
-    padding-bottom: 4rem;
+    padding-bottom: 4.75rem;
   }
 
   .section-rail,
@@ -565,18 +565,28 @@ main {
     left: 50%;
     bottom: calc(0.9rem + env(safe-area-inset-bottom));
     transform: translateX(-50%);
-    padding: 0.2rem 0.5rem 0.2rem 0.9rem;
+    padding: 0.25rem 0.6rem 0.25rem 1.1rem;
     background: rgba(255, 255, 255, 0.97);
     border: 1px solid var(--border);
     border-radius: 999px;
-    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.1);
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.12);
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: box-shadow 0.15s ease;
+  }
+
+  .section-rail.scrubbing {
+    box-shadow: 0 6px 24px rgba(15, 23, 42, 0.2);
   }
 
   .rail-current {
     display: block;
-    min-width: 6.5rem;
-    margin-right: 0.3rem;
-    font-size: 0.78rem;
+    width: 8.5rem;
+    margin-right: 0.4rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.95rem;
     font-weight: 600;
     color: var(--ink);
     white-space: nowrap;
@@ -587,22 +597,27 @@ main {
   .section-rail:focus-within a {
     justify-content: center;
     gap: 0;
-    width: 1.35rem;
-    height: 1.9rem;
+    width: 1.75rem;
+    height: 2.5rem;
     -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
   }
 
   .rail-tick,
   .section-rail a:hover .rail-tick {
-    width: 6px;
-    height: 6px;
-    border-radius: 3px;
-    background: #c9ced6;
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    background: #c3c9d2;
   }
 
   .section-rail a.active .rail-tick {
-    width: 14px;
+    width: 20px;
     background: var(--ink);
+  }
+
+  .section-rail.scrubbing a.active .rail-tick {
+    background: var(--accent);
   }
 
   .section-rail .rail-label {
@@ -672,21 +687,21 @@ main {
 }
 
 @media (max-width: 640px) {
-  body {
-    font-size: 16px;
-  }
-
   .header-inner {
-    padding: 0.45rem 1rem;
+    padding: 0.6rem 1rem;
   }
 
   .brand-name {
-    font-size: 1.1rem;
+    font-size: 1.3rem;
   }
 
   .nav-toggle {
-    padding: 0.15rem 0.6rem;
-    font-size: 0.85rem;
+    padding: 0.3rem 0.85rem;
+    font-size: 1rem;
+  }
+
+  .site-nav a {
+    font-size: 1.05rem;
   }
 
   main {
@@ -732,14 +747,15 @@ main {
   }
 
   .pub-title {
-    font-size: 1rem;
+    font-size: 1.08rem;
   }
 
   .pub-authors,
   .pub-venue,
   .pub-desc,
-  .pub-links {
-    font-size: 0.88rem;
+  .pub-links,
+  .inline-note {
+    font-size: 0.95rem;
   }
 }
 
