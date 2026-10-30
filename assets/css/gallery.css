@@ -84,14 +84,19 @@
     inset 0 1px 3px rgba(0, 0, 0, 0.22);
 }
 
+/* Explicit width and absolutely positioned images: Safari would otherwise stretch
+   the frame to the image file's natural width */
 .artwork .progressive-img {
   height: var(--art-h);
+  width: calc(var(--art-h) * (var(--ar)));
   aspect-ratio: var(--ar);
   background: #ddd6c8;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
 }
 
 .artwork .progressive-img img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   max-height: none;
@@ -263,11 +268,14 @@ html.viewer-open {
 .viewer-img {
   position: relative;
   height: var(--H);
+  width: calc(var(--H) * (var(--ar)));
   aspect-ratio: var(--ar);
   background: #ddd6c8;
 }
 
 .viewer-img img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;

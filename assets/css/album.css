@@ -104,17 +104,23 @@
   }
 }
 
+/* --ph is the print's height; the width is set from it explicitly (and the images
+   are absolutely positioned) so Safari can't stretch the mount to the file's width */
 .mount .progressive-img {
-  height: 29cqh;
+  --ph: 29cqh;
+  height: var(--ph);
+  width: calc(var(--ph) * (var(--ar)));
   aspect-ratio: var(--ar);
   background: #ece6d8;
 }
 
 .album-page.portraits .mount .progressive-img {
-  height: 34cqh;
+  --ph: 34cqh;
 }
 
 .mount .progressive-img img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   max-height: none;
@@ -162,7 +168,7 @@
 }
 
 .album-page.captioned .mount .progressive-img {
-  height: 25cqh;
+  --ph: 25cqh;
 }
 
 /* A page holding one larger print */
@@ -171,13 +177,14 @@
 }
 
 .album-page.single .mount .progressive-img {
-  height: auto;
   width: 74cqw;
+  height: calc(74cqw / (var(--ar)));
 }
 
 .album-page.single.portraits .mount .progressive-img {
-  width: auto;
-  height: 56cqh;
+  --ph: 56cqh;
+  height: var(--ph);
+  width: calc(var(--ph) * (var(--ar)));
 }
 
 .album-page.single .print figcaption {
