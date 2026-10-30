@@ -85,6 +85,16 @@ When adding a new photo to any of the three pages:
    </div>
    ```
 
+### Art Works page (gallery.html) exception
+
+`gallery.html` shows paintings framed on a "gallery wall" (styles in `assets/css/gallery.css`). Its `.full` images point to web-sized copies in `gallery/wall/` (640px tall, ~100 KB each), not the multi-MB originals in `gallery/`. Each painting is a `<figure class="artwork" style="--ar: W / H;">` with `.frame` > `.liner` > `.progressive-img`, plus a `.placard` (title, year). To add a painting:
+
+```bash
+ffmpeg -i gallery/<photo>.jpeg -vf "scale=-2:640:flags=lanczos" -q:v 3 gallery/wall/<photo>.jpg   # add crop=w:h:x:y, first if the photo shows wall/easel around the canvas
+sips -Z 300 gallery/<photo>.jpeg --out gallery/thumbs/<photo>.jpeg -s formatOptions 60
+```
+Then copy an existing `<figure class="artwork">` block, setting `--ar` to the wall image's width / height.
+
 ### Site structure notes
 
 - Shared header/footer are injected by `assets/js/site.js` into `#site-header` and `#site-footer` divs.
