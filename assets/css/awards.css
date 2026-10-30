@@ -37,7 +37,7 @@
 }
 
 /* Sizes on the wall */
-.artwork.feature { --art-h: 210px; }
+.artwork.feature { --art-h: 172px; } /* framed size matches the .small credential beside it */
 .artwork.medium  { --art-h: 260px; }
 .artwork.small   { --art-h: 190px; }
 
@@ -85,8 +85,8 @@
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.55);
 }
 
-.artwork[data-frame="box"] .frame { padding: 12px; }
-.artwork[data-frame="box"] .liner { padding: 22px; }
+.artwork[data-frame="box"] .frame { padding: 11px; }
+.artwork[data-frame="box"] .liner { padding: 14px; }
 
 .viewer-art[data-frame="box"] {
   --fw: 0.045;
@@ -135,19 +135,19 @@
 }
 
 @media (max-width: 960px) {
-  .artwork.feature { --art-h: 190px; }
+  .artwork.feature { --art-h: 146px; }
   .artwork.medium  { --art-h: 220px; }
   .artwork.small   { --art-h: 160px; }
 }
 
 @media (max-width: 640px) {
-  .artwork.feature { --art-h: 150px; }
+  .artwork.feature { --art-h: 106px; }
   .artwork.medium  { --art-h: 170px; }
   .artwork.small   { --art-h: 120px; }
 
   .artwork[data-frame="doc"] .liner { padding: 10px; }
-  .artwork[data-frame="box"] .frame { padding: 9px; }
-  .artwork[data-frame="box"] .liner { padding: 18px; }
+  .artwork[data-frame="box"] .frame { padding: 7px; }
+  .artwork[data-frame="box"] .liner { padding: 11px; }
 
   .wall-label {
     font-size: 0.7rem;
