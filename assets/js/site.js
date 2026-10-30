@@ -16,8 +16,8 @@
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
     <nav id="site-nav" class="site-nav">
       <a href="${homeHref}">Home</a>
-      <a href="${basePath}album.html">Album</a>
       <a href="${basePath}gallery.html">Art Works</a>
+      <a href="${basePath}album.html">Album</a>
       <a href="${basePath}events.html">Events</a>
       <a href="${basePath}awards.html">Awards</a>
       <a class="lang-toggle" href="${basePath}index_cn.html">中文</a>

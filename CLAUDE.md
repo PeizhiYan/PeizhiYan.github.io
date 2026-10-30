@@ -95,6 +95,17 @@ sips -Z 300 gallery/<photo>.jpeg --out gallery/thumbs/<photo>.jpeg -s formatOpti
 ```
 Then copy an existing `<figure class="artwork">` block, setting `--ar` to the wall image's width / height.
 
+Clicking a painting opens a framed full-screen viewer (`assets/js/gallery-viewer.js`). It shows the wall image first, then swaps in a sharper copy from `gallery/view/` (1400px tall, same filename), so each new painting also needs:
+```bash
+ffmpeg -i gallery/<photo>.jpeg -vf "scale=-2:'min(1400,ih)':flags=lanczos" -q:v 3 gallery/view/<photo>.jpg   # same crop as the wall copy, if any
+```
+
+### Album page (album.html) exception
+
+`album.html` is a photo album (styles `assets/css/album.css`, behavior `assets/js/album.js`). The markup is a flat list of `.album-page` elements in `#albumPages`: cover, then pages of two `.print`s each, then back cover; the page count must stay even (album.js pairs pages into turning leaves on screens ≥820px, and leaves them as a swipeable row below that). `.full` images point to web copies in `album/web/` (1000px long side), not the originals. To add a photo: `ffmpeg -i album/<p>.jpg -vf "scale='if(gt(iw,ih),1000,-2)':'if(gt(iw,ih),-2,1000)'" -q:v 3 album/web/<p>.jpg`, make the thumb as usual, and add a `.print` with `--ar: W / H`. A page of two portrait photos gets the `portraits` class.
+
+`events.html` reuses the same album (maroon cover via `<div class="album-stage maroon">`, web copies in `events/web/`). Its pages use `captioned` (smaller prints, two-line captions with a `.caption-meta` place/date line) and `single` / `single portraits` for a page holding one larger print.
+
 ### Site structure notes
 
 - Shared header/footer are injected by `assets/js/site.js` into `#site-header` and `#site-footer` divs.

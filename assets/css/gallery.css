@@ -168,3 +168,180 @@
     font-size: 0.82rem;
   }
 }
+
+/* ---------- Clickable paintings ---------- */
+
+.artwork {
+  cursor: zoom-in;
+}
+
+.artwork .frame {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.artwork:hover .frame,
+.artwork:focus-visible .frame {
+  transform: translateY(-3px);
+}
+
+.artwork:focus-visible {
+  outline: none;
+}
+
+.artwork:focus-visible .placard {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+/* ---------- Viewer: the clicked painting lifted onto a layer above the wall ---------- */
+
+html.viewer-open {
+  overflow: hidden;
+}
+
+/* The painting being viewed leaves an empty spot on the wall */
+.artwork.lifted .frame {
+  visibility: hidden;
+}
+
+.viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(28, 24, 19, 0.6);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  touch-action: pan-y;
+}
+
+.viewer[hidden] {
+  display: none;
+}
+
+.viewer.is-open {
+  opacity: 1;
+}
+
+/*
+  --H is the painting's height. The framed painting fills 80% of the screen in
+  whichever direction runs out first (the frame adds ~14.6% of --H around it,
+  and ~4rem is left for the placard). Frame, lip and liner scale with --H, so
+  it is the same frame as on the wall, just bigger.
+*/
+.viewer-art {
+  --H: min(calc((80vh - 4rem) / 1.146), calc(80vw / (var(--ar) + 0.146)));
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.viewer-art .frame {
+  padding: calc(var(--H) * 0.045);
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.16),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.45),
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    0 30px 60px -20px rgba(0, 0, 0, 0.55);
+}
+
+.viewer-art .liner {
+  padding: calc(var(--H) * 0.028);
+  box-shadow:
+    0 0 0 calc(var(--H) * 0.008) #b4965c,
+    inset 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+.viewer-img {
+  position: relative;
+  height: var(--H);
+  aspect-ratio: var(--ar);
+  background: #ddd6c8;
+}
+
+.viewer-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+}
+
+.viewer-img::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.viewer-art .placard {
+  margin-top: 1.25rem;
+  opacity: 0;
+  transition: opacity 0.25s ease 0.15s;
+}
+
+.viewer.is-open .viewer-art .placard {
+  opacity: 1;
+}
+
+.viewer-btn {
+  position: absolute;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--ink);
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.viewer-btn:hover {
+  background: #fff;
+}
+
+.viewer-close {
+  top: 1.25rem;
+  right: 1.25rem;
+  font-size: 1.6rem;
+}
+
+.viewer-prev,
+.viewer-next {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.viewer-prev {
+  left: 1.25rem;
+}
+
+.viewer-next {
+  right: 1.25rem;
+}
+
+@media (max-width: 640px) {
+  /* Arrows move below the painting on phones */
+  .viewer-prev,
+  .viewer-next {
+    top: auto;
+    bottom: calc(1.5rem + env(safe-area-inset-bottom));
+    transform: none;
+  }
+
+  .viewer-prev {
+    left: calc(50% - 3.5rem);
+  }
+
+  .viewer-next {
+    right: calc(50% - 3.5rem);
+  }
+}
