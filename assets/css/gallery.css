@@ -233,7 +233,10 @@ html.viewer-open {
   it is the same frame as on the wall, just bigger.
 */
 .viewer-art {
-  --H: min(calc((80vh - 4rem) / 1.146), calc(80vw / (var(--ar) + 0.146)));
+  --fw: 0.045; /* moulding, as a fraction of --H */
+  --lw: 0.028; /* liner or mat */
+  --edge: calc(2 * (var(--fw) + var(--lw)) + 0.016);
+  --H: min(calc((80vh - 4rem) / (1 + var(--edge))), calc(80vw / (var(--ar) + var(--edge))));
   margin: 0;
   display: flex;
   flex-direction: column;
@@ -241,7 +244,7 @@ html.viewer-open {
 }
 
 .viewer-art .frame {
-  padding: calc(var(--H) * 0.045);
+  padding: calc(var(--H) * var(--fw));
   transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
   box-shadow:
     inset 1px 1px 0 rgba(255, 255, 255, 0.16),
@@ -251,7 +254,7 @@ html.viewer-open {
 }
 
 .viewer-art .liner {
-  padding: calc(var(--H) * 0.028);
+  padding: calc(var(--H) * var(--lw));
   box-shadow:
     0 0 0 calc(var(--H) * 0.008) #b4965c,
     inset 0 1px 4px rgba(0, 0, 0, 0.25);

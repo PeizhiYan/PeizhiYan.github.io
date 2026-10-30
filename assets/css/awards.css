@@ -1,0 +1,161 @@
+/* Awards page: a small hall of honors on the gallery wall (builds on gallery.css).
+   data-frame="box": velvet-lined shadow box; data-frame="doc": slim black frame with a white mat. */
+
+.awards-wall {
+  padding-top: 3.5rem;
+}
+
+/* Engraved-looking group labels on the wall */
+.wall-label {
+  max-width: 1200px;
+  margin: 0 auto 2.75rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #8b8170;
+}
+
+.wall-label::before,
+.wall-label::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #d9d2c4;
+}
+
+.awards-wall .hang + .wall-label {
+  margin-top: 5rem;
+}
+
+.awards-wall .hang {
+  align-items: center;
+}
+
+/* Sizes on the wall */
+.artwork.feature { --art-h: 210px; }
+.artwork.medium  { --art-h: 260px; }
+.artwork.small   { --art-h: 190px; }
+
+/* ---------- Document frame: slim black moulding, wide white mat ---------- */
+
+.artwork[data-frame="doc"] .frame,
+.viewer-art[data-frame="doc"] .frame {
+  background: linear-gradient(135deg, #3a3a3a, #121212 55%, #262626);
+}
+
+.artwork[data-frame="doc"] .liner,
+.viewer-art[data-frame="doc"] .liner {
+  background: #fbfaf7;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06), inset 0 2px 4px rgba(0, 0, 0, 0.12);
+}
+
+.artwork[data-frame="doc"] .progressive-img,
+.viewer-art[data-frame="doc"] .viewer-img {
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.artwork[data-frame="doc"] .frame { padding: 5px; }
+.artwork[data-frame="doc"] .liner { padding: 16px; }
+
+.viewer-art[data-frame="doc"] {
+  --fw: 0.016;
+  --lw: 0.075;
+}
+
+/* ---------- Shadow box: walnut frame around a deep navy velvet well ---------- */
+
+.artwork[data-frame="box"] .liner,
+.viewer-art[data-frame="box"] .liner {
+  background:
+    radial-gradient(ellipse at 50% 40%, #26345e, #121a33 75%);
+  box-shadow:
+    0 0 0 2px #b4965c,
+    inset 0 8px 18px rgba(0, 0, 0, 0.65),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.artwork[data-frame="box"] .progressive-img,
+.viewer-art[data-frame="box"] .viewer-img {
+  background: #121a33;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.55);
+}
+
+.artwork[data-frame="box"] .frame { padding: 12px; }
+.artwork[data-frame="box"] .liner { padding: 22px; }
+
+.viewer-art[data-frame="box"] {
+  --fw: 0.045;
+  --lw: 0.1;
+}
+
+/* ---------- Brass plaque under the medal ---------- */
+
+.placard.brass,
+.viewer-art[data-frame="box"] .placard {
+  padding: 0.55rem 1.2rem 0.6rem;
+  background: linear-gradient(135deg, #e3cd98, #c2a265 45%, #dcc28a 70%, #b8975a);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+    0 2px 5px rgba(60, 40, 10, 0.3);
+}
+
+.placard.brass {
+  margin-top: 1.6rem;
+}
+
+.placard.brass .placard-title,
+.viewer-art[data-frame="box"] .placard-title {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #3b2a12;
+}
+
+.placard.brass .placard-year,
+.viewer-art[data-frame="box"] .placard-year {
+  color: #4f3a1c;
+}
+
+/* Small links on placards */
+.placard a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgba(0, 0, 0, 0.3);
+  text-underline-offset: 2px;
+}
+
+.placard a:hover {
+  color: var(--accent);
+}
+
+@media (max-width: 960px) {
+  .artwork.feature { --art-h: 190px; }
+  .artwork.medium  { --art-h: 220px; }
+  .artwork.small   { --art-h: 160px; }
+}
+
+@media (max-width: 640px) {
+  .artwork.feature { --art-h: 150px; }
+  .artwork.medium  { --art-h: 170px; }
+  .artwork.small   { --art-h: 120px; }
+
+  .artwork[data-frame="doc"] .liner { padding: 10px; }
+  .artwork[data-frame="box"] .frame { padding: 9px; }
+  .artwork[data-frame="box"] .liner { padding: 18px; }
+
+  .wall-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    margin-bottom: 2rem;
+  }
+
+  .awards-wall .hang + .wall-label {
+    margin-top: 3.5rem;
+  }
+}

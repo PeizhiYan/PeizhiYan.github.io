@@ -100,6 +100,10 @@ Clicking a painting opens a framed full-screen viewer (`assets/js/gallery-viewer
 ffmpeg -i gallery/<photo>.jpeg -vf "scale=-2:'min(1400,ih)':flags=lanczos" -q:v 3 gallery/view/<photo>.jpg   # same crop as the wall copy, if any
 ```
 
+### Awards page (awards.html)
+
+`awards.html` reuses the Art Works wall and viewer (`gallery.css` + `gallery-viewer.js`) plus `assets/css/awards.css`. Each piece is an `.artwork` with a size class (`feature`/`medium`/`small`), an optional `data-frame` (`box` = velvet shadow box, `doc` = black document frame with white mat; default walnut), and `data-view` pointing to its sharp copy. Images: `awards/wall/` (600px tall), `awards/view/` (≤1400px), `awards/thumbs/`; originals in `awards/` are untouched.
+
 ### Album page (album.html) exception
 
 `album.html` is a photo album (styles `assets/css/album.css`, behavior `assets/js/album.js`). The markup is a flat list of `.album-page` elements in `#albumPages`: cover, then pages of two `.print`s each, then back cover; the page count must stay even (album.js pairs pages into turning leaves on screens ≥820px, and leaves them as a swipeable row below that). `.full` images point to web copies in `album/web/` (1000px long side), not the originals. To add a photo: `ffmpeg -i album/<p>.jpg -vf "scale='if(gt(iw,ih),1000,-2)':'if(gt(iw,ih),-2,1000)'" -q:v 3 album/web/<p>.jpg`, make the thumb as usual, and add a `.print` with `--ar: W / H`. A page of two portrait photos gets the `portraits` class.

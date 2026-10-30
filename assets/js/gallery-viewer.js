@@ -1,5 +1,7 @@
-// Art Works: click a framed painting to see it large, still framed, on the wall.
-// Shows the wall-size image at once, then swaps in the sharper copy from gallery/view/.
+// Click a framed piece (.artwork) to see it large, still framed, above the wall.
+// Shows the wall-size image at once, then swaps in a sharper copy: the piece's
+// data-view, or the same filename under gallery/view/. data-frame picks the frame
+// style ("doc", "box"; default is the walnut painting frame).
 (function () {
   const artworks = Array.from(document.querySelectorAll(".artwork"));
   if (!artworks.length) return;
@@ -30,9 +32,10 @@
     index = (i + artworks.length) % artworks.length;
     const work = artworks[index];
     const wallSrc = work.querySelector(".full").getAttribute("data-src");
-    const viewSrc = wallSrc.replace("gallery/wall/", "gallery/view/");
+    const viewSrc = work.getAttribute("data-view") || wallSrc.replace("gallery/wall/", "gallery/view/");
 
     art.style.setProperty("--ar", work.style.getPropertyValue("--ar"));
+    art.setAttribute("data-frame", work.getAttribute("data-frame") || "");
     img.src = wallSrc;
     img.alt = work.querySelector(".placard-title").textContent;
     const sharp = new Image();
@@ -104,7 +107,8 @@
     work.tabIndex = 0;
     work.setAttribute("role", "button");
     work.setAttribute("aria-label", "View " + work.querySelector(".placard-title").textContent);
-    work.addEventListener("click", function () {
+    work.addEventListener("click", function (event) {
+      if (event.target.closest("a")) return; // links on placards work normally
       open(i);
     });
     work.addEventListener("keydown", function (event) {
